@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="alert alert-danger small mb-0" role="alert">
+  <strong>{% trans "Please fix the following:" %}</strong>
+  <ul class="mb-0 mt-2">
+    {% for field, messages in errors.items %}
+      {% for msg in messages %}
+      <li>{{ field }}: {{ msg }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+</div>

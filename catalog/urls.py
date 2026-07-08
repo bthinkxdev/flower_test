@@ -1,0 +1,26 @@
+"""URL routing for the catalog app."""
+
+from __future__ import annotations
+
+from django.urls import path
+
+from catalog import views
+
+app_name = "catalog"
+
+urlpatterns = [
+    path("search/suggest/", views.search_suggestions_view, name="search-suggest"),
+    path("products/<slug:slug>/", views.pdp_view, name="pdp"),
+    path(
+        "products/<int:product_id>/variant-price/",
+        views.variant_price_view,
+        name="variant-price",
+    ),
+    path(
+        "products/<int:product_id>/delivery-estimate/",
+        views.delivery_estimate_view,
+        name="delivery-estimate",
+    ),
+    path("category/<slug:category_slug>/", views.plp_view, name="plp-category"),
+    path("", views.plp_view, name="plp"),
+]

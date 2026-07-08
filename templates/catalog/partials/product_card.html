@@ -1,0 +1,28 @@
+{% load i18n static storefront_tags %}
+<article class="product-card card h-100">
+  <a href="{% url 'catalog:pdp' slug=product.slug %}" class="text-decoration-none text-dark d-block">
+    <div class="product-card-img-wrap ratio ratio-1x1">
+      {% with img=product.primary_images.0 %}
+      {% if img and img.image %}
+      <img src="{{ img.image.url }}" alt="{{ img.alt_text|default:product.name }}" class="object-fit-cover" width="400" height="400" loading="lazy"
+           onerror="this.onerror=null;this.src='{% static 'img/product-placeholder.svg' %}';this.classList.add('product-card-img--placeholder');">
+      {% else %}
+      <img src="{% static 'img/product-placeholder.svg' %}" alt="{{ product.name }}" class="object-fit-cover product-card-img--placeholder" width="400" height="400" loading="lazy">
+      {% endif %}
+      {% endwith %}
+      {% if product.is_same_day_eligible %}
+      <span class="product-badge product-badge--same-day">{% trans "Same Day" %}</span>
+      {% elif product.is_bestseller %}
+      <span class="product-badge product-badge--express">{% trans "Express" %}</span>
+      {% elif product.is_new_arrival %}
+      <span class="product-badge product-badge--new">{% trans "New" %}</span>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <h3 class="card-title">{{ product.name }}</h3>
+      <p class="product-price">
+        {% money_label product.display_price|default:product.base_price display_currency %}
+      </p>
+    </div>
+  </a>
+</article>

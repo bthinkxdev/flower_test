@@ -1,0 +1,41 @@
+"""Payment gateway registry — checkout selects by string key only."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from payments.adapters.concrete import (
+    ApplePayAdapter,
+    CardGatewayAdapter,
+    GiftVoucherAdapter,
+    GooglePayAdapter,
+    QatarLocalGatewayAdapter,
+)
+
+if TYPE_CHECKING:
+    from payments.adapters.base import PaymentGatewayAdapter
+
+PAYMENT_GATEWAYS: dict[str, PaymentGatewayAdapter] = {
+    CardGatewayAdapter.key: CardGatewayAdapter(),
+    QatarLocalGatewayAdapter.key: QatarLocalGatewayAdapter(),
+    ApplePayAdapter.key: ApplePayAdapter(),
+    GooglePayAdapter.key: GooglePayAdapter(),
+    GiftVoucherAdapter.key: GiftVoucherAdapter(),
+}
+
+
+def get_payment_adapter(*, gateway_key: str) -> PaymentGatewayAdapter:
+    """Look up a registered adapter by key."""
+    adapter = PAYMENT_GATEWAYS.get(gateway_key)
+    if adapter is None:
+        raise KeyError(f"Unknown payment gateway: {gateway_key}")
+    return adapter
+
+
+def register_payment_adapter(*, adapter: PaymentGatewayAdapter) -> None:
+    """
+    Register an adapter at runtime (used by tests and future plugins).
+
+    Adding a gateway requires only registry registration — zero checkout view edits.
+    """
+    PAYMENT_GATEWAYS[adapter.key] = adapter

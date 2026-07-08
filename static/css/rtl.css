@@ -1,0 +1,11 @@
+[dir="rtl"] .navbar-nav.me-auto { margin-right: 0 !important; margin-left: auto !important; }
+[dir="rtl"] .dropdown-menu { text-align: right; }
+[dir="rtl"] .search-wrap input { padding: 0.5rem 2.5rem 0.5rem 1rem; background-position: calc(100% - 0.85rem) center; }
+[dir="rtl"] .product-badge { left: auto; right: 8px; }
+[dir="rtl"] .product-card .card-body { text-align: right; }
+[dir="rtl"] .section-header { flex-direction: row-reverse; }
+[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before { float: right; padding-left: 0.5rem; padding-right: 0; }
+[dir="rtl"] .tracking-timeline { padding-left: 0; padding-right: 1.5rem; }
+[dir="rtl"] .tracking-timeline::before { left: auto; right: 5px; }
+[dir="rtl"] .tracking-step::before { left: auto; right: -1.5rem; }
+[dir="rtl"] .cart-line { flex-direction: row-reverse; }

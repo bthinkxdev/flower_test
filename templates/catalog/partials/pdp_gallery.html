@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="pdp-gallery">
+  <div class="main-image-wrap ratio ratio-1x1 mb-2 bg-light rounded overflow-hidden zoom-container">
+    {% with primary=product.images.first %}
+    {% if primary %}
+    <img id="main-pdp-image" src="{{ primary.image.url }}" alt="{{ primary.alt_text|default:product.name }}" class="w-100 h-100 object-fit-cover zoom-image" width="800" height="800" fetchpriority="high">
+    {% endif %}
+    {% endwith %}
+  </div>
+  <div class="d-flex gap-2 flex-wrap thumbs">
+    {% for image in product.images.all %}
+    <button type="button" class="btn p-0 border rounded thumb-btn" data-full="{{ image.image.url }}" aria-label="{% trans 'View image' %} {{ forloop.counter }}">
+      <img src="{{ image.image.url }}" alt="" width="72" height="72" class="object-fit-cover rounded" loading="lazy">
+    </button>
+    {% endfor %}
+  </div>
+</div>

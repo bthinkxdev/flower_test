@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="checkout-confirmation text-center py-4">
+  <div class="checkout-confirmation__icon mb-3">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--floward-primary)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>
+  </div>
+  <h2 class="section-title mb-2">{% trans "Thank you!" %}</h2>
+  <p class="text-muted mb-4">
+    {% blocktrans with number=order.order_number %}Order <strong>{{ number }}</strong> has been confirmed.{% endblocktrans %}
+  </p>
+  <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+    <a href="{% url 'orders:tracking' order_id=order.pk %}" class="btn btn-floward">{% trans "Track Order" %}</a>
+    <a href="{% url 'catalog:plp' %}" class="btn btn-outline-floward">{% trans "Continue Shopping" %}</a>
+  </div>
+</div>

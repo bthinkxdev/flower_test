@@ -1,0 +1,95 @@
+{% load i18n %}
+<div class="order-preview">
+  <div class="order-preview__header">
+    <h2 class="h6 mb-0">{% trans "Order Preview" %}</h2>
+  </div>
+  <div class="order-preview__body">
+    {% if field_errors %}
+    <div class="alert alert-danger small" role="alert">
+      <strong>{% trans "Please fix the following:" %}</strong>
+      <ul class="mb-0 mt-1">
+        {% for field, messages in field_errors.items %}
+          {% for msg in messages %}
+          <li>{{ field }}: {{ msg }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="alert alert-success small py-2">{% trans "Gift customization saved." %}</div>
+    {% endif %}
+
+    {% if snapshot %}
+    <dl class="order-preview-list small mb-0">
+      <dt>{% trans "Product" %}</dt>
+      <dd>{{ product.name }}</dd>
+
+      {% if snapshot.personal_message %}
+      <dt>{% trans "Message" %}</dt>
+      <dd class="message-preview-quote">{{ snapshot.personal_message }}</dd>
+      {% endif %}
+
+      {% if snapshot.greeting_card %}
+      <dt>{% trans "Greeting card" %}</dt>
+      <dd>{{ snapshot.greeting_card.name }}</dd>
+      {% endif %}
+
+      {% if snapshot.gift_wrap %}
+      <dt>{% trans "Gift wrap" %}</dt>
+      <dd>{{ snapshot.gift_wrap.get_name_display }} (+{{ snapshot.gift_wrap.price_delta }} QAR)</dd>
+      {% endif %}
+
+      {% if snapshot.ribbon %}
+      <dt>{% trans "Ribbon" %}</dt>
+      <dd>{{ snapshot.ribbon.get_name_display }} (+{{ snapshot.ribbon.price_delta }} QAR)</dd>
+      {% endif %}
+
+      {% if snapshot.photo_upload %}
+      <dt>{% trans "Photo upload" %}</dt>
+      <dd>{{ snapshot.photo_upload.name }} (+{{ snapshot.photo_upload.price_delta }} QAR)</dd>
+      {% endif %}
+
+      {% for addon_row in snapshot.snapshot_addons.all %}
+      <dt>{% trans "Add-on" %}</dt>
+      <dd>{{ addon_row.addon_product.name }} (+{{ addon_row.price_at_time_of_purchase }} QAR)</dd>
+      {% endfor %}
+
+      {% if snapshot.delivery_date %}
+      <dt>{% trans "Delivery date" %}</dt>
+      <dd>{{ snapshot.delivery_date }}</dd>
+      {% endif %}
+
+      {% if snapshot.delivery_slot %}
+      <dt>{% trans "Delivery slot" %}</dt>
+      <dd>{{ snapshot.delivery_slot.name }}</dd>
+      {% endif %}
+
+      {% if snapshot.delivery_instructions %}
+      <dt>{% trans "Instructions" %}</dt>
+      <dd>{{ snapshot.delivery_instructions }}</dd>
+      {% endif %}
+
+      {% if snapshot.is_anonymous %}
+      <dt>{% trans "Anonymous" %}</dt>
+      <dd>{% trans "Yes" %}</dd>
+      {% endif %}
+
+      {% if snapshot.is_gift_receipt %}
+      <dt>{% trans "Gift receipt" %}</dt>
+      <dd>{% trans "Prices hidden on packing slip" %}</dd>
+      {% endif %}
+    </dl>
+
+    {% if snapshot.snapshot_json.pricing %}
+    <div class="order-preview__total">
+      <span>{% trans "Customization total" %}</span>
+      <span class="text-floward">+{{ snapshot.snapshot_json.pricing.total_delta }} QAR</span>
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="text-muted small mb-0">{% trans "Customize your gift to see a live preview here." %}</p>
+    {% endif %}
+  </div>
+</div>

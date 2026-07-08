@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Corporate Portal" %} | Floward{% endblock %}
+
+{% block content %}
+<div class="container page-container py-4">
+  <h1 class="section-title mb-4">{% trans "Corporate Portal" %}</h1>
+
+  {% if not account %}
+  <div class="card p-4 text-center">
+    <p class="mb-3">{% trans "You need a corporate account to access this portal." %}</p>
+    <a href="{% url 'accounts:corporate-register' %}" class="btn btn-floward">{% trans "Register for corporate gifting" %}</a>
+  </div>
+  {% else %}
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <div class="h3 mb-0">{{ dashboard.pending_quotes.total_count }}</div>
+        <div class="small text-muted">{% trans "Pending quotes" %}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <div class="h3 mb-0">{{ dashboard.active_recurring_orders.total_count }}</div>
+        <div class="small text-muted">{% trans "Active recurring orders" %}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 text-center">
+        <div class="h3 mb-0">{{ dashboard.invoice_history.total_count }}</div>
+        <div class="small text-muted">{% trans "Invoices" %}</div>
+      </div>
+    </div>
+  </div>
+  <p class="text-muted small mb-0">
+    {% trans "Company" %}: {{ account.company_name }}
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

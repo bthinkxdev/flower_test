@@ -1,0 +1,11 @@
+{% load i18n %}
+<section class="container mb-5">
+  {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Follow Us" %}
+  <div class="instagram-grid">
+    {% for image in section_context.images %}
+    <div class="instagram-grid__item">
+      <img src="{{ image.url }}" alt="" width="200" height="200" loading="lazy">
+    </div>
+    {% endfor %}
+  </div>
+</section>

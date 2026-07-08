@@ -1,0 +1,11 @@
+{% load i18n %}
+<section class="container mb-4">
+  {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Explore Unique Gift Ideas" %}
+  <div class="chip-scroll" role="list">
+    {% for category in section_context.categories %}
+    <a href="{% url 'catalog:plp-category' category_slug=category.slug %}" class="category-chip text-decoration-none" role="listitem">
+      <span class="category-chip__label">{{ category.name }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>

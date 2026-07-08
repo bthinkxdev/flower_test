@@ -1,0 +1,17 @@
+{% load i18n %}
+<section class="container mb-5">
+  {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Customer Reviews" %}
+  <div class="row g-3">
+    {% for review in section_context.reviews %}
+    <div class="col-md-4">
+      <article class="review-card h-100">
+        <div class="review-card__stars text-floward mb-2" aria-label="{% trans 'Rating' %} {{ review.rating }}">
+          {% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+        </div>
+        <h3 class="review-card__title">{{ review.title }}</h3>
+        <p class="review-card__body">{{ review.body|truncatewords:24 }}</p>
+      </article>
+    </div>
+    {% endfor %}
+  </div>
+</section>

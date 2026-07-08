@@ -1,0 +1,59 @@
+{% load i18n %}
+<form class="plp-filters card p-3"
+      method="get"
+      action="{{ request.path }}"
+      hx-get="{{ request.path }}"
+      hx-target="#product-grid"
+      hx-swap="innerHTML"
+      hx-push-url="true"
+      hx-indicator="#product-grid"
+      hx-trigger="submit, change from:select[name=sort]">
+  <h2 class="h6">{% trans "Filters" %}</h2>
+  <div class="mb-3">
+    <label class="form-label small">{% trans "Category" %}</label>
+    <select name="category" class="form-select form-select-sm">
+      <option value="">{% trans "All" %}</option>
+      {% for cat in categories %}
+      <option value="{{ cat.pk }}" {% if filters.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label small">{% trans "Occasion" %}</label>
+    <select name="occasion" class="form-select form-select-sm">
+      <option value="">{% trans "All" %}</option>
+      {% for occ in occasions %}
+      <option value="{{ occ.pk }}" {% if filters.occasion_id == occ.pk %}selected{% endif %}>{{ occ.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label small">{% trans "Brand" %}</label>
+    <select name="brand" class="form-select form-select-sm">
+      <option value="">{% trans "All" %}</option>
+      {% for brand in brands %}
+      <option value="{{ brand.pk }}" {% if filters.brand_id == brand.pk %}selected{% endif %}>{{ brand.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label small">{% trans "Price" %}</label>
+    <div class="input-group input-group-sm">
+      <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.GET.min_price }}">
+      <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.GET.max_price }}">
+    </div>
+  </div>
+  <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="same_day" value="1" id="f-sd" {% if filters.same_day %}checked{% endif %}><label class="form-check-label small" for="f-sd">{% trans "Same Day" %}</label></div>
+  <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="bestseller" value="1" id="f-bs" {% if filters.bestseller %}checked{% endif %}><label class="form-check-label small" for="f-bs">{% trans "Bestseller" %}</label></div>
+  <div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="in_stock" value="1" id="f-stock" {% if filters.in_stock %}checked{% endif %}><label class="form-check-label small" for="f-stock">{% trans "In Stock" %}</label></div>
+  <div class="mb-3">
+    <label class="form-label small">{% trans "Sort" %}</label>
+    <select name="sort" class="form-select form-select-sm">
+      <option value="newest" {% if sort == 'newest' %}selected{% endif %}>{% trans "Newest" %}</option>
+      <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Price: Low to High" %}</option>
+      <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Price: High to Low" %}</option>
+      <option value="rating" {% if sort == 'rating' %}selected{% endif %}>{% trans "Top Rated" %}</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-floward btn-sm w-100">{% trans "Apply" %}</button>
+</form>

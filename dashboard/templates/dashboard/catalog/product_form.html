@@ -1,0 +1,175 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{% if form_mode == "edit" %}Edit{% else %}Add{% endif %} Product{% endblock %}
+{% block page_title %}{% if form_mode == "edit" %}Edit Product{% else %}Add Product{% endif %}{% endblock %}
+{% block breadcrumbs %}<p class="mb-0 text-secondary">{% if form_mode == "edit" %}Update product details, variants and images{% else %}Create a new product for your catalog{% endif %}</p>{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-8">
+      <div class="card mb-3">
+        <div class="card-header panel-header"><h3 class="panel-title">Product details</h3></div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">{% include "dashboard/partials/_field.html" with field=form.name %}</div>
+            <div class="col-md-6">{% include "dashboard/partials/_field.html" with field=form.sku %}</div>
+            <div class="col-md-6">{% include "dashboard/partials/_field.html" with field=form.slug %}</div>
+            <div class="col-md-6">{% include "dashboard/partials/_field.html" with field=form.category %}</div>
+            <div class="col-md-6">{% include "dashboard/partials/_field.html" with field=form.primary_occasion %}</div>
+            <div class="col-md-6">{% include "dashboard/partials/_field.html" with field=form.brand %}</div>
+            <div class="col-md-3">{% include "dashboard/partials/_field.html" with field=form.base_price %}</div>
+            <div class="col-md-3">{% include "dashboard/partials/_field.html" with field=form.color %}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3" data-formset="variants">
+        <div class="card-header panel-header">
+          <div><h3 class="panel-title">Variants</h3><p class="panel-sub">Size or packaging options with their own price &amp; stock</p></div>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-formset-add><i class="ti ti-plus me-1"></i>Add variant</button>
+        </div>
+        <div class="card-body p-0">
+          {{ variants.management_form }}
+          <div class="table-responsive">
+            <table class="table repeater align-middle mb-0">
+              <thead>
+                <tr><th>Type</th><th>Name</th><th>Price delta</th><th>SKU suffix</th><th>Stock</th><th class="text-center">Remove</th></tr>
+              </thead>
+              <tbody data-formset-body>
+                {% for vform in variants %}
+                <tr>
+                  {{ vform.id }}
+                  <td>{{ vform.variant_type }}</td>
+                  <td>{{ vform.name }}</td>
+                  <td>{{ vform.price_delta }}</td>
+                  <td>{{ vform.sku_suffix }}</td>
+                  <td>{{ vform.stock_quantity }}</td>
+                  <td class="text-center">
+                    {% if vform.instance.pk %}
+                    <label class="form-check d-inline-flex m-0" title="Delete on save">{{ vform.DELETE }}</label>
+                    {% else %}
+                    <button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <template data-formset-empty>
+            <tr>
+              {{ variants.empty_form.id }}
+              <td>{{ variants.empty_form.variant_type }}</td>
+              <td>{{ variants.empty_form.name }}</td>
+              <td>{{ variants.empty_form.price_delta }}</td>
+              <td>{{ variants.empty_form.sku_suffix }}</td>
+              <td>{{ variants.empty_form.stock_quantity }}</td>
+              <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </template>
+        </div>
+      </div>
+
+      <div class="card mb-3" data-formset="images">
+        <div class="card-header panel-header">
+          <div><h3 class="panel-title">Images</h3><p class="panel-sub">Mark one image as primary for cards and rails</p></div>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-formset-add><i class="ti ti-plus me-1"></i>Add image</button>
+        </div>
+        <div class="card-body p-0">
+          {{ images.management_form }}
+          <div class="table-responsive">
+            <table class="table repeater align-middle mb-0">
+              <thead>
+                <tr><th style="width:80px">Preview</th><th>Image file</th><th>Alt text</th><th>Order</th><th class="text-center">Primary</th><th class="text-center">Remove</th></tr>
+              </thead>
+              <tbody data-formset-body>
+                {% for iform in images %}
+                <tr>
+                  {{ iform.id }}
+                  <td>
+                    {% if iform.instance.pk and iform.instance.image %}<img src="{{ iform.instance.image.url }}" class="thumb" data-img-preview alt="">
+                    {% else %}<img src="" class="thumb d-none" data-img-preview alt="">{% endif %}
+                  </td>
+                  <td>{{ iform.image }}</td>
+                  <td>{{ iform.alt_text }}</td>
+                  <td>{{ iform.display_order }}</td>
+                  <td class="text-center">{{ iform.is_primary }}</td>
+                  <td class="text-center">
+                    {% if iform.instance.pk %}
+                    <label class="form-check d-inline-flex m-0" title="Delete on save">{{ iform.DELETE }}</label>
+                    {% else %}
+                    <button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <template data-formset-empty>
+            <tr>
+              {{ images.empty_form.id }}
+              <td><img src="" class="thumb d-none" data-img-preview alt=""></td>
+              <td>{{ images.empty_form.image }}</td>
+              <td>{{ images.empty_form.alt_text }}</td>
+              <td>{{ images.empty_form.display_order }}</td>
+              <td class="text-center">{{ images.empty_form.is_primary }}</td>
+              <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </template>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header panel-header"><h3 class="panel-title">Search engine listing</h3></div>
+        <div class="card-body">
+          {% include "dashboard/partials/_field.html" with field=form.meta_title %}
+          {% include "dashboard/partials/_field.html" with field=form.meta_description %}
+          {% include "dashboard/partials/_field.html" with field=form.og_image %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="sticky-sidebar">
+        <div class="card mb-3">
+          <div class="card-body d-grid gap-2">
+            <button type="submit" class="btn btn-primary"><i class="ti ti-device-floppy me-1"></i>Save Product</button>
+            <a href="{{ cancel_url }}" class="btn btn-light">Cancel</a>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header panel-header"><h3 class="panel-title">Status &amp; visibility</h3></div>
+          <div class="card-body">
+            {% include "dashboard/partials/_field.html" with field=form.is_active %}
+            {% include "dashboard/partials/_field.html" with field=form.is_bestseller %}
+            {% include "dashboard/partials/_field.html" with field=form.is_new_arrival %}
+            {% include "dashboard/partials/_field.html" with field=form.is_same_day_eligible %}
+            {% include "dashboard/partials/_field.html" with field=form.supports_gift_customization %}
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header panel-header"><h3 class="panel-title">Inventory</h3></div>
+          <div class="card-body">
+            {% include "dashboard/partials/_field.html" with field=form.stock_quantity %}
+            {% include "dashboard/partials/_field.html" with field=form.low_stock_threshold %}
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header panel-header"><h3 class="panel-title">Organization</h3></div>
+          <div class="card-body">
+            {% include "dashboard/partials/_field.html" with field=form.recipients %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

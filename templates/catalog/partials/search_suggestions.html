@@ -1,0 +1,32 @@
+{% load i18n %}
+{% if products %}
+<ul class="list-unstyled search-suggestions-list mb-0" role="presentation">
+  {% for product in products %}
+  <li role="presentation">
+    <a href="{% url 'catalog:pdp' slug=product.slug %}"
+       class="search-suggestion-link d-block px-3 py-2 rounded text-dark small text-decoration-none"
+       role="option"
+       id="search-suggestion-{{ forloop.counter }}">
+      {{ product.name }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% elif query %}
+<div class="search-suggestions-empty" role="status">
+  <div class="search-suggestions-empty__icon" aria-hidden="true">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </svg>
+  </div>
+  <p class="search-suggestions-empty__title mb-1">
+    {% blocktrans with term=query %}No results for "{{ term }}"{% endblocktrans %}
+  </p>
+  <p class="search-suggestions-empty__hint small text-muted mb-3">
+    {% trans "Try a different keyword or browse our collections." %}
+  </p>
+  <a href="{% url 'catalog:plp' %}" class="btn btn-outline-floward btn-sm">
+    {% trans "Browse all categories" %}
+  </a>
+</div>
+{% endif %}

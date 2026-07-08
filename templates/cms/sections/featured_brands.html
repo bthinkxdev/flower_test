@@ -1,0 +1,9 @@
+{% load i18n %}
+<section class="container mb-4">
+  {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Brands You'll Love" %}
+  <div class="brands-scroll" role="list">
+    {% for brand in section_context.brands %}
+    <a href="{% url 'catalog:plp' %}?brand={{ brand.pk }}" class="brand-pill text-decoration-none text-dark" role="listitem">{{ brand.name }}</a>
+    {% endfor %}
+  </div>
+</section>

@@ -1,0 +1,41 @@
+{% load i18n %}
+{% if section_context.slides %}
+<section class="hero-slider" aria-label="{% trans 'Promotions' %}">
+  <div id="heroCarousel"
+       class="carousel slide carousel-fade hero-carousel"
+       data-bs-ride="carousel"
+       data-bs-interval="6000"
+       data-bs-pause="false">
+    {% if section_context.slides|length > 1 %}
+    <div class="carousel-indicators hero-carousel__indicators">
+      {% for slide in section_context.slides %}
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+              {% if forloop.first %}class="active" aria-current="true"{% endif %}
+              aria-label="{% blocktrans with number=forloop.counter %}Slide {{ number }}{% endblocktrans %}"></button>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="carousel-inner">
+      {% for slide in section_context.slides %}
+      <div class="carousel-item hero-slide {% if forloop.first %}active{% endif %}">
+        {% if slide.type == 'video' %}
+        <video class="hero-slide__media"
+               autoplay muted loop playsinline
+               preload="{% if forloop.first %}auto{% else %}metadata{% endif %}"
+               {% if slide.poster %}poster="{{ slide.poster }}"{% endif %}>
+          <source src="{{ slide.src }}">
+        </video>
+        {% else %}
+        {% if forloop.first %}<link rel="preload" as="image" href="{{ slide.src }}" fetchpriority="high">{% endif %}
+        <img src="{{ slide.src }}"
+             class="hero-slide__media hero-slide__media--zoom"
+             alt="{{ slide.title }}"
+             width="1440" height="480"
+             {% if forloop.first %}fetchpriority="high" loading="eager"{% else %}loading="lazy"{% endif %}>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

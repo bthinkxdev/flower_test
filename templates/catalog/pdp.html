@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load i18n static storefront_tags %}
+
+{% block extra_head %}
+{{ block.super }}
+<script type="application/ld+json">{{ product_json_ld }}</script>
+{% endblock %}
+
+{% block content %}
+<div class="container page-container product-detail" data-product-id="{{ product.pk }}">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small mb-0">
+      <li class="breadcrumb-item"><a href="{% url 'catalog:plp' %}">{% trans "Shop" %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'catalog:plp-category' category_slug=product.category.slug %}">{{ product.category.name }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ product.name|truncatechars:40 }}</li>
+    </ol>
+  </nav>
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="pdp-gallery">
+        {% include "catalog/partials/pdp_gallery.html" %}
+      </div>
+    </div>
+    <div class="col-lg-6 pdp-info">
+      <h1>{{ product.name }}</h1>
+      <p class="pdp-meta">{{ product.category.name }}{% if product.brand %} · {{ product.brand.name }}{% endif %}</p>
+      <p class="pdp-price" id="pdp-price">
+        {% if price_data.is_flash_sale == "true" %}
+        <span class="was">{% money_label price_data.original_price display_currency %}</span>
+        {% endif %}
+        {% money_label price_data.price display_currency %}
+      </p>
+      {% include "catalog/partials/pdp_delivery.html" %}
+      {% if product.variant_list %}
+      <div class="mb-3">
+        <label class="form-label small fw-medium">{% trans "Select Option" %}</label>
+        <select id="variant-select" class="form-select" data-price-url="{% url 'catalog:variant-price' product_id=product.pk %}">
+          <option value="">{% trans "Standard" %}</option>
+          {% for v in product.variant_list %}
+          <option value="{{ v.pk }}">{{ v.name }} (+{{ v.price_delta }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="d-flex gap-2 mb-3 d-none d-lg-flex">
+        <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.pk }}">
+          <button type="submit" class="btn btn-floward w-100 py-2">{% trans "Add to Cart" %}</button>
+        </form>
+        <form method="post" action="{% url 'cart:wishlist-toggle' %}">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.pk }}">
+          <button type="submit" class="btn btn-outline-floward px-3" aria-label="{% trans 'Wishlist' %}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+        </form>
+      </div>
+      {% if product.supports_gift_customization %}
+      <a href="{% url 'gifting:builder' slug=product.slug %}" class="btn btn-outline-floward w-100 mb-3 py-2">
+        {% trans "Customize as Gift" %}
+      </a>
+      {% endif %}
+      <p class="small {% if product.is_in_stock %}text-success{% else %}text-danger{% endif %} mb-0">
+        {% if product.is_in_stock %}{% trans "In stock — order now" %}{% else %}{% trans "Out of stock" %}{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <div class="pdp-sticky-bar">
+    <div class="pdp-sticky-price" id="pdp-sticky-price">{% money_label price_data.price display_currency %}</div>
+    <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ product.pk }}">
+      <button type="submit" class="btn btn-floward w-100">{% trans "Add to Cart" %}</button>
+    </form>
+  </div>
+
+  <section class="mt-5 pt-4 border-top" id="reviews">
+    <h2 class="section-title h5 mb-3">{% trans "Reviews" %}</h2>
+    {% for review in product.approved_reviews %}
+    <div class="py-3 border-bottom">
+      <div class="d-flex justify-content-between align-items-start">
+        <strong class="small">{{ review.title }}</strong>
+        <span class="text-floward small">★ {{ review.rating }}</span>
+      </div>
+      <p class="mb-0 small text-muted mt-1">{{ review.body }}</p>
+    </div>
+    {% empty %}
+    <p class="text-muted small">{% trans "No reviews yet." %}</p>
+    {% endfor %}
+  </section>
+
+  {% if product.related_relations %}
+  <section class="mt-4">
+    <div class="section-header">
+      <h2 class="section-title">{% trans "Related Products" %}</h2>
+    </div>
+    <div class="product-rail-scroll">
+      {% for rel in product.related_relations %}
+      <div class="product-rail-item">
+        {% include "catalog/partials/product_card.html" with product=rel.related_product %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}<script src="{% static 'js/pdp.js' %}"></script>{% endblock %}

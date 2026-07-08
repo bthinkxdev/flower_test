@@ -1,0 +1,17 @@
+{% load i18n %}
+<section class="container product-rail">
+  <div class="section-header">
+    <div>
+      {% if rail_title %}<h2 class="section-title">{{ rail_title }}</h2>{% endif %}
+    </div>
+  </div>
+  <div class="product-rail-scroll" role="list">
+    {% for product in products %}
+    <div class="product-rail-item" role="listitem">
+      {% include "catalog/partials/product_card.html" with product=product %}
+    </div>
+    {% empty %}
+    <p class="text-muted small px-2">{% trans "No products available." %}</p>
+    {% endfor %}
+  </div>
+</section>

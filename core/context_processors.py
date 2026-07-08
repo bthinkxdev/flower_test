@@ -1,0 +1,40 @@
+"""Template context processors for storefront chrome."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from django.http import HttpRequest
+
+from cart.selectors import get_cart_count, get_wishlist_count
+from catalog.selectors import get_category_tree
+from core.selectors import get_currency_by_code, get_default_currency
+from delivery.selectors import get_active_countries
+
+
+def storefront(request: HttpRequest) -> dict[str, Any]:
+    """Inject navigation, cart, and locale data into every template."""
+    default_currency = get_default_currency()
+    session_currency = request.session.get("storefront_currency", "")
+    display_currency = (
+        get_currency_by_code(code=session_currency) if session_currency else default_currency
+    )
+    countries = get_active_countries()
+    session_country = request.session.get("storefront_country", "")
+    active_country = next(
+        (c for c in countries if c.code == session_country),
+        countries[0] if countries else None,
+    )
+    return {
+        "category_tree": get_category_tree(),
+        "cart_count": get_cart_count(request=request),
+        "wishlist_count": get_wishlist_count(request=request),
+        "default_currency": default_currency,
+        "display_currency": display_currency,
+        "session_language": request.session.get("django_language", ""),
+        "session_currency": session_currency,
+        "countries": countries,
+        "session_country": session_country,
+        "active_country": active_country,
+        "shell_only": request.META.get("HTTP_X_SHELL_RERENDER") == "true",
+    }

@@ -1,0 +1,56 @@
+# Minimal Arabic locale for RTL storefront verification.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ar\n"
+
+msgid "Floward Qatar"
+msgstr "فلاورد قطر"
+
+msgid "Luxury Flowers & Gifts"
+msgstr "زهور وهدايا فاخرة"
+
+msgid "Shop Now"
+msgstr "تسوق الآن"
+
+msgid "Add to Cart"
+msgstr "أضف إلى السلة"
+
+msgid "Same Day"
+msgstr "توصيل اليوم"
+
+msgid "Subscribe"
+msgstr "اشترك"
+
+msgid "Join Our Newsletter"
+msgstr "انضم إلى نشرتنا"
+
+msgid "Shop by Occasion"
+msgstr "تسوق حسب المناسبة"
+
+msgid "Shop by Category"
+msgstr "تسوق حسب الفئة"
+
+msgid "Featured Brands"
+msgstr "علامات مميزة"
+
+msgid "Customer Reviews"
+msgstr "آراء العملاء"
+
+msgid "Follow Us"
+msgstr "تابعنا"
+
+msgid "Get exclusive offers and gifting inspiration."
+msgstr "احصل على عروض حصرية وإلهام للهدايا."
+
+msgid "My Account"
+msgstr "حسابي"
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Cart"
+msgstr "السلة"
+
+msgid "Wishlist"
+msgstr "المفضلة"

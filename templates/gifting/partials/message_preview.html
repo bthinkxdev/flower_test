@@ -1,0 +1,10 @@
+{% load i18n %}
+<div class="message-preview-panel small">
+  <div class="d-flex justify-content-between text-muted mb-1">
+    <span>{% trans "Preview" %}</span>
+    <span id="message-char-count">{{ message|length }} / {{ message_max_length }}</span>
+  </div>
+  <div class="message-preview-quote {% if not message %}is-empty{% endif %}">
+    {% if message %}{{ message }}{% else %}{% trans "Your message will appear here..." %}{% endif %}
+  </div>
+</div>

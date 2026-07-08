@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Account" %} | Floward{% endblock %}
+
+{% block content %}
+<div class="container page-container py-4">
+  <h1 class="section-title mb-4">{% trans "My Account" %}</h1>
+
+  {% if error_message %}
+  <div class="alert alert-warning">{{ error_message }}</div>
+  {% else %}
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h2 class="h6 mb-3">{% trans "Profile" %}</h2>
+        <p class="small mb-1"><strong>{% trans "Email" %}:</strong> {{ request.user.email }}</p>
+        <p class="small mb-1"><strong>{% trans "Phone" %}:</strong> {{ dashboard.profile.phone|default:"—" }}</p>
+        <p class="small mb-0"><strong>{% trans "Currency" %}:</strong> {{ dashboard.profile.preferred_currency.code }}</p>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card p-3 mb-4">
+        <h2 class="h6 mb-3">{% trans "Recent orders" %}</h2>
+        {% if dashboard.recent_orders %}
+        <ul class="list-group list-group-flush">
+          {% for order in dashboard.recent_orders %}
+          <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <span class="small">{{ order.order_number }}</span>
+            <span class="small text-muted">{{ order.order_status }}</span>
+            <a class="btn btn-sm btn-outline-floward"
+               href="{% url 'orders:tracking' order_id=order.pk %}">{% trans "Track" %}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted small mb-0">{% trans "No orders yet." %}</p>
+        <a href="{% url 'catalog:plp' %}" class="btn btn-floward btn-sm mt-3">{% trans "Start shopping" %}</a>
+        {% endif %}
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'catalog:plp' %}" class="btn btn-outline-floward btn-sm">{% trans "Continue shopping" %}</a>
+        <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary btn-sm">{% trans "Logout" %}</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
