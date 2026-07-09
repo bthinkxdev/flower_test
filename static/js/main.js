@@ -428,3 +428,33 @@
     });
   });
 })();
+
+// Featured brands rail: arrow scrolling + auto-hide disabled state
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.brand-rail').forEach((rail) => {
+    const track = rail.querySelector('[data-brand-track]');
+    const prevBtn = rail.querySelector('[data-brand-scroll="prev"]');
+    const nextBtn = rail.querySelector('[data-brand-scroll="next"]');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    const scrollByCard = (dir) => {
+      const card = track.querySelector('.brand-card');
+      const gap = 20;
+      const distance = card ? card.offsetWidth + gap : 220;
+      track.scrollBy({ left: dir * distance * 2, behavior: 'smooth' });
+    };
+
+    prevBtn.addEventListener('click', () => scrollByCard(-1));
+    nextBtn.addEventListener('click', () => scrollByCard(1));
+
+    const updateArrowState = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth - 1;
+      prevBtn.disabled = track.scrollLeft <= 0;
+      nextBtn.disabled = track.scrollLeft >= maxScroll || maxScroll <= 0;
+    };
+
+    track.addEventListener('scroll', updateArrowState, { passive: true });
+    window.addEventListener('resize', updateArrowState);
+    updateArrowState();
+  });
+});

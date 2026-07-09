@@ -66,82 +66,89 @@
     </div>
   </div>
   <nav class="navbar navbar-expand-lg container py-2">
-    <a class="navbar-brand" href="{% url 'cms:homepage' %}">Floward</a>
-    <div class="navbar-mobile-actions d-flex d-lg-none align-items-center gap-1 ms-auto">
-      <button type="button"
-              class="header-icon header-icon--trigger"
-              id="mobile-search-open"
-              aria-label="{% trans 'Search' %}"
-              aria-controls="mobile-search-overlay"
-              aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-3.6-3.6"/></svg>
-      </button>
-      <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="{% trans 'Menu' %}">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav me-auto d-none d-lg-flex">
-        {% for cat in category_tree %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="{% url 'catalog:plp-category' category_slug=cat.slug %}" data-bs-toggle="dropdown">{{ cat.name }}</a>
-          {% if cat.children.all %}
-          <ul class="dropdown-menu">
-            {% for child in cat.children.all %}
-            <li><a class="dropdown-item" href="{% url 'catalog:plp-category' category_slug=child.slug %}">{{ child.name }}</a></li>
+    <div class="navbar-row">
+
+      <div class="navbar-col navbar-col--start">
+        <button class="navbar-toggler border-0 shadow-none p-2 d-lg-none"
+                type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="{% trans 'Menu' %}">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <button type="button"
+                class="header-icon header-icon--trigger d-lg-none"
+                id="mobile-search-open"
+                aria-label="{% trans 'Search' %}"
+                aria-controls="mobile-search-overlay"
+                aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-3.6-3.6"/></svg>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav">
+            {% for cat in category_tree %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="{% url 'catalog:plp-category' category_slug=cat.slug %}" data-bs-toggle="dropdown">{{ cat.name }}</a>
+              {% if cat.children.all %}
+              <ul class="dropdown-menu">
+                {% for child in cat.children.all %}
+                <li><a class="dropdown-item" href="{% url 'catalog:plp-category' category_slug=child.slug %}">{{ child.name }}</a></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </li>
             {% endfor %}
           </ul>
-          {% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-      <div class="search-wrap search-wrap--header position-relative flex-grow-1 d-none d-lg-block">
-        <input type="search"
-               id="site-search-input"
-               name="q"
-               class="form-control"
-               placeholder="{% trans 'Search flowers, gifts...' %}"
-               hx-get="{% url 'catalog:search-suggest' %}"
-               hx-trigger="keyup changed delay:300ms, search"
-               hx-target="#search-suggestions"
-               hx-indicator="#search-suggestions-indicator"
-               hx-swap="innerHTML"
-               autocomplete="off"
-               role="combobox"
-               aria-controls="search-suggestions"
-               aria-expanded="false"
-               aria-autocomplete="list"
-               aria-label="{% trans 'Search' %}">
-        <div class="search-suggestions-dropdown" id="search-suggestions-dropdown">
-          <div id="search-suggestions-indicator" class="search-suggestions-loading htmx-indicator" aria-live="polite">
-            <span class="search-suggestions-spinner" aria-hidden="true"></span>
-            <span class="search-suggestions-loading__text">{% trans "Searching..." %}</span>
-          </div>
-          <div id="search-suggestions" class="search-suggestions-body" role="listbox"></div>
         </div>
       </div>
-      <ul class="navbar-nav align-items-center gap-1 ms-lg-2">
-        <li class="nav-item d-none d-lg-block">
-          <a class="header-icon" href="{% url 'catalog:plp' %}" title="{% trans 'Wishlist' %}" aria-label="{% trans 'Wishlist' %}">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            {% if wishlist_count %}<span class="badge-count">{{ wishlist_count }}</span>{% endif %}
-          </a>
-        </li>
-        <li class="nav-item">
-          <button class="header-icon btn-ghost" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-label="{% trans 'Cart' %}">
-            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
 
-            <span id="cart-count-badge"
-                  hx-get="{% url 'cart:count' %}"
-                  hx-trigger="load, cartItemAdded from:body, cartUpdated from:body"
-                  hx-swap="innerHTML"
-                  aria-live="polite">
-              {% include "cart/partials/count_badge.html" with count=cart_count %}
-            </span>
-          </button>
-        </li>
-        <li class="nav-item dropdown">
-          <button class="header-icon btn-ghost dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-label="{% trans 'Account' %}">
+      <a class="navbar-brand navbar-col navbar-col--brand" href="{% url 'cms:homepage' %}">Floward</a>
+
+      <div class="navbar-col navbar-col--end">
+        <div class="search-wrap search-wrap--header position-relative d-none d-lg-block">
+          <input type="search"
+                id="site-search-input"
+                name="q"
+                class="form-control"
+                placeholder="{% trans 'Search flowers, gifts...' %}"
+                hx-get="{% url 'catalog:search-suggest' %}"
+                hx-trigger="keyup changed delay:300ms, search"
+                hx-target="#search-suggestions"
+                hx-indicator="#search-suggestions-indicator"
+                hx-swap="innerHTML"
+                autocomplete="off"
+                role="combobox"
+                aria-controls="search-suggestions"
+                aria-expanded="false"
+                aria-autocomplete="list"
+                aria-label="{% trans 'Search' %}">
+          <div class="search-suggestions-dropdown" id="search-suggestions-dropdown">
+            <div id="search-suggestions-indicator" class="search-suggestions-loading htmx-indicator" aria-live="polite">
+              <span class="search-suggestions-spinner" aria-hidden="true"></span>
+              <span class="search-suggestions-loading__text">{% trans "Searching..." %}</span>
+            </div>
+            <div id="search-suggestions" class="search-suggestions-body" role="listbox"></div>
+          </div>
+        </div>
+
+        <a class="header-icon d-none d-lg-flex" href="{% url 'catalog:plp' %}" title="{% trans 'Wishlist' %}" aria-label="{% trans 'Wishlist' %}">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          {% if wishlist_count %}<span class="badge-count">{{ wishlist_count }}</span>{% endif %}
+        </a>
+
+        <button class="header-icon btn-ghost" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-label="{% trans 'Cart' %}">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cart-count-badge"
+                hx-get="{% url 'cart:count' %}"
+                hx-trigger="load, cartItemAdded from:body, cartUpdated from:body"
+                hx-swap="innerHTML"
+                aria-live="polite">
+            {% include "cart/partials/count_badge.html" with count=cart_count %}
+          </span>
+        </button>
+
+        <div class="dropdown">
+          <button class="header-icon header-icon--account btn-ghost dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-label="{% trans 'Account' %}">
             <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
@@ -153,8 +160,9 @@
             <li><a class="dropdown-item" href="{% url 'accounts:register' %}">{% trans "Register" %}</a></li>
             {% endif %}
           </ul>
-        </li>
-      </ul>
+        </div>
+      </div>
+
     </div>
   </nav>
 </header>

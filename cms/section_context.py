@@ -94,8 +94,7 @@ def _shop_by_recipient(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _shop_by_category(config: dict[str, Any]) -> dict[str, Any]:
-    category_ids = config.get("category_ids")
-    return {"categories": get_root_categories(category_ids=category_ids)}
+    return {"categories": get_root_categories(category_ids=None)}
 
 
 def _product_collection(config: dict[str, Any]) -> dict[str, Any]:
