@@ -17,7 +17,9 @@ from accounts.models import (
     GiftReminder,
     SavedPaymentMethod,
     Wishlist,
+    Subscription
 )
+from catalog.models import ProductImage
 from notifications.selectors import get_unread_notification_count
 from orders.selectors import get_customer_orders
 
@@ -196,15 +198,21 @@ def get_wishlist(
     customer_profile: Optional[CustomerProfile] = None,
     share_token: Optional[str] = None,
 ) -> Optional[WishlistView]:
-    """
-    Return wishlist items for an owner or shared read-only token.
-
-    Query guarantee: 1 SELECT on wishlist + 1 prefetch on items/products.
-    """
     from django.core import signing
 
     from accounts.models import WishlistItem
     from accounts.subscription_services import WISHLIST_SHARE_SALT
+
+    items_prefetch = Prefetch(
+        "items",
+        queryset=WishlistItem.objects.select_related("product").prefetch_related(
+            Prefetch(
+                "product__images",
+                queryset=ProductImage.objects.filter(is_primary=True).order_by("display_order"),
+                to_attr="primary_images",
+            ),
+        ),
+    )
 
     if share_token:
         try:
@@ -213,12 +221,7 @@ def get_wishlist(
         except signing.BadSignature:
             return None
         wishlist = (
-            Wishlist.objects.prefetch_related(
-                Prefetch(
-                    "items",
-                    queryset=WishlistItem.objects.select_related("product"),
-                )
-            )
+            Wishlist.objects.prefetch_related(items_prefetch)
             .filter(pk=wishlist_id)
             .first()
         )
@@ -231,18 +234,49 @@ def get_wishlist(
 
     wishlist = (
         Wishlist.objects.filter(customer_profile=customer_profile)
-        .prefetch_related(
-            Prefetch(
-                "items",
-                queryset=WishlistItem.objects.select_related("product"),
-            )
-        )
+        .prefetch_related(items_prefetch)
         .first()
     )
     if wishlist is None:
         return None
     return WishlistView(wishlist=wishlist, items=list(wishlist.items.all()), readonly=False)
 
+
+@dataclass(frozen=True)
+class SubscriptionListItem:
+    """Thin wrapper if you later want computed fields; currently passthrough."""
+    subscription: Subscription
+
+
+def get_customer_subscriptions(
+    *,
+    customer_profile: CustomerProfile,
+    status: Optional[str] = None,
+) -> list[Subscription]:
+    """
+    Return a customer's subscriptions, optionally filtered by status.
+
+    Query guarantee: 1 SELECT with select_related on product and recurring_schedule.
+    """
+    queryset = Subscription.objects.select_related(
+        "product", "recurring_schedule", "delivery_address"
+    ).filter(customer_profile=customer_profile)
+    if status:
+        queryset = queryset.filter(status=status)
+    return list(queryset.order_by("-created_at"))
+
+
+def get_customer_subscription_by_id(
+    *,
+    subscription_id: int,
+    customer_profile: CustomerProfile,
+) -> Optional[Subscription]:
+    """Return a single subscription owned by the customer, or None."""
+    return (
+        Subscription.objects.select_related("product", "recurring_schedule", "delivery_address")
+        .filter(pk=subscription_id, customer_profile=customer_profile)
+        .first()
+    )
 
 def get_upcoming_gift_reminders(*, customer_profile: CustomerProfile) -> list[GiftReminder]:
     """Return gift reminders ordered by reminder_date. Query guarantee: 1 SELECT."""

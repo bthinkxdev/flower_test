@@ -1,8 +1,19 @@
 {% load i18n %}
+{% load static %}
 {% if summary and summary.lines %}
-<ul class="list-unstyled mb-3">
-  {% for line in summary.lines %}
-  <li class="cart-line">
+<div class="cart-drawer-scroll">
+  <ul class="list-unstyled mb-0">
+    {% for line in summary.lines %}
+    <li class="cart-line">
+    <div class="cart-line__img-wrap">
+      {% with line.product.primary_images|first as primary_image %}
+      {% if primary_image %}
+      <img src="{{ primary_image.image.url }}" alt="{{ line.product.name }}" class="cart-line__img" loading="lazy">
+      {% else %}
+      <img src="{% static 'img/product-placeholder.svg' %}" alt="{{ line.product.name }}" class="cart-line__img cart-line__img--placeholder">
+      {% endif %}
+      {% endwith %}
+    </div>
     <div class="cart-line__info">
       <a href="{% url 'catalog:pdp' slug=line.product.slug %}" class="cart-line__name text-dark">{{ line.product.name }}</a>
       <div class="cart-line__meta">{{ line.quantity }} × {{ line.unit_price_at_add }} QAR</div>
@@ -13,16 +24,17 @@
       <input type="hidden" name="cart_item_id" value="{{ line.item.pk }}">
       <button class="btn btn-sm btn-ghost text-danger" type="submit" aria-label="{% trans 'Remove' %}">×</button>
     </form>
-  </li>
-  {% endfor %}
-</ul>
-<div class="mb-3">
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<div class="cart-drawer-footer">
   <div class="cart-summary-row"><span>{% trans "Subtotal" %}</span><span>{{ summary.subtotal }} QAR</span></div>
   {% if summary.coupon_discount %}<div class="cart-summary-row text-success"><span>{% trans "Coupon" %}</span><span>-{{ summary.coupon_discount }} QAR</span></div>{% endif %}
   <div class="cart-summary-row"><span>{% trans "Delivery" %}</span><span>{{ summary.delivery_charge }} QAR</span></div>
   <div class="cart-summary-row cart-summary-total"><span>{% trans "Total" %}</span><span class="text-floward">{{ summary.grand_total }} QAR</span></div>
+  <a href="{% url 'checkout:checkout' %}" class="btn btn-floward w-100 py-2 mt-2">{% trans "Checkout" %}</a>
 </div>
-<a href="{% url 'checkout:checkout' %}" class="btn btn-floward w-100 py-2">{% trans "Checkout" %}</a>
 {% else %}
 <div class="text-center py-4">
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" class="mb-3 mx-auto"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>

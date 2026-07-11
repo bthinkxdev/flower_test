@@ -1,4 +1,4 @@
-name = Floward Clone
+name: Floward Clone
 on:
   push:
     branches: [main, develop]

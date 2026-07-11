@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ seo_title }}{% endblock %}
+
+{% block content %}
+<div class="container page-container py-4">
+  <h1 class="section-title mb-4">{% trans "Contact Us" %}</h1>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card p-4">
+        <h6 class="mb-3">{% trans "Get in touch" %}</h6>
+        <p class="small text-muted mb-1">{% trans "Doha, Qatar" %}</p>
+        <p class="small text-muted mb-1">{% trans "Customer support available 24/7" %}</p>
+        <p class="small text-muted mb-0">
+          {% trans "Email" %}: <a href="mailto:support@floward.qa">support@floward.qa</a>
+        </p>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-4">
+        <h6 class="mb-3">{% trans "Need quick answers?" %}</h6>
+        <p class="mb-3">{% trans "Check our frequently asked questions for common queries about ordering, delivery, and payments." %}</p>
+        <a href="{% url 'core:faq' %}" class="btn btn-floward">{% trans "Visit FAQ" %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

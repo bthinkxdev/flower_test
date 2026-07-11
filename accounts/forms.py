@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-
+from recurring.models import RecurrenceFrequency 
 from accounts.models import Address
 
 
@@ -115,3 +115,23 @@ class CorporateRegistrationForm(forms.Form):
     name = forms.CharField(max_length=150, label="Contact name")
     company_name = forms.CharField(max_length=200, label="Company name")
     trade_license_number = forms.CharField(max_length=100, label="Trade license number")
+
+class SubscriptionCreateForm(forms.Form):
+    product_id = forms.IntegerField(widget=forms.HiddenInput)
+    delivery_address_id = forms.ModelChoiceField(
+        queryset=Address.objects.none(),
+        label="Delivery address",
+    )
+    frequency = forms.ChoiceField(choices=RecurrenceFrequency.choices, label="Frequency")
+    next_run_date = forms.DateField(
+        label="First delivery date",
+        widget=forms.DateInput(attrs={"type": "date"}),
+    )
+    quantity = forms.IntegerField(min_value=1, initial=1, label="Quantity")
+
+    def __init__(self, *args, customer_profile=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if customer_profile is not None:
+            self.fields["delivery_address_id"].queryset = Address.objects.filter(
+                customer_profile=customer_profile
+            )

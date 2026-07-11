@@ -35,9 +35,29 @@ urlpatterns = [
     ),
     path("wishlist/shared/", views.wishlist_shared_view, name="wishlist-shared"),
     path("wishlist/add/", views.wishlist_add_view, name="wishlist-add"),
+    path("wishlist/remove/", views.wishlist_remove_view, name="wishlist-remove"),
     path(
         "wishlist/shared/mutate/",
         views.wishlist_shared_mutate_view,
         name="wishlist-shared-mutate",
+    ),
+    path("wishlist/", views.wishlist_view, name="wishlist"),
+
+    path("subscriptions/", views.subscription_list_view, name="subscription-list"),
+    path("subscriptions/create/", views.subscription_create_view, name="subscription-create"),
+    path(
+        "subscriptions/<int:subscription_id>/pause/",
+        views.subscription_pause_view,
+        name="subscription-pause",
+    ),
+    path(
+        "subscriptions/<int:subscription_id>/resume/",
+        views.subscription_resume_view,
+        name="subscription-resume",
+    ),
+    path(
+        "subscriptions/<int:subscription_id>/cancel/",
+        views.subscription_cancel_view,
+        name="subscription-cancel",
     ),
 ]

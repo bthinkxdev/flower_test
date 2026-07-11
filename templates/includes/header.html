@@ -131,7 +131,7 @@
           </div>
         </div>
 
-        <a class="header-icon d-none d-lg-flex" href="{% url 'catalog:plp' %}" title="{% trans 'Wishlist' %}" aria-label="{% trans 'Wishlist' %}">
+        <a class="header-icon d-flex" href="{% url 'accounts:wishlist' %}" title="{% trans 'Wishlist' %}" aria-label="{% trans 'Wishlist' %}">
           <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           {% if wishlist_count %}<span class="badge-count">{{ wishlist_count }}</span>{% endif %}
         </a>
@@ -200,9 +200,9 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
   </div>
   <div class="offcanvas-body" id="cart-drawer-body"
-       hx-get="{% url 'cart:drawer' %}"
-       hx-trigger="cartUpdated from:body"
-       hx-swap="innerHTML">
-    <p class="text-muted small mb-0">{% trans "Your cart items will appear here." %}</p>
-  </div>
+     hx-get="{% url 'cart:drawer' %}"
+     hx-trigger="cartItemAdded from:body, cartUpdated from:body"
+     hx-swap="innerHTML">
+  <p class="text-muted small mb-0">{% trans "Your cart items will appear here." %}</p>
+</div>
 </div>

@@ -2,7 +2,7 @@
 <footer class="site-footer">
   <div class="container">
     <div class="row g-4">
-      <div class="col-md-4">
+      <div class="col-md-4 col-lg-2">
         <div class="footer-brand mb-2">Floward</div>
         <p class="small text-muted mb-0">{% trans "Online flowers & gifts delivery in Qatar. Same-day delivery available." %}</p>
       </div>
@@ -17,7 +17,17 @@
         <a href="{% url 'accounts:corporate-register' %}">{% trans "Corporate Gifts" %}</a>
         <a href="{% url 'corporate:dashboard' %}">{% trans "Corporate Portal" %}</a>
       </div>
-      <div class="col-md-4">
+      <div class="col-6 col-md-2">
+        <h6>{% trans "Get to Know Us" %}</h6>
+        <a href="{% url 'core:about-us' %}">{% trans "About Us" %}</a>
+        <a href="{% url 'core:privacy-policy' %}">{% trans "Privacy Policy" %}</a>
+      </div>
+      <div class="col-6 col-md-2">
+        <h6>{% trans "Customer Service" %}</h6>
+        <a href="{% url 'core:contact-us' %}">{% trans "Contact Us" %}</a>
+        <a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a>
+      </div>
+      <div class="col-md-4 col-lg-2">
         <h6>{% trans "Contact" %}</h6>
         <p class="small text-muted mb-1">{% trans "Doha, Qatar" %}</p>
         <p class="small text-muted mb-0">{% trans "Customer support available 24/7" %}</p>

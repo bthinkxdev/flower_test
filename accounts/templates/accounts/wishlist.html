@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "My Wishlist" %} | Floward{% endblock %}
+
+{% block content %}
+<div class="container page-container py-5">
+  <h1 class="section-title h4 mb-4">{% trans "My Wishlist" %}</h1>
+
+  {% if items %}
+  <div class="row product-grid-inner g-3">
+    {% for item in items %}
+    <div class="col-6 col-md-3 product-grid-item">
+      <div class="wishlist-card">
+        {% include "catalog/partials/product_card.html" with product=item.product %}
+        <form method="post" action="{% url 'accounts:wishlist-remove' %}" class="wishlist-card__actions">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ item.product_id }}">
+          <button type="submit" class="btn btn-outline-floward btn-sm w-100">{% trans "Remove" %}</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card p-4 text-center">
+    <p class="mb-3 text-muted">{% trans "Your wishlist is empty." %}</p>
+    <a href="{% url 'cms:homepage' %}" class="btn btn-floward">{% trans "Choose Gifts Now" %}</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

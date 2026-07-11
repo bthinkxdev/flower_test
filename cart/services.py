@@ -143,18 +143,22 @@ def recalculate_delivery_charge(*, cart: Cart, destination_city: City) -> Cart:
 
 def toggle_wishlist(*, request: HttpRequest, product_id: int) -> bool:
     """
-    Toggle a product in the session wishlist (unchanged from Phase 4).
+    Toggle a product in the persistent wishlist (DB-backed, guest or authenticated).
 
     Returns:
         True if product is now in wishlist, False if removed.
     """
-    ids: list[int] = request.session.get("wishlist_ids", [])
-    if product_id in ids:
-        ids.remove(product_id)
-        request.session["wishlist_ids"] = ids
-        request.session.modified = True
+    from accounts.subscription_services import (
+        add_to_wishlist,
+        get_or_create_wishlist,
+        remove_from_wishlist,
+    )
+    from accounts.models import WishlistItem
+
+    wishlist = get_or_create_wishlist(request=request)
+    exists = WishlistItem.objects.filter(wishlist=wishlist, product_id=product_id).exists()
+    if exists:
+        remove_from_wishlist(wishlist=wishlist, product_id=product_id)
         return False
-    ids.append(product_id)
-    request.session["wishlist_ids"] = ids
-    request.session.modified = True
+    add_to_wishlist(wishlist=wishlist, product_id=product_id)
     return True

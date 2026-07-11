@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Any, Optional
 
-from django.db.models import Sum
+from django.db.models import Sum,Prefetch
 from django.http import HttpRequest
 
 from cart.models import Cart, CartItem
+from catalog.models import ProductImage
 from delivery.selectors import get_delivery_charge
 from gifting.selectors import get_gift_customization_snapshot
 
@@ -108,8 +109,18 @@ def get_cart_count(*, request: HttpRequest) -> int:
 
 
 def get_wishlist_count(*, request: HttpRequest) -> int:
-    """Return wishlist item count from session."""
-    return len(request.session.get("wishlist_ids", []))
+    """Return wishlist item count from the persistent Wishlist model."""
+    from accounts.models import WishlistItem
+
+    if request.user.is_authenticated and hasattr(request.user, "customer_profile"):
+        return WishlistItem.objects.filter(
+            wishlist__customer_profile=request.user.customer_profile
+        ).count()
+    if not request.session.session_key:
+        return 0
+    return WishlistItem.objects.filter(
+        wishlist__session_key=request.session.session_key
+    ).count()
 
 
 def get_cart_summary(*, cart: Cart) -> CartSummary:
@@ -132,6 +143,13 @@ def get_cart_summary(*, cart: Cart) -> CartSummary:
             "product__category",
             "product__brand",
             "variant",
+        )
+        .prefetch_related(
+            Prefetch(
+                "product__images",
+                queryset=ProductImage.objects.filter(is_primary=True).order_by("display_order"),
+                to_attr="primary_images",
+            ),
         )
         .order_by("id")
     )

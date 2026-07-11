@@ -4,9 +4,9 @@
     <div class="newsletter-card text-center">
       {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Join Our Newsletter" %}
       <p class="section-subtitle mb-4">{% trans "Get exclusive offers and gifting inspiration." %}</p>
-      <form class="newsletter-form" method="post" action="#">
+      <form class="newsletter-form" method="post" action="{% url 'marketing:newsletter-subscribe' %}">
         {% csrf_token %}
-        <input type="email" class="form-control" placeholder="{{ section_context.placeholder|default:'Email address' }}" required aria-label="{% trans 'Email' %}">
+        <input type="email" name="email" class="form-control" placeholder="{{ section_context.placeholder|default:'Email address' }}" required aria-label="{% trans 'Email' %}">
         <button type="submit" class="btn btn-floward">{% trans "Subscribe" %}</button>
       </form>
     </div>

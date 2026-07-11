@@ -56,6 +56,15 @@ from accounts.services import (
 )
 from core.decorators import role_required
 
+from accounts.selectors import get_customer_subscriptions, get_customer_subscription_by_id
+from accounts.forms import SubscriptionCreateForm
+from accounts.subscription_services import (
+    create_subscription,
+    pause_subscription,
+    resume_subscription,
+    cancel_subscription,
+)
+
 
 def _json_body(request: HttpRequest) -> dict[str, Any]:
     """Parse JSON request body; return empty dict for non-JSON requests."""
@@ -521,6 +530,16 @@ def wishlist_add_view(request: HttpRequest) -> HttpResponse:
     add_to_wishlist(wishlist=wishlist, product_id=product_id)
     return JsonResponse({"status": "added"})
 
+@login_required
+@require_POST
+def wishlist_remove_view(request: HttpRequest) -> HttpResponse:
+    """Remove a product from the authenticated customer's wishlist."""
+    from accounts.subscription_services import get_or_create_wishlist, remove_from_wishlist
+
+    product_id = int(request.POST.get("product_id", 0))
+    wishlist = get_or_create_wishlist(request=request)
+    remove_from_wishlist(wishlist=wishlist, product_id=product_id)
+    return redirect("accounts:wishlist")
 
 @require_POST
 def wishlist_shared_mutate_view(request: HttpRequest) -> HttpResponse:
@@ -529,3 +548,96 @@ def wishlist_shared_mutate_view(request: HttpRequest) -> HttpResponse:
     if token:
         return JsonResponse({"error": "Shared wishlists are read-only."}, status=403)
     return JsonResponse({"error": "Authentication required."}, status=401)
+
+@login_required
+@require_GET
+def wishlist_view(request: HttpRequest) -> HttpResponse:
+    """Render the authenticated customer's wishlist page."""
+    profile = request.user.customer_profile
+    view = get_wishlist(customer_profile=profile)
+    if view is None:
+        return render(request, "accounts/wishlist.html", {"items": []})
+    return render(request, "accounts/wishlist.html", {"wishlist": view.wishlist, "items": view.items})
+
+
+@login_required
+@require_GET
+def subscription_list_view(request: HttpRequest) -> HttpResponse:
+    """List the authenticated customer's subscriptions."""
+    profile = request.user.customer_profile
+    subscriptions = get_customer_subscriptions(customer_profile=profile)
+    return render(request, "accounts/subscription_list.html", {"subscriptions": subscriptions})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def subscription_create_view(request: HttpRequest) -> HttpResponse:
+    if request.method == "GET":
+        initial = {}
+        product_id = request.GET.get("product_id")
+        if product_id:
+            initial["product_id"] = product_id
+        return render(request, "accounts/subscription_create.html", {"form": SubscriptionCreateForm(initial=initial)})
+
+    data = _json_body(request) or request.POST.dict()
+    form = SubscriptionCreateForm(data)
+    if not form.is_valid():
+        if _wants_json(request):
+            return _error_response(str(form.errors), code="validation_error")
+        return render(
+            request,
+            "accounts/subscription_create.html",
+            {"form": form, "errors": form.errors},
+            status=400,
+        )
+    subscription = create_subscription(
+        customer_profile=request.user.customer_profile,
+        product_id=form.cleaned_data["product_id"],
+        delivery_address_id=form.cleaned_data["delivery_address_id"],
+        frequency=form.cleaned_data["frequency"],
+        next_run_date=form.cleaned_data["next_run_date"],
+        quantity=form.cleaned_data["quantity"],
+        created_by=request.user,
+    )
+    if _wants_json(request):
+        return _success_response({"subscription_id": subscription.pk}, status=201)
+    return redirect("accounts:subscription-list")
+
+
+@login_required
+@require_POST
+def subscription_pause_view(request: HttpRequest, subscription_id: int) -> HttpResponse:
+    """Pause a subscription owned by the current customer."""
+    subscription = get_customer_subscription_by_id(
+        subscription_id=subscription_id, customer_profile=request.user.customer_profile
+    )
+    if subscription is None:
+        return _error_response("Subscription not found.", status=404)
+    pause_subscription(subscription=subscription)
+    return _success_response()
+
+
+@login_required
+@require_POST
+def subscription_resume_view(request: HttpRequest, subscription_id: int) -> HttpResponse:
+    """Resume a paused subscription owned by the current customer."""
+    subscription = get_customer_subscription_by_id(
+        subscription_id=subscription_id, customer_profile=request.user.customer_profile
+    )
+    if subscription is None:
+        return _error_response("Subscription not found.", status=404)
+    resume_subscription(subscription=subscription)
+    return _success_response()
+
+
+@login_required
+@require_POST
+def subscription_cancel_view(request: HttpRequest, subscription_id: int) -> HttpResponse:
+    """Cancel a subscription owned by the current customer."""
+    subscription = get_customer_subscription_by_id(
+        subscription_id=subscription_id, customer_profile=request.user.customer_profile
+    )
+    if subscription is None:
+        return _error_response("Subscription not found.", status=404)
+    cancel_subscription(subscription=subscription)
+    return _success_response()
