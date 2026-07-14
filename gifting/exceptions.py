@@ -18,3 +18,11 @@ class GiftCustomizationValidationError(Exception):
     def as_dict(self) -> dict[str, list[str]]:
         """Return the field-level error mapping."""
         return self.errors
+
+class GiftSnapshotLockedError(Exception):
+    """
+    Raised when code attempts to rebuild a snapshot that is already locked
+    (i.e. already part of a placed order). This must never happen through
+    normal cart/checkout flow — surfacing it means something upstream tried
+    to re-run the gift builder against an already-ordered line.
+    """

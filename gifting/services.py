@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 
 from gifting.constants import PERSONAL_MESSAGE_MAX_LENGTH
-from gifting.exceptions import GiftCustomizationValidationError
+from gifting.exceptions import GiftCustomizationValidationError,GiftSnapshotLockedError
 from gifting.models import (
     GiftCustomizationConfig,
     GiftCustomizationSnapshot,
@@ -75,18 +75,23 @@ def build_gift_customization_snapshot(
 
     Raises:
         GiftCustomizationValidationError: field-level ``errors`` dict when invalid.
-
-    PLUG-AND-PLAY EXTENSION PATTERN
-    -------------------------------
-    To add e.g. Photo Upload without touching cart/checkout:
-
-    1. Subclass ``BaseCustomizationOption`` → ``GiftPhotoUploadOption`` (models.py)
-    2. Add ``allows_photo_upload`` boolean to ``GiftCustomizationConfig``
-    3. Add one branch in ``_resolve_selections`` below (search ``photo_upload``)
-
-    Cart, checkout, and order confirmation only read snapshots via
-    ``get_gift_customization_snapshot`` — zero changes required outside gifting/.
+        GiftSnapshotLockedError: if a locked (already-ordered) snapshot exists
+            for this exact line-item reference — this must never be caught and
+            "handled" by silently proceeding; it means an upstream bug is
+            re-running the builder against an ordered line.
     """
+    line_item_ct = ContentType.objects.get_for_model(line_item_reference.__class__)
+
+    existing = GiftCustomizationSnapshot.objects.filter(
+        line_item_content_type=line_item_ct,
+        line_item_object_id=line_item_reference.pk,
+    ).first()
+    if existing is not None and existing.is_locked:
+        raise GiftSnapshotLockedError(
+            f"Snapshot for {line_item_ct}:{line_item_reference.pk} is locked "
+            "and cannot be rebuilt."
+        )
+
     config = get_gift_customization_config(product_instance=product_instance)
     if config is None:
         _err({"__all__": ["Gift customization is not enabled for this product."]})
@@ -97,7 +102,6 @@ def build_gift_customization_snapshot(
         selections=selections,
     )
 
-    line_item_ct = ContentType.objects.get_for_model(line_item_reference.__class__)
     snapshot, _created = GiftCustomizationSnapshot.objects.update_or_create(
         line_item_content_type=line_item_ct,
         line_item_object_id=line_item_reference.pk,
@@ -131,6 +135,28 @@ def build_gift_customization_snapshot(
 
     return snapshot
 
+@transaction.atomic
+def lock_gift_customization_snapshot(*, line_item_reference: Any) -> Optional[GiftCustomizationSnapshot]:
+    """
+    Permanently lock the snapshot tied to a line-item reference.
+
+    Call this exactly ONCE — from orders.services at the moment an order is
+    placed (e.g. inside place_order() / transition_order_status() when an
+    order first reaches a confirmed state), passing the OrderItem (or
+    equivalent) that the CartItem's gift customization was copied onto.
+    Never call this from cart or gifting code.
+    """
+    from gifting.selectors import get_gift_customization_snapshot
+
+    line_item_ct = ContentType.objects.get_for_model(line_item_reference.__class__)
+    updated = GiftCustomizationSnapshot.objects.filter(
+        line_item_content_type=line_item_ct,
+        line_item_object_id=line_item_reference.pk,
+        is_locked=False,
+    ).update(is_locked=True)
+    if not updated:
+        return None
+    return get_gift_customization_snapshot(line_item_reference=line_item_reference)
 
 def _resolve_selections(
     *,

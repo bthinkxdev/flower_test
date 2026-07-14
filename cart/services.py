@@ -8,6 +8,7 @@ from typing import Any, Optional
 from django.db import transaction
 from django.http import HttpRequest
 
+from cart.exceptions import CartItemNotFoundError
 from cart.models import Cart, CartItem
 from cart.selectors import get_cart_for_request, get_cart_summary
 from catalog.models import Product, ProductVariant
@@ -69,15 +70,36 @@ def add_to_cart(
     """
     Add or increment a cart line, optionally building a gift snapshot first.
 
-    When ``gift_selections`` is provided, calls
-    ``gifting.services.build_gift_customization_snapshot`` atomically before
-    persisting the CartItem link.
+    Gift-customized adds ALWAYS create a brand-new line — two personalized
+    gifts for the same product/variant (different recipient, message, card,
+    etc.) must never collapse into one and silently overwrite each other.
+    Only plain (non-gift) adds of the same product/variant merge by quantity,
+    matching the conditional unique constraint on CartItem.
     """
     unit_price = _resolve_unit_price(product=product, variant=variant)
+
+    if gift_selections:
+        item = CartItem.objects.create(
+            cart=cart,
+            product=product,
+            variant=variant,
+            quantity=quantity,
+            unit_price_at_add=unit_price,
+        )
+        snapshot = build_gift_customization_snapshot(
+            product_instance=product,
+            selections=gift_selections,
+            line_item_reference=item,
+        )
+        item.gift_customization_snapshot = snapshot
+        item.save(update_fields=["gift_customization_snapshot", "updated_at"])
+        return item
+
     item, created = CartItem.objects.get_or_create(
         cart=cart,
         product=product,
         variant=variant,
+        gift_customization_snapshot__isnull=True,
         defaults={
             "quantity": quantity,
             "unit_price_at_add": unit_price,
@@ -86,16 +108,6 @@ def add_to_cart(
     if not created:
         item.quantity += quantity
         item.save(update_fields=["quantity", "updated_at"])
-
-    if gift_selections:
-        snapshot = build_gift_customization_snapshot(
-            product_instance=product,
-            selections=gift_selections,
-            line_item_reference=item,
-        )
-        item.gift_customization_snapshot = snapshot
-        item.save(update_fields=["gift_customization_snapshot", "updated_at"])
-
     return item
 
 
@@ -104,6 +116,38 @@ def remove_cart_item(*, cart: Cart, cart_item_id: int) -> None:
     """Remove a line item from the cart."""
     CartItem.objects.filter(cart=cart, pk=cart_item_id).delete()
 
+@transaction.atomic
+def adjust_cart_item_quantity(
+    *,
+    cart: Cart,
+    cart_item_id: int,
+    delta: int,
+) -> Optional[CartItem]:
+    """
+    Increment or decrement a cart line's quantity by ``delta``.
+
+    Row-locked (``select_for_update``) so rapid +/- clicks never race each
+    other into a lost update. Quantity dropping to zero or below deletes the
+    line instead of persisting a non-positive quantity.
+
+    Returns:
+        The updated CartItem, or None if the line was deleted.
+
+    Raises:
+        CartItemNotFoundError: When no matching line exists on this cart.
+    """
+    item = CartItem.objects.select_for_update().filter(cart=cart, pk=cart_item_id).first()
+    if item is None:
+        raise CartItemNotFoundError("Cart item not found.")
+
+    new_quantity = item.quantity + delta
+    if new_quantity < 1:
+        item.delete()
+        return None
+
+    item.quantity = new_quantity
+    item.save(update_fields=["quantity", "updated_at"])
+    return item
 
 @transaction.atomic
 def apply_coupon(*, cart: Cart, code: str) -> Cart:
@@ -126,6 +170,13 @@ def apply_coupon(*, cart: Cart, code: str) -> Cart:
     cart.save(update_fields=["coupon_code", "coupon_discount", "updated_at"])
     return cart
 
+@transaction.atomic
+def remove_coupon(*, cart: Cart) -> Cart:
+    """Clear any applied coupon from the cart."""
+    cart.coupon_code = ""
+    cart.coupon_discount = Decimal("0.00")
+    cart.save(update_fields=["coupon_code", "coupon_discount", "updated_at"])
+    return cart
 
 @transaction.atomic
 def recalculate_delivery_charge(*, cart: Cart, destination_city: City) -> Cart:

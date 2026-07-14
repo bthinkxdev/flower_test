@@ -9,3 +9,7 @@ class CartError(Exception):
 
 class CartNotFoundError(CartError):
     """Raised when no cart can be resolved for the request context."""
+
+
+class CartItemNotFoundError(CartError):
+    """Raised when a cart line item cannot be resolved for the given cart."""

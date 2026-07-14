@@ -360,6 +360,14 @@ class GiftCustomizationSnapshot(TimeStampedModel):
         verbose_name="Gift receipt",
         help_text="When True, pricing is excluded from the packing slip.",
     )
+    is_locked = models.BooleanField(
+        default=False,
+        verbose_name="Locked",
+        help_text=(
+            "Set True the moment this snapshot becomes part of a placed order. "
+            "Once locked, it can never be rebuilt or overwritten again."
+        ),
+    )
     snapshot_json = models.JSONField(
         default=dict,
         verbose_name="Snapshot JSON",

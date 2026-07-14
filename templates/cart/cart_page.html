@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Cart" %} | Floward{% endblock %}
+
+{% block content %}
+<div class="container page-container checkout-page">
+  <h1 class="section-title mb-4">{% trans "Cart" %}</h1>
+  {% include "cart/partials/page_body.html" %}
+</div>
+{% endblock %}

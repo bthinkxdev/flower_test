@@ -1036,6 +1036,32 @@ body.mobile-search-open { overflow: hidden; }
   border-top: 1px solid var(--floward-border);
   background: var(--floward-white);
 }
+
+.qty-stepper {
+  border-color: var(--floward-border) !important;
+}
+.qty-stepper form { margin: 0; }
+.qty-stepper__btn {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  background: transparent;
+  color: var(--floward-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+}
+.qty-stepper__btn:hover { background: var(--floward-bg); }
+.qty-stepper__value {
+  min-width: 28px;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.cart-page-line .cart-line__name { font-size: 0.9375rem; }
+
 .checkout-page .card {
   border: 1px solid var(--floward-border) !important;
   border-radius: var(--floward-radius-lg) !important;

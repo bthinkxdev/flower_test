@@ -33,6 +33,7 @@
   {% if summary.coupon_discount %}<div class="cart-summary-row text-success"><span>{% trans "Coupon" %}</span><span>-{{ summary.coupon_discount }} QAR</span></div>{% endif %}
   <div class="cart-summary-row"><span>{% trans "Delivery" %}</span><span>{{ summary.delivery_charge }} QAR</span></div>
   <div class="cart-summary-row cart-summary-total"><span>{% trans "Total" %}</span><span class="text-floward">{{ summary.grand_total }} QAR</span></div>
+  <a href="{% url 'cart:page' %}" class="btn btn-outline-floward w-100 py-2 mt-2">{% trans "View Cart" %}</a>
   <a href="{% url 'checkout:checkout' %}" class="btn btn-floward w-100 py-2 mt-2">{% trans "Checkout" %}</a>
 </div>
 {% else %}

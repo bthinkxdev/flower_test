@@ -129,7 +129,8 @@ class CartItem(TimeStampedModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["cart", "product", "variant"],
-                name="cart_item_unique_product_variant",
+                condition=models.Q(gift_customization_snapshot__isnull=True),
+                name="cart_item_unique_product_variant_no_gift",
             ),
         ]
         indexes = [

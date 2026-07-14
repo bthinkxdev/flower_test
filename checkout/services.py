@@ -20,6 +20,7 @@ from marketing.models import Coupon
 from marketing.services import record_coupon_redemption
 from orders.models import Order, OrderItem, OrderStatus
 from orders.services import generate_order_number
+from gifting.models import GiftCustomizationSnapshot
 
 
 @transaction.atomic
@@ -174,6 +175,7 @@ def place_order(
     except IntegrityError:
         return Order.objects.get(idempotency_key=idempotency_key)
 
+    locked_snapshot_ids: list[int] = []
     for line in summary.lines:
         OrderItem.objects.create(
             order=order,
@@ -182,6 +184,13 @@ def place_order(
             quantity=line.quantity,
             unit_price=line.unit_price_at_add,
             gift_customization_snapshot=line.gift_snapshot,
+        )
+        if line.gift_snapshot is not None:
+            locked_snapshot_ids.append(line.gift_snapshot.pk)
+
+    if locked_snapshot_ids:
+        GiftCustomizationSnapshot.objects.filter(pk__in=locked_snapshot_ids).update(
+            is_locked=True
         )
 
     if session.cart.coupon_code:

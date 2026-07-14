@@ -12,10 +12,11 @@
 
       <form id="gift-builder-form"
             method="post"
+            data-product-id="{{ product.pk }}"
             hx-post="{% url 'gifting:builder-preview' line_item_id=line_item_ref.pk %}?product_slug={{ product.slug }}"
             hx-target="#order-preview"
             hx-swap="innerHTML"
-            hx-trigger="change delay:300ms, submit">
+            hx-trigger="change delay:300ms">
         {% csrf_token %}
         <input type="hidden" name="product_slug" value="{{ product.slug }}">
 
@@ -177,7 +178,21 @@
         </section>
         {% endif %}
 
-        <button type="submit" class="btn btn-floward">{% trans "Update Preview" %}</button>
+        <div class="d-flex align-items-center gap-2 mt-3">
+          <label class="form-label small mb-0 me-1">{% trans "Qty" %}</label>
+          <input type="number" name="quantity" value="1" min="1" class="form-control form-control-sm" style="width: 5rem;">
+          <button type="button" class="btn btn-outline-floward btn-sm"
+                  hx-post="{% url 'gifting:builder-preview' line_item_id=line_item_ref.pk %}?product_slug={{ product.slug }}"
+                  hx-target="#order-preview" hx-swap="innerHTML" hx-include="#gift-builder-form">
+            {% trans "Update Preview" %}
+          </button>
+          <button type="submit" id="add-to-cart-btn" class="btn btn-floward"
+                  hx-post="{% url 'cart:add' %}"
+                  hx-target="#add-to-cart-feedback" hx-swap="innerHTML">
+            {% trans "Add to Cart" %}
+          </button>
+        </div>
+        <div id="add-to-cart-feedback" class="small mt-2"></div>
       </form>
     </div>
 
