@@ -90,6 +90,27 @@
       </a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link {% if nav_section == 'greetingcards' %}active{% endif %}" href="{% url 'dashboard:greetingcard-list' %}">
+          <i class="ti ti-mail-heart"></i><span class="nav-text">Greeting Cards</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if nav_section == 'giftwrap' %}active{% endif %}" href="{% url 'dashboard:giftwrap-list' %}">
+          <i class="ti ti-gift"></i><span class="nav-text">Gift Wrap</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if nav_section == 'ribbons' %}active{% endif %}" href="{% url 'dashboard:ribbon-list' %}">
+          <i class="ti ti-award"></i><span class="nav-text">Ribbons</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {% if nav_section == 'photouploadoptions' %}active{% endif %}" href="{% url 'dashboard:photouploadoption-list' %}">
+          <i class="ti ti-photo"></i><span class="nav-text">Photo Upload Options</span>
+        </a>
+      </li>
+
     <li class="px-4 pt-4 pb-2"><small class="nav-text text-secondary text-uppercase">Content</small></li>
     <li>
       <a class="nav-link {% if nav_section == 'homepage' %}active{% endif %}" href="{% url 'dashboard:homepagesection-list' %}">

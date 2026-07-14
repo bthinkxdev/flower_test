@@ -20,6 +20,8 @@ from cms.models import BlogPost, FAQItem, HeroSlide, HomepageSection, Page, Poli
 from core.models import SiteSettings
 from delivery.models import City, DeliverySlot
 from marketing.models import Coupon, FlashSale, GiftCard, NewsletterSubscriber
+from gifting.models import GiftWrapOption, GreetingCardDesign, RibbonOption, GiftPhotoUploadOption, GiftAddonEligibility, GiftCustomizationConfig
+from django.contrib.contenttypes.forms import generic_inlineformset_factory
 
 _DATE = forms.DateInput(attrs={"type": "date"})
 _DATETIME = forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M")
@@ -196,7 +198,51 @@ class NewsletterSubscriberForm(forms.ModelForm):
         model = NewsletterSubscriber
         fields = ["email", "is_active"]
 
+class GreetingCardDesignForm(SlugAutoMixin):
+    class Meta:
+        model = GreetingCardDesign
+        fields = ["name", "occasion", "image", "is_active"]
 
+
+class GiftWrapOptionForm(forms.ModelForm):
+    class Meta:
+        model = GiftWrapOption
+        fields = ["name", "price_delta", "is_active"]
+
+
+class RibbonOptionForm(forms.ModelForm):
+    class Meta:
+        model = RibbonOption
+        fields = ["name", "price_delta", "is_active"]
+
+
+class GiftPhotoUploadOptionForm(forms.ModelForm):
+    class Meta:
+        model = GiftPhotoUploadOption
+        fields = ["name", "price_delta", "is_active"]
+
+class GiftCustomizationConfigForm(forms.ModelForm):
+    class Meta:
+        model = GiftCustomizationConfig
+        fields = [
+            "allows_personal_message",
+            "allows_greeting_card",
+            "allows_gift_wrap",
+            "allows_ribbon",
+            "allows_addons",
+            "allows_anonymous",
+            "allows_gift_receipt",
+            "allows_midnight_delivery",
+            "allows_photo_upload",
+        ]
+
+
+GiftAddonEligibilityFormSet = generic_inlineformset_factory(
+    GiftAddonEligibility,
+    fields=["addon_product"],
+    extra=1,
+    can_delete=True,
+)
 class HomepageSectionForm(forms.ModelForm):
     class Meta:
         model = HomepageSection

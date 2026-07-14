@@ -94,7 +94,12 @@ def get_order_tracking_view(
                 "product",
                 "variant",
                 "gift_customization_snapshot",
-            ),
+                "gift_customization_snapshot__greeting_card",
+                "gift_customization_snapshot__gift_wrap",
+                "gift_customization_snapshot__ribbon",
+                "gift_customization_snapshot__photo_upload",
+                "gift_customization_snapshot__delivery_slot",
+            ).prefetch_related("gift_customization_snapshot__snapshot_addons__addon_product"),
         ),
     )
     if customer_profile is not None:

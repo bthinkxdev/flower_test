@@ -10,6 +10,7 @@ from dashboard.views import (
     cms,
     customers,
     delivery,
+    gifting,
     home,
     marketing,
     misc,
@@ -169,4 +170,33 @@ urlpatterns += _crud(
     delivery.DeliverySlotCreateView,
     delivery.DeliverySlotUpdateView,
     delivery.DeliverySlotDeleteView,
+)
+
+urlpatterns += _crud(
+    "greetingcard",
+    gifting.GreetingCardListView,
+    gifting.GreetingCardCreateView,
+    gifting.GreetingCardUpdateView,
+    gifting.GreetingCardDeleteView,
+)
+urlpatterns += _crud(
+    "giftwrap",
+    gifting.GiftWrapListView,
+    gifting.GiftWrapCreateView,
+    gifting.GiftWrapUpdateView,
+    gifting.GiftWrapDeleteView,
+)
+urlpatterns += _crud(
+    "ribbon",
+    gifting.RibbonListView,
+    gifting.RibbonCreateView,
+    gifting.RibbonUpdateView,
+    gifting.RibbonDeleteView,
+)
+urlpatterns += _crud(
+    "photouploadoption",
+    gifting.PhotoUploadOptionListView,
+    gifting.PhotoUploadOptionCreateView,
+    gifting.PhotoUploadOptionUpdateView,
+    gifting.PhotoUploadOptionDeleteView,
 )

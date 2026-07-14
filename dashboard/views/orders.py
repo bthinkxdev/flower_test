@@ -53,7 +53,15 @@ def order_detail(request: HttpRequest, pk: int) -> HttpResponse:
     order = get_object_or_404(
         Order.objects.select_related("customer_profile__user", "currency"), pk=pk
     )
-    items = order.items.select_related("product", "variant").all()
+    items = order.items.select_related(
+        "product",
+        "variant",
+        "gift_customization_snapshot",
+        "gift_customization_snapshot__greeting_card",
+        "gift_customization_snapshot__gift_wrap",
+        "gift_customization_snapshot__ribbon",
+        "gift_customization_snapshot__photo_upload",
+    ).prefetch_related("gift_customization_snapshot__snapshot_addons__addon_product").all()
     history = order.status_history.select_related("changed_by").all()
     payments = order.payment_transactions.select_related("currency").all()
     pod = getattr(order, "proof_of_delivery", None)

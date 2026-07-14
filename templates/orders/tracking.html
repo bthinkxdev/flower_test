@@ -21,19 +21,33 @@
   </div>
   {% endif %}
 
-  <div class="checkout-step">
-    <h2 class="h6 mb-3">{% trans "Tracking Timeline" %}</h2>
-    <div class="tracking-timeline">
-      {% for entry in status_history %}
-      <div class="tracking-step {% if forloop.last %}is-current{% else %}is-complete{% endif %}">
-        <time class="small text-muted d-block" datetime="{{ entry.changed_at|date:'c' }}">{{ entry.changed_at }}</time>
-        <span class="small fw-medium">{{ entry.get_to_status_display|default:entry.to_status }}</span>
-        {% if entry.note %}<p class="small text-muted mb-0">{{ entry.note }}</p>{% endif %}
+  <div class="checkout-step mb-4">
+    <h2 class="h6 mb-3">{% trans "Items" %}</h2>
+    {% for item in order.items.all %}
+    <div class="order-item-row mb-3 pb-3 border-bottom">
+      <div class="d-flex justify-content-between">
+        <span class="fw-medium">{{ item.product.name }}{% if item.variant %} — {{ item.variant.name }}{% endif %}</span>
+        <span class="text-muted small">×{{ item.quantity }}</span>
       </div>
-      {% empty %}
-      <p class="text-muted small">{% trans "No status updates yet." %}</p>
-      {% endfor %}
+      {% with snap=item.gift_customization_snapshot %}
+      {% if snap %}
+      <div class="gift-snapshot-badge small mt-2 ps-3 border-start border-2 border-floward">
+        {% if snap.personal_message %}<div>{% trans "Message" %}: <em>{{ snap.personal_message }}</em></div>{% endif %}
+        {% if snap.greeting_card %}<div>{% trans "Greeting card" %}: {{ snap.greeting_card.name }}</div>{% endif %}
+        {% if snap.gift_wrap %}<div>{% trans "Gift wrap" %}: {{ snap.gift_wrap.get_name_display }}</div>{% endif %}
+        {% if snap.ribbon %}<div>{% trans "Ribbon" %}: {{ snap.ribbon.get_name_display }}</div>{% endif %}
+        {% for addon_row in snap.snapshot_addons.all %}
+        <div>{% trans "Add-on" %}: {{ addon_row.addon_product.name }}</div>
+        {% endfor %}
+        {% if snap.is_anonymous %}<div>{% trans "Sent anonymously" %}</div>{% endif %}
+        {% if snap.is_gift_receipt %}<div>{% trans "Gift receipt — prices hidden" %}</div>{% endif %}
+      </div>
+      {% endif %}
+      {% endwith %}
     </div>
+    {% empty %}
+    <p class="text-muted small">{% trans "No items on this order." %}</p>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
