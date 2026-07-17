@@ -97,6 +97,15 @@ def get_cart_item_count(*, cart: Cart | None) -> int:
     total = CartItem.objects.filter(cart=cart).aggregate(total=Sum("quantity"))["total"]
     return int(total or 0)
 
+def is_product_in_cart(*, cart: Optional[Cart], product_id: int) -> bool:
+    """
+    Return True if the given product (any variant) already has a line in this cart.
+
+    Query guarantee: exactly 1 EXISTS-backed SELECT (0 if cart is None).
+    """
+    if cart is None:
+        return False
+    return CartItem.objects.filter(cart=cart, product_id=product_id).exists()
 
 def get_cart_count(*, request: HttpRequest) -> int:
     """

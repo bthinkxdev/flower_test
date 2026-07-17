@@ -20,7 +20,18 @@ from cms.models import BlogPost, FAQItem, HeroSlide, HomepageSection, Page, Poli
 from core.models import SiteSettings
 from delivery.models import City, DeliverySlot
 from marketing.models import Coupon, FlashSale, GiftCard, NewsletterSubscriber
-from gifting.models import GiftWrapOption, GreetingCardDesign, RibbonOption, GiftPhotoUploadOption, GiftAddonEligibility, GiftCustomizationConfig
+from gifting.models import (
+    GiftWrapOption,
+    GreetingCardDesign,
+    RibbonOption,
+    GiftPhotoUploadOption,
+    GiftAddonEligibility,
+    GiftCardEligibility,
+    GiftWrapEligibility,
+    RibbonEligibility,
+    GiftPhotoUploadEligibility,
+    GiftCustomizationConfig,
+)
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 
 _DATE = forms.DateInput(attrs={"type": "date"})
@@ -240,6 +251,36 @@ class GiftCustomizationConfigForm(forms.ModelForm):
 GiftAddonEligibilityFormSet = generic_inlineformset_factory(
     GiftAddonEligibility,
     fields=["addon_product"],
+    extra=1,
+    can_delete=True,
+)
+GiftAddonEligibilityFormSet = generic_inlineformset_factory(
+    GiftAddonEligibility,
+    fields=["addon_product"],
+    extra=1,
+    can_delete=True,
+)
+GiftCardEligibilityFormSet = generic_inlineformset_factory(
+    GiftCardEligibility,
+    fields=["greeting_card"],
+    extra=1,
+    can_delete=True,
+)
+GiftWrapEligibilityFormSet = generic_inlineformset_factory(
+    GiftWrapEligibility,
+    fields=["gift_wrap"],
+    extra=1,
+    can_delete=True,
+)
+GiftRibbonEligibilityFormSet = generic_inlineformset_factory(
+    RibbonEligibility,
+    fields=["ribbon"],
+    extra=1,
+    can_delete=True,
+)
+GiftPhotoEligibilityFormSet = generic_inlineformset_factory(
+    GiftPhotoUploadEligibility,
+    fields=["photo_upload"],
     extra=1,
     can_delete=True,
 )

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Gift Calendar" %} | Floward{% endblock %}
+{% block content %}
+<div class="container page-container">
+  <h1 class="section-title mb-4">{% trans "Gift Calendar" %}</h1>
+  <div class="row g-4">
+    <div class="col-md-5">
+      <form method="post" action="{% url 'accounts:gift-reminder-add' %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="mb-3"><label class="form-label small">{% trans "Occasion" %}</label>{{ form.occasion_type }}</div>
+        <div class="mb-3"><label class="form-label small">{% trans "Date" %}</label>{{ form.reminder_date }}</div>
+        <div class="mb-3"><label class="form-label small">{% trans "Recipient" %}</label>{{ form.recipient_name }}</div>
+        <div class="mb-3"><label class="form-label small">{% trans "Notify me (days before)" %}</label>{{ form.notify_days_before }}</div>
+        <div class="mb-3"><label class="form-label small">{% trans "Notes" %}</label>{{ form.notes }}</div>
+        <button type="submit" class="btn btn-floward w-100">{% trans "Add Reminder" %}</button>
+      </form>
+    </div>
+    <div class="col-md-7">
+      {% if reminders %}
+      <div class="list-group">
+        {% for r in reminders %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ r.get_occasion_type_display }}</strong> — {{ r.recipient_name }}
+            <div class="small text-muted">{{ r.reminder_date }}</div>
+          </div>
+          <form method="post" action="{% url 'accounts:gift-reminder-delete' r.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-outline-danger">{% trans "Remove" %}</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">{% trans "No reminders yet." %}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

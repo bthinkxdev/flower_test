@@ -44,6 +44,12 @@ class CheckoutSession(TimeStampedModel):
         verbose_name="Session key",
         help_text="Guest session key when customer_profile is null.",
     )
+    guest_details = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name="Guest details",
+        help_text="Name/contact/address captured for guest checkout (no saved Address row).",
+    )
     address = models.ForeignKey(
         "accounts.Address",
         on_delete=models.SET_NULL,

@@ -12,10 +12,10 @@ from gifting.constants import PERSONAL_MESSAGE_MAX_LENGTH
 from gifting.exceptions import GiftCustomizationValidationError
 from gifting.forms import GiftBuilderForm
 from gifting.selectors import (
-    get_active_gift_wrap_options,
-    get_active_photo_upload_options,
-    get_active_ribbon_options,
-    get_available_greeting_cards,
+    get_eligible_gift_wrap_options,
+    get_eligible_photo_upload_options,
+    get_eligible_ribbon_options,
+    get_eligible_greeting_cards,
     get_eligible_addons,
     get_gift_customization_config,
     get_gift_customization_snapshot,
@@ -40,7 +40,6 @@ def _builder_context(*, request: HttpRequest, product, line_item_ref) -> dict:
     config = get_gift_customization_config(product_instance=product, request=request)
     if config is None:
         raise Http404("Gift customization is not available for this product.")
-    occasion_id = getattr(product, "primary_occasion_id", None)
     snapshot = get_gift_customization_snapshot(line_item_reference=line_item_ref)
     selected_addon_ids: list[int] = []
     if snapshot is not None:
@@ -49,10 +48,10 @@ def _builder_context(*, request: HttpRequest, product, line_item_ref) -> dict:
         "product": product,
         "config": config,
         "line_item_ref": line_item_ref,
-        "greeting_cards": get_available_greeting_cards(occasion_id=occasion_id),
-        "gift_wrap_options": get_active_gift_wrap_options(),
-        "ribbon_options": get_active_ribbon_options(),
-        "photo_upload_options": get_active_photo_upload_options(),
+        "greeting_cards": get_eligible_greeting_cards(product_instance=product),
+        "gift_wrap_options": get_eligible_gift_wrap_options(product_instance=product),
+        "ribbon_options": get_eligible_ribbon_options(product_instance=product),
+        "photo_upload_options": get_eligible_photo_upload_options(product_instance=product),
         "eligible_addons": get_eligible_addons(product_instance=product),
         "delivery_slots": get_available_delivery_slots(
             allow_midnight=config.allows_midnight_delivery,

@@ -15,16 +15,19 @@
         <form method="post">
           {% csrf_token %}
           <div class="mb-3">
-            <label class="form-label" for="id_work_email">{% trans "Work email" %}</label>
-            {{ form.work_email }}
+            <label class="form-label" for="id_email">{% trans "Work email" %}</label>
+            {{ form.email }}
+            {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors }}</div>{% endif %}
           </div>
           <div class="mb-3">
             <label class="form-label" for="id_password">{% trans "Password" %}</label>
             {{ form.password }}
+            {% if form.password.errors %}<div class="text-danger small">{{ form.password.errors }}</div>{% endif %}
           </div>
           <div class="mb-3">
-            <label class="form-label" for="id_contact_name">{% trans "Contact name" %}</label>
-            {{ form.contact_name }}
+            <label class="form-label" for="id_name">{% trans "Contact name" %}</label>
+            {{ form.name }}
+            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
           </div>
           <div class="mb-3">
             <label class="form-label" for="id_company_name">{% trans "Company name" %}</label>

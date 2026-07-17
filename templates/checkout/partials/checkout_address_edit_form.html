@@ -1,0 +1,18 @@
+{% load i18n %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+{% include "checkout/partials/address_form_fields.html" %}
+<div class="d-flex gap-2 mt-2">
+  <button type="button" class="btn btn-sm btn-floward" 
+          hx-post="{% url 'checkout:edit-address' address_id=address.pk %}" 
+          hx-target="#address-list-container" 
+          hx-include="#add-address-container input, #add-address-container select"
+          hx-on::after-request="if(event.detail.successful){ bootstrap.Collapse.getOrCreateInstance(document.getElementById('addAddressCollapse')).hide(); }">
+    {% trans "Save Changes" %}
+  </button>
+  <button type="button" class="btn btn-sm btn-outline-secondary" 
+          hx-get="{% url 'checkout:address-form-reset' %}"
+          hx-target="#add-address-container"
+          hx-swap="innerHTML">
+    {% trans "Cancel" %}
+  </button>
+</div>

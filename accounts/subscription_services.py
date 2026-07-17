@@ -153,6 +153,36 @@ def remove_from_wishlist(*, wishlist: Wishlist, product_id: int) -> None:
     """Remove a product from a wishlist."""
     WishlistItem.objects.filter(wishlist=wishlist, product_id=product_id).delete()
 
+@transaction.atomic
+def merge_session_wishlist_to_user(*, old_session_key: str, user) -> None:
+    """
+    Merge a guest session wishlist into the newly-logged-in customer's wishlist.
+
+    Same session-key-rotation caveat as cart.services.merge_carts — must be
+    called with the key captured before login().
+    """
+    if not old_session_key or not hasattr(user, "customer_profile"):
+        return
+
+    guest_wishlist = Wishlist.objects.select_for_update().filter(session_key=old_session_key).first()
+    if guest_wishlist is None:
+        return
+
+    profile = user.customer_profile
+    user_wishlist, _ = Wishlist.objects.get_or_create(customer_profile=profile)
+
+    guest_product_ids = set(
+        WishlistItem.objects.filter(wishlist=guest_wishlist).values_list("product_id", flat=True)
+    )
+    existing_product_ids = set(
+        WishlistItem.objects.filter(wishlist=user_wishlist).values_list("product_id", flat=True)
+    )
+    new_ids = guest_product_ids - existing_product_ids
+    if new_ids:
+        WishlistItem.objects.bulk_create(
+            [WishlistItem(wishlist=user_wishlist, product_id=pid) for pid in new_ids]
+        )
+    guest_wishlist.delete()
 
 def generate_wishlist_share_token(*, wishlist: Wishlist) -> str:
     """Create a signed share token for read-only wishlist access."""

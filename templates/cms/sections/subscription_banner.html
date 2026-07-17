@@ -1,8 +1,18 @@
 {% load i18n %}
 {% if section_context.banner.url and section_context.banner.image %}
-<section class="container mb-5">
-  <a href="{{ section_context.banner.url }}" class="promo-banner d-block rounded overflow-hidden">
-    <img src="{{ section_context.banner.image }}" alt="{{ section_context.banner.title }}" class="w-100" width="1200" height="300" loading="lazy">
-  </a>
-</section>
+    <div class="promo-banner-slide">
+      <a href="{{ section_context.banner.url }}" class="promo-banner d-block rounded overflow-hidden">
+        <img src="{{ section_context.banner.image }}" alt="{{ section_context.banner.title }}" loading="lazy">
+        {% if section_context.banner.title %}
+        <div class="promo-banner__overlay">
+          <h3 class="promo-banner__title">{{ section_context.banner.title }}</h3>
+          {% if section_context.banner.cta_text %}
+          <span class="promo-banner__cta">{{ section_context.banner.cta_text }}</span>
+          {% endif %}
+        </div>
+        {% endif %}
+      </a>
+    </div>
+  </div>
+</div>
 {% endif %}

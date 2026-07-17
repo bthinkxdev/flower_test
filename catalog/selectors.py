@@ -496,11 +496,14 @@ def get_variant_price(*, product_id: int, variant_id: int | None = None) -> dict
     sale = get_active_flash_sale_price(product_id=product.pk, base_price=price)
     display_price = sale["price"]
 
+    stock_quantity = variant.stock_quantity if variant_id and resolved_variant_id else product.stock_quantity
     result = {
         "base_price": str(product.base_price),
         "price": str(display_price),
         "variant_id": str(resolved_variant_id) if resolved_variant_id else "",
         "is_flash_sale": str(sale["is_flash_sale"]).lower(),
+        "is_in_stock": str(stock_quantity > 0).lower(),
+        "stock_quantity": stock_quantity,
     }
     if sale["is_flash_sale"]:
         result["original_price"] = str(sale["original_price"])
@@ -560,3 +563,32 @@ def get_products_by_ids(*, product_ids: list[int]) -> list[Product]:
             "id", "name", "slug", "base_price"
         )
     )
+
+def get_active_products_for_picker() -> list[dict[str, Any]]:
+    """
+    Return lightweight active-product data (id, name, thumbnail URL) for UI
+    pickers that need a product image — subscription setup, corporate quote
+    line items, etc.
+
+    Query guarantee: 1 SELECT with prefetch (no N+1 per product).
+    """
+    from django.db.models import Prefetch
+
+    from catalog.models import Product, ProductImage
+
+    products = (
+        Product.objects.filter(is_active=True)
+        .prefetch_related(
+            Prefetch(
+                "images",
+                queryset=ProductImage.objects.filter(is_primary=True).order_by("display_order"),
+                to_attr="primary_images",
+            )
+        )
+        .order_by("name")
+    )
+    result = []
+    for product in products:
+        thumbnail = product.primary_images[0].image.url if product.primary_images else ""
+        result.append({"id": product.pk, "name": product.name, "thumbnail": thumbnail})
+    return result

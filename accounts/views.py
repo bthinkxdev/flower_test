@@ -20,8 +20,8 @@ from accounts.exceptions import (
 from accounts.forms import (
     AddressForm,
     CorporateRegistrationForm,
-    EmailLoginForm,
-    EmailRegistrationForm,
+    EmailOTPRequestForm,      
+    EmailOTPVerifyForm,       
     ForgotPasswordForm,
     GoogleLoginForm,
     GuestCheckoutForm,
@@ -46,25 +46,29 @@ from accounts.services import (
     create_guest_checkout_token,
     delete_address,
     delete_saved_payment_method,
+    login_or_create_customer_by_email,   
     login_or_create_customer_by_phone,
     register_corporate_account,
-    register_customer_email,
+    request_email_otp,                   
     request_otp,
     reset_password_with_otp,
     update_address,
+    verify_email_otp,                    
     verify_otp,
 )
 from core.decorators import role_required
-
-from accounts.selectors import get_customer_subscriptions, get_customer_subscription_by_id
-from accounts.forms import SubscriptionCreateForm
+from cart.services import merge_carts
+from accounts.selectors import get_customer_subscriptions, get_customer_subscription_by_id, get_saved_addresses, get_upcoming_gift_reminders
+from accounts.forms import SubscriptionCreateForm, AddressForm, GiftReminderForm
 from accounts.subscription_services import (
     create_subscription,
     pause_subscription,
     resume_subscription,
     cancel_subscription,
+    merge_session_wishlist_to_user,
+    schedule_gift_reminder,
 )
-
+from catalog.selectors import get_active_products_for_picker
 
 def _json_body(request: HttpRequest) -> dict[str, Any]:
     """Parse JSON request body; return empty dict for non-JSON requests."""
@@ -128,76 +132,47 @@ def _wants_json(request: HttpRequest) -> bool:
     accept = request.headers.get("Accept", "")
     return "application/json" in accept and "text/html" not in accept
 
+@require_GET
+def login_view(request: HttpRequest) -> HttpResponse:
+    """Render the email-OTP login page. Redirects if already authenticated."""
+    if request.user.is_authenticated:
+        return redirect("accounts:dashboard")
+    return render(request, "accounts/login.html", {})
 
-@require_http_methods(["GET", "POST"])
-def email_register_view(request: HttpRequest) -> HttpResponse:
-    """Register a new customer with email and password."""
-    if request.method == "GET":
-        return render(request, "accounts/register.html", {"form": EmailRegistrationForm()})
-
+@require_POST
+def email_otp_request_view(request: HttpRequest) -> HttpResponse:
+    """Request an OTP for email-based customer login (auto-registers on first use)."""
     data = _json_body(request) or request.POST.dict()
-    form = EmailRegistrationForm(data)
+    form = EmailOTPRequestForm(data)
     if not form.is_valid():
-        if _wants_json(request):
-            return _error_response(str(form.errors), code="validation_error")
-        return render(
-            request,
-            "accounts/register.html",
-            {"form": form, "errors": form.errors},
-            status=400,
-        )
-    profile = register_customer_email(
-        email=form.cleaned_data["email"],
-        password=form.cleaned_data["password"],
-        name=form.cleaned_data["name"],
-    )
-    login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
-    if _wants_json(request):
-        return _success_response({"user_id": profile.user_id})
-    return redirect("accounts:dashboard")
-
-
-@require_http_methods(["GET", "POST"])
-def email_login_view(request: HttpRequest) -> HttpResponse:
-    """Authenticate a customer with email and password."""
-    if request.method == "GET":
-        return render(request, "accounts/login.html", {"form": EmailLoginForm()})
-
-    data = _json_body(request) or request.POST.dict()
-    identifier = (
-        (data.get("email") or data.get("username") or request.META.get("REMOTE_ADDR", "anon"))
-        .strip()
-        .lower()
-    )
+        return _error_response(str(form.errors), code="validation_error")
     try:
-        _check_login_rate_limit(identifier=identifier)
+        otp_request = request_email_otp(email=form.cleaned_data["email"])
     except OTPRateLimitError as exc:
-        if _wants_json(request):
-            return _error_response(str(exc), code="rate_limited", status=429)
-        return render(
-            request,
-            "accounts/login.html",
-            {"form": EmailLoginForm(), "error_message": str(exc)},
-            status=429,
-        )
-    form = EmailLoginForm(request, data)
+        return _error_response(str(exc), code="rate_limited", status=429)
+    return _success_response(
+        {"otp_request_id": otp_request.pk, "expires_at": otp_request.expires_at.isoformat()}
+    )
+
+
+@require_POST
+def email_otp_verify_view(request: HttpRequest) -> HttpResponse:
+    """Verify an email OTP and log the customer in, creating the account if new."""
+    data = _json_body(request) or request.POST.dict()
+    form = EmailOTPVerifyForm(data)
     if not form.is_valid():
-        _increment_login_rate_limit(identifier=identifier)
-        if _wants_json(request):
-            return _error_response("Invalid email or password.", code="auth_failed", status=401)
-        return render(
-            request,
-            "accounts/login.html",
-            {"form": form, "error_message": "Invalid email or password."},
-            status=401,
-        )
-    login(request, form.get_user(), backend="django.contrib.auth.backends.ModelBackend")
-    if _wants_json(request):
-        return _success_response({"user_id": form.get_user().pk})
-    next_url = request.GET.get("next") or request.POST.get("next")
-    if next_url:
-        return redirect(next_url)
-    return redirect("accounts:dashboard")
+        return _error_response(str(form.errors), code="validation_error")
+    try:
+        verify_email_otp(email=form.cleaned_data["email"], otp_code=form.cleaned_data["otp_code"])
+    except OTPVerificationError as exc:
+        return _error_response(str(exc), code=exc.__class__.__name__, status=400)
+
+    profile = login_or_create_customer_by_email(email=form.cleaned_data["email"])
+    old_session_key = request.session.session_key
+    login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
+    merge_carts(user=profile.user, old_session_key=old_session_key)
+    merge_session_wishlist_to_user(old_session_key=old_session_key, user=profile.user)
+    return _success_response({"user_id": profile.user_id})
 
 
 @require_http_methods(["GET", "POST"])
@@ -247,7 +222,10 @@ def otp_verify_view(request: HttpRequest) -> HttpResponse:
     purpose = form.cleaned_data["purpose"]
     if purpose in (OTPPurpose.LOGIN, OTPPurpose.SIGNUP):
         profile = login_or_create_customer_by_phone(phone=form.cleaned_data["phone"])
+        old_session_key = request.session.session_key
         login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
+        merge_carts(user=profile.user, old_session_key=old_session_key)
+        merge_session_wishlist_to_user(old_session_key=old_session_key, user=profile.user)
         return _success_response({"user_id": profile.user_id})
 
     return _success_response({"verified": True})
@@ -264,7 +242,10 @@ def google_login_view(request: HttpRequest) -> HttpResponse:
         profile = authenticate_google(google_id_token=form.cleaned_data["id_token"])
     except GoogleAuthError as exc:
         return _error_response(str(exc), code="google_auth_failed", status=401)
+    old_session_key = request.session.session_key
     login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
+    merge_carts(user=profile.user, old_session_key=old_session_key)
+    merge_session_wishlist_to_user(old_session_key=old_session_key, user=profile.user)
     return _success_response({"user_id": profile.user_id})
 
 
@@ -310,7 +291,10 @@ def reset_password_view(request: HttpRequest) -> HttpResponse:
         return _error_response(str(exc), code=exc.__class__.__name__, status=400)
     except CustomerProfile.DoesNotExist:
         return _error_response("Customer profile not found.", status=404)
+    old_session_key = request.session.session_key
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+    merge_carts(user=user, old_session_key=old_session_key)
+    merge_session_wishlist_to_user(old_session_key=old_session_key, user=user)
     return _success_response({"user_id": user.pk})
 
 
@@ -345,7 +329,16 @@ def dashboard_view(request: HttpRequest) -> HttpResponse:
                 "unread_notification_count": context.unread_notification_count,
             }
         )
-    return render(request, "accounts/dashboard.html", {"dashboard": context})
+        
+    return render(
+        request, 
+        "accounts/dashboard.html", 
+        {
+            "dashboard": context,
+            "addresses": get_saved_addresses(customer_profile=request.user.customer_profile, page=1)["results"],
+            "address_form": AddressForm(),
+        }
+    )
 
 
 @login_required
@@ -447,7 +440,7 @@ def corporate_register_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = CorporateRegistrationForm(data)
     if not form.is_valid():
-        if request.content_type == "application/json":
+        if _wants_json(request):
             return _error_response(str(form.errors), code="validation_error")
         return render(
             request,
@@ -464,10 +457,24 @@ def corporate_register_view(request: HttpRequest) -> HttpResponse:
             trade_license_number=form.cleaned_data["trade_license_number"],
         )
     except CorporateRegistrationError as exc:
-        return _error_response(str(exc), code="registration_failed")
-    return _success_response(
-        {"corporate_account_id": account.pk, "approval_status": account.approval_status},
-        status=201,
+        if _wants_json(request):
+            return _error_response(str(exc), code="registration_failed")
+        return render(
+            request,
+            "accounts/corporate_register.html",
+            {"form": form, "errors": str(exc)},
+            status=400,
+        )
+
+    if _wants_json(request):
+        return _success_response(
+            {"corporate_account_id": account.pk, "approval_status": account.approval_status},
+            status=201,
+        )
+    return render(
+        request,
+        "accounts/corporate_register_pending.html",
+        {"account": account},
     )
 
 
@@ -519,7 +526,6 @@ def wishlist_shared_view(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required
 @require_POST
 def wishlist_add_view(request: HttpRequest) -> HttpResponse:
     """Add a product to the authenticated customer's wishlist."""
@@ -530,7 +536,6 @@ def wishlist_add_view(request: HttpRequest) -> HttpResponse:
     add_to_wishlist(wishlist=wishlist, product_id=product_id)
     return JsonResponse({"status": "added"})
 
-@login_required
 @require_POST
 def wishlist_remove_view(request: HttpRequest) -> HttpResponse:
     """Remove a product from the authenticated customer's wishlist."""
@@ -549,16 +554,64 @@ def wishlist_shared_mutate_view(request: HttpRequest) -> HttpResponse:
         return JsonResponse({"error": "Shared wishlists are read-only."}, status=403)
     return JsonResponse({"error": "Authentication required."}, status=401)
 
-@login_required
 @require_GET
 def wishlist_view(request: HttpRequest) -> HttpResponse:
-    """Render the authenticated customer's wishlist page."""
-    profile = request.user.customer_profile
-    view = get_wishlist(customer_profile=profile)
+    """Render the wishlist page for guest or authenticated customers."""
+    from accounts.subscription_services import get_or_create_wishlist
+
+    wl = get_or_create_wishlist(request=request)
+    view = get_wishlist(wishlist=wl)
     if view is None:
         return render(request, "accounts/wishlist.html", {"items": []})
     return render(request, "accounts/wishlist.html", {"wishlist": view.wishlist, "items": view.items})
 
+@login_required
+@require_GET
+def gift_reminder_list_view(request: HttpRequest) -> HttpResponse:
+    """Personal gift calendar — upcoming occasions."""
+    profile = request.user.customer_profile
+    reminders = get_upcoming_gift_reminders(customer_profile=profile)
+    return render(
+        request,
+        "accounts/gift_reminders.html",
+        {"reminders": reminders, "form": GiftReminderForm()},
+    )
+
+
+@login_required
+@require_POST
+def gift_reminder_create_view(request: HttpRequest) -> HttpResponse:
+    """Add a gift reminder to the calendar."""
+    profile = request.user.customer_profile
+    form = GiftReminderForm(request.POST)
+    if not form.is_valid():
+        reminders = get_upcoming_gift_reminders(customer_profile=profile)
+        return render(
+            request,
+            "accounts/gift_reminders.html",
+            {"reminders": reminders, "form": form},
+            status=400,
+        )
+    schedule_gift_reminder(
+        customer_profile=profile,
+        occasion_type=form.cleaned_data["occasion_type"],
+        reminder_date=form.cleaned_data["reminder_date"],
+        recipient_name=form.cleaned_data["recipient_name"],
+        notes=form.cleaned_data.get("notes", ""),
+        notify_days_before=form.cleaned_data["notify_days_before"],
+    )
+    return redirect("accounts:gift-reminders")
+
+
+@login_required
+@require_POST
+def gift_reminder_delete_view(request: HttpRequest, reminder_id: int) -> HttpResponse:
+    """Remove a gift reminder owned by the current customer."""
+    from accounts.models import GiftReminder
+
+    profile = request.user.customer_profile
+    GiftReminder.objects.filter(pk=reminder_id, customer_profile=profile).delete()
+    return redirect("accounts:gift-reminders")
 
 @login_required
 @require_GET
@@ -572,28 +625,32 @@ def subscription_list_view(request: HttpRequest) -> HttpResponse:
 @login_required
 @require_http_methods(["GET", "POST"])
 def subscription_create_view(request: HttpRequest) -> HttpResponse:
+    profile = request.user.customer_profile
+    products = get_active_products_for_picker()
+
     if request.method == "GET":
         initial = {}
         product_id = request.GET.get("product_id")
         if product_id:
             initial["product_id"] = product_id
-        return render(request, "accounts/subscription_create.html", {"form": SubscriptionCreateForm(initial=initial)})
+        form = SubscriptionCreateForm(initial=initial, customer_profile=profile)
+        return render(request, "accounts/subscription_create.html", {"form": form, "products": products})
 
     data = _json_body(request) or request.POST.dict()
-    form = SubscriptionCreateForm(data)
+    form = SubscriptionCreateForm(data, customer_profile=profile)
     if not form.is_valid():
         if _wants_json(request):
             return _error_response(str(form.errors), code="validation_error")
         return render(
             request,
             "accounts/subscription_create.html",
-            {"form": form, "errors": form.errors},
+            {"form": form, "errors": form.errors, "products": products},
             status=400,
         )
     subscription = create_subscription(
-        customer_profile=request.user.customer_profile,
-        product_id=form.cleaned_data["product_id"],
-        delivery_address_id=form.cleaned_data["delivery_address_id"],
+        customer_profile=profile,
+        product_id=form.cleaned_data["product_id"].pk,
+        delivery_address_id=form.cleaned_data["delivery_address_id"].pk,
         frequency=form.cleaned_data["frequency"],
         next_run_date=form.cleaned_data["next_run_date"],
         quantity=form.cleaned_data["quantity"],
@@ -641,3 +698,55 @@ def subscription_cancel_view(request: HttpRequest, subscription_id: int) -> Http
         return _error_response("Subscription not found.", status=404)
     cancel_subscription(subscription=subscription)
     return _success_response()
+
+@login_required
+@require_POST
+def dashboard_add_address_view(request: HttpRequest) -> HttpResponse:
+    """Endpoint for HTMX address creation from dashboard."""
+    profile = request.user.customer_profile
+    form = AddressForm(request.POST)
+    if not form.is_valid():
+        return render(
+            request,
+            "accounts/partials/address_list_partial.html",
+            {
+                "addresses": get_saved_addresses(customer_profile=profile, page=1)["results"],
+                "address_form": form,
+            }
+        )
+        
+    create_address(
+        customer_profile=profile,
+        label=form.cleaned_data["label"],
+        line1=form.cleaned_data["line1"],
+        line2=form.cleaned_data.get("line2", ""),
+        city_id=form.cleaned_data["city"].pk,
+        is_default=form.cleaned_data.get("is_default", False),
+    )
+    
+    addresses = get_saved_addresses(customer_profile=profile, page=1)["results"]
+    return render(
+        request,
+        "accounts/partials/address_list_partial.html",
+        {
+            "addresses": addresses,
+            "address_form": AddressForm(),
+        }
+    )
+
+@login_required
+@require_http_methods(["POST", "DELETE"])
+def dashboard_delete_address_view(request: HttpRequest, address_id: int) -> HttpResponse:
+    """Endpoint for HTMX address deletion from dashboard."""
+    profile = request.user.customer_profile
+    delete_address(customer_profile=profile, address_id=address_id)
+    
+    addresses = get_saved_addresses(customer_profile=profile, page=1)["results"]
+    return render(
+        request,
+        "accounts/partials/address_list_partial.html",
+        {
+            "addresses": addresses,
+            "address_form": AddressForm(),
+        }
+    )

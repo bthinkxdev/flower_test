@@ -43,10 +43,13 @@
       </div>
       {% endif %}
       <div class="d-flex gap-2 mb-3 d-none d-lg-flex">
-        <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
+        <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1 pdp-add-to-cart-form" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
           {% csrf_token %}
           <input type="hidden" name="product_id" value="{{ product.pk }}">
-          <button type="submit" class="btn btn-floward w-100 py-2">{% trans "Add to Cart" %}</button>
+          <button type="submit" class="btn btn-floward w-100 py-2 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" {% if not product.is_in_stock %}disabled{% endif %}>
+            <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
+            <span class="btn-check-icon" aria-hidden="true">✔</span>
+          </button>
         </form>
         <form method="post" action="{% url 'cart:wishlist-toggle' %}">
           {% csrf_token %}
@@ -61,20 +64,30 @@
         {% trans "Customize as Gift" %}
       </a>
       {% endif %}
-      <p class="small {% if product.is_in_stock %}text-success{% else %}text-danger{% endif %} mb-0">
+      <p class="small {% if product.is_in_stock %}text-success{% else %}text-danger{% endif %} mb-0" id="pdp-stock-text">
         {% if product.is_in_stock %}{% trans "In stock — order now" %}{% else %}{% trans "Out of stock" %}{% endif %}
       </p>
     </div>
   </div>
 
   <div class="pdp-sticky-bar">
-    <div class="pdp-sticky-price" id="pdp-sticky-price">{% money_label price_data.price display_currency %}</div>
-    <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
-      {% csrf_token %}
-      <input type="hidden" name="product_id" value="{{ product.pk }}">
-      <button type="submit" class="btn btn-floward w-100">{% trans "Add to Cart" %}</button>
-    </form>
-  </div>
+  <div class="pdp-sticky-price" id="pdp-sticky-price">{% money_label price_data.price display_currency %}</div>
+  <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1 pdp-add-to-cart-form" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="product_id" value="{{ product.pk }}">
+    <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" {% if not product.is_in_stock %}disabled{% endif %}>
+      <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
+      <span class="btn-check-icon" aria-hidden="true">✔</span>
+    </button>
+  </form>
+  <form method="post" action="{% url 'cart:wishlist-toggle' %}">
+    {% csrf_token %}
+    <input type="hidden" name="product_id" value="{{ product.pk }}">
+    <button type="submit" class="btn btn-outline-floward px-3" aria-label="{% trans 'Wishlist' %}">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+  </form>
+</div>
 
   <section class="mt-5 pt-4 border-top" id="reviews">
     <h2 class="section-title h5 mb-3">{% trans "Reviews" %}</h2>

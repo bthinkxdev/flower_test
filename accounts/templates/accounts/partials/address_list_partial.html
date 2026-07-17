@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div id="dashboard-address-list">
+  {% for addr in addresses %}
+  <div class="border-bottom py-2 small d-flex justify-content-between align-items-center">
+    <div>
+      <strong>{{ addr.label }}</strong>: {{ addr.line1 }}, {{ addr.city.name }}
+      {% if addr.is_default %}<span class="badge bg-secondary ms-1">{% trans "Default" %}</span>{% endif %}
+    </div>
+    <button class="btn btn-sm btn-link text-danger p-0" 
+            hx-post="{% url 'accounts:dashboard-delete-address' address_id=addr.pk %}" 
+            hx-target="#dashboard-address-wrapper" 
+            hx-confirm="{% trans 'Are you sure you want to delete this address?' %}">{% trans "Delete" %}</button>
+  </div>
+  {% empty %}
+  <p class="text-muted small mb-0">{% trans "No saved addresses yet." %}</p>
+  {% endfor %}
+</div>
+
+<form id="dashboard-address-form" 
+      hx-post="{% url 'accounts:dashboard-add-address' %}" 
+      hx-target="#dashboard-address-wrapper" 
+      class="needs-validation mt-3"
+      hx-swap-oob="true">
+  {% csrf_token %}
+  {% include "checkout/partials/address_form_fields.html" %}
+  <button type="submit" class="btn btn-sm btn-floward mt-2">{% trans "Add Address" %}</button>
+</form>

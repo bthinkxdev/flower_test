@@ -458,3 +458,52 @@ document.addEventListener('DOMContentLoaded', () => {
     updateArrowState();
   });
 });
+
+// subscription
+
+(function () {
+  var hiddenSelect = document.getElementById('id_product_id');
+  var trigger = document.getElementById('sub-product-trigger');
+  var panel = document.getElementById('sub-product-panel');
+  var selectedLabel = document.getElementById('sub-product-selected');
+  var search = document.getElementById('sub-product-search');
+  var options = document.querySelectorAll('.sub-product-option');
+
+  if (!hiddenSelect || !trigger) return;
+
+  var preselectedId = hiddenSelect.value;
+  if (preselectedId) {
+    options.forEach(function (opt) {
+      if (opt.dataset.id === preselectedId) {
+        selectedLabel.innerHTML = opt.innerHTML;
+        selectedLabel.classList.remove('text-muted');
+      }
+    });
+  }
+
+  trigger.addEventListener('click', function () {
+    panel.classList.toggle('is-open');
+    if (panel.classList.contains('is-open')) search.focus();
+  });
+
+  document.addEventListener('click', function (evt) {
+    if (!evt.target.closest('.sub-product-picker')) panel.classList.remove('is-open');
+  });
+
+  options.forEach(function (opt) {
+    opt.addEventListener('click', function () {
+      hiddenSelect.value = opt.dataset.id;
+      selectedLabel.innerHTML = opt.innerHTML;
+      selectedLabel.classList.remove('text-muted');
+      panel.classList.remove('is-open');
+    });
+  });
+
+  search.addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    options.forEach(function (opt) {
+      var match = opt.dataset.name.toLowerCase().indexOf(q) !== -1;
+      opt.style.display = match ? 'flex' : 'none';
+    });
+  });
+})();

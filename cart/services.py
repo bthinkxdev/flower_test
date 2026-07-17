@@ -18,7 +18,7 @@ from delivery.models import City
 from delivery.selectors import get_delivery_charge
 from gifting.services import build_gift_customization_snapshot
 from marketing.services import validate_coupon_for_cart
-
+from cart.exceptions import OutOfStockError
 
 def _resolve_unit_price(*, product: Product, variant: Optional[ProductVariant]) -> Decimal:
     """Compute snapshotted unit price from catalog selector."""
@@ -76,6 +76,13 @@ def add_to_cart(
     Only plain (non-gift) adds of the same product/variant merge by quantity,
     matching the conditional unique constraint on CartItem.
     """
+    available = variant.stock_quantity if variant else product.stock_quantity
+    already_in_cart = CartItem.objects.filter(cart=cart, product=product, variant=variant).values_list(
+        "quantity", flat=True
+    ).first() or 0
+    if available <= 0 or (already_in_cart + quantity) > available:
+        raise OutOfStockError(f"Only {available} unit(s) of '{product.name}' available.")
+
     unit_price = _resolve_unit_price(product=product, variant=variant)
 
     if gift_selections:
@@ -191,6 +198,85 @@ def recalculate_delivery_charge(*, cart: Cart, destination_city: City) -> Cart:
     cart.save(update_fields=["destination_city", "delivery_charge", "updated_at"])
     return cart
 
+def preview_delivery_charge(*, cart: Cart, destination_city: City) -> Decimal:
+    """Quote delivery charge for a city WITHOUT persisting to the cart.
+    Read-only counterpart to recalculate_delivery_charge — used for
+    instant on-change previews before the customer commits an address."""
+    summary = get_cart_summary(cart=cart)
+    return get_delivery_charge(item_count=summary.item_count, destination_city=destination_city)
+
+@transaction.atomic
+def merge_carts(*, user, old_session_key: str) -> Optional[Cart]:
+    """
+    Merge a guest session cart into the newly-logged-in customer's cart.
+
+    Must be called with the session key captured *before* django.contrib.auth.login()
+    — login() rotates the session key, so after that point the guest cart's
+    session_key can no longer be found via request.session.session_key.
+
+    - Non-gift lines merge by summed quantity, capped to available stock (same
+      invariant add_to_cart enforces — never silently exceed real stock).
+    - Gift-customized lines never merge into an existing line, mirroring
+      add_to_cart's "always a new line" rule for personalized items.
+    - If the customer has no existing cart yet, the guest cart is reassigned
+      wholesale (cheap path — no per-line work needed).
+    """
+    if not old_session_key or not hasattr(user, "customer_profile"):
+        return None
+
+    guest_cart = Cart.objects.select_for_update().filter(session_key=old_session_key).first()
+    if guest_cart is None:
+        return None
+
+    profile = user.customer_profile
+    user_cart = Cart.objects.select_for_update().filter(customer_profile=profile).first()
+
+    if user_cart is None:
+        guest_cart.customer_profile = profile
+        guest_cart.session_key = None
+        guest_cart.save(update_fields=["customer_profile", "session_key", "updated_at"])
+        return guest_cart
+
+    guest_items = list(CartItem.objects.filter(cart=guest_cart).select_related("product", "variant"))
+    for guest_item in guest_items:
+        if guest_item.gift_customization_snapshot_id:
+            guest_item.cart = user_cart
+            guest_item.save(update_fields=["cart", "updated_at"])
+            continue
+
+        existing = CartItem.objects.filter(
+            cart=user_cart,
+            product=guest_item.product,
+            variant=guest_item.variant,
+            gift_customization_snapshot__isnull=True,
+        ).first()
+
+        target = guest_item.variant if guest_item.variant else guest_item.product
+        available = target.stock_quantity
+
+        if existing is None:
+            new_quantity = min(guest_item.quantity, available)
+            if new_quantity < 1:
+                guest_item.delete()
+                continue
+            guest_item.cart = user_cart
+            guest_item.quantity = new_quantity
+            guest_item.save(update_fields=["cart", "quantity", "updated_at"])
+            continue
+
+        combined_quantity = min(existing.quantity + guest_item.quantity, available)
+        if combined_quantity < 1:
+            existing.delete()
+        else:
+            existing.quantity = combined_quantity
+            existing.save(update_fields=["quantity", "updated_at"])
+        guest_item.delete()
+
+    if guest_cart.destination_city_id and not user_cart.destination_city_id:
+        recalculate_delivery_charge(cart=user_cart, destination_city=guest_cart.destination_city)
+
+    guest_cart.delete()
+    return user_cart
 
 def toggle_wishlist(*, request: HttpRequest, product_id: int) -> bool:
     """

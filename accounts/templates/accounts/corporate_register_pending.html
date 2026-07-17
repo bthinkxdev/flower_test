@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Registration Submitted" %} | Floward{% endblock %}
+{% block content %}
+<div class="container page-container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+      <div class="card p-4">
+        <div class="mb-3">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--floward-primary)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 2"/></svg>
+        </div>
+        <h1 class="section-title h4 mb-2">{% trans "Registration Submitted" %}</h1>
+        <p class="text-muted mb-3">
+          {% blocktrans with company=account.company_name %}Thanks — your corporate account for <strong>{{ company }}</strong> is now pending admin approval. We'll notify you at your work email once it's reviewed.{% endblocktrans %}
+        </p>
+        <a href="{% url 'cms:homepage' %}" class="btn btn-floward w-100">{% trans "Continue Shopping" %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

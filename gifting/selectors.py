@@ -73,25 +73,64 @@ def get_available_greeting_cards(*, occasion_id: Optional[int] = None) -> list[G
     return list(qs.order_by("name"))
 
 
-def get_active_gift_wrap_options() -> list:
-    """Return active gift-wrap options. Query guarantee: 1 SELECT."""
-    from gifting.models import GiftWrapOption
+def _curated_or_fallback(*, product_instance, eligibility_model, option_field, fallback_qs):
+    content_type = _content_type_for_instance(instance=product_instance)
+    curated = (
+        eligibility_model.objects.filter(
+            content_type=content_type,
+            object_id=product_instance.pk,
+            **{f"{option_field}__is_active": True},
+        )
+        .select_related(option_field)
+        .order_by(f"{option_field}__name")
+    )
+    curated_list = [getattr(row, option_field) for row in curated]
+    return curated_list if curated_list else list(fallback_qs)
 
-    return list(GiftWrapOption.objects.filter(is_active=True).order_by("name"))
+
+def get_eligible_greeting_cards(*, product_instance: Any) -> list[GreetingCardDesign]:
+    """Curated cards win; else occasion-match; query guarantee: 1–2 SELECTs."""
+    from gifting.models import GiftCardEligibility
+    curated = _curated_or_fallback(
+        product_instance=product_instance,
+        eligibility_model=GiftCardEligibility,
+        option_field="greeting_card",
+        fallback_qs=[],
+    )
+    if curated:
+        return curated
+    occasion_id = getattr(product_instance, "primary_occasion_id", None)
+    return get_available_greeting_cards(occasion_id=occasion_id)
 
 
-def get_active_ribbon_options() -> list:
-    """Return active ribbon options. Query guarantee: 1 SELECT."""
-    from gifting.models import RibbonOption
+def get_eligible_gift_wrap_options(*, product_instance: Any) -> list:
+    from gifting.models import GiftWrapEligibility, GiftWrapOption
+    return _curated_or_fallback(
+        product_instance=product_instance,
+        eligibility_model=GiftWrapEligibility,
+        option_field="gift_wrap",
+        fallback_qs=GiftWrapOption.objects.filter(is_active=True).order_by("name"),
+    )
 
-    return list(RibbonOption.objects.filter(is_active=True).order_by("name"))
+
+def get_eligible_ribbon_options(*, product_instance: Any) -> list:
+    from gifting.models import RibbonEligibility, RibbonOption
+    return _curated_or_fallback(
+        product_instance=product_instance,
+        eligibility_model=RibbonEligibility,
+        option_field="ribbon",
+        fallback_qs=RibbonOption.objects.filter(is_active=True).order_by("name"),
+    )
 
 
-def get_active_photo_upload_options() -> list:
-    """Return active photo-upload options. Query guarantee: 1 SELECT."""
-    from gifting.models import GiftPhotoUploadOption
-
-    return list(GiftPhotoUploadOption.objects.filter(is_active=True).order_by("name"))
+def get_eligible_photo_upload_options(*, product_instance: Any) -> list:
+    from gifting.models import GiftPhotoUploadEligibility, GiftPhotoUploadOption
+    return _curated_or_fallback(
+        product_instance=product_instance,
+        eligibility_model=GiftPhotoUploadEligibility,
+        option_field="photo_upload",
+        fallback_qs=GiftPhotoUploadOption.objects.filter(is_active=True).order_by("name"),
+    )
 
 
 def get_eligible_addons(*, product_instance: Any) -> list:

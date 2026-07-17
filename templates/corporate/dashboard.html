@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Corporate Portal" %} | Floward{% endblock %}
+<a href="{% url 'corporate:quote-request' %}" class="btn btn-floward btn-sm">{% trans "Request New Quote" %}</a>
 
 {% block content %}
 <div class="container page-container py-4">

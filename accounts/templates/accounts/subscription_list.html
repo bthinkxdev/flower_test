@@ -28,18 +28,18 @@
         </div>
         <div class="d-flex gap-2 mt-3">
           {% if sub.status == "active" %}
-          <form method="post" action="{% url 'accounts:subscription-pause' sub.pk %}">
+          <form method="post" action="{% url 'accounts:subscription-pause' sub.pk %}" class="subscription-action-form">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-floward btn-sm">{% trans "Pause" %}</button>
           </form>
           {% elif sub.status == "paused" %}
-          <form method="post" action="{% url 'accounts:subscription-resume' sub.pk %}">
+          <form method="post" action="{% url 'accounts:subscription-resume' sub.pk %}" class="subscription-action-form">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-floward btn-sm">{% trans "Resume" %}</button>
           </form>
           {% endif %}
           {% if sub.status != "cancelled" %}
-          <form method="post" action="{% url 'accounts:subscription-cancel' sub.pk %}">
+          <form method="post" action="{% url 'accounts:subscription-cancel' sub.pk %}" class="subscription-action-form">
             {% csrf_token %}
             <button type="submit" class="btn btn-sm btn-outline-danger">{% trans "Cancel" %}</button>
           </form>
@@ -56,4 +56,48 @@
   </div>
   {% endif %}
 </div>
+
+<div id="toast-container" style="position:fixed; bottom:20px; right:20px; z-index:1080; display:flex; flex-direction:column; gap:8px;"></div>
+
+<script>
+function showToast(message, isError) {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  toast.style.cssText = `
+    padding: 12px 20px; border-radius: 8px; color: #fff;
+    background: ${isError ? "#b02a37" : "#5a1f34"};
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    font-size: 0.9rem; opacity: 0; transition: opacity 0.3s ease;
+  `;
+  container.appendChild(toast);
+  requestAnimationFrame(() => { toast.style.opacity = "1"; });
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+document.querySelectorAll(".subscription-action-form").forEach((form) => {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const csrftoken = form.querySelector("[name=csrfmiddlewaretoken]").value;
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        headers: { "X-CSRFToken": csrftoken, "X-Requested-With": "XMLHttpRequest" },
+      });
+      const data = await res.json();
+      if (!res.ok || data.success === false) {
+        showToast(data.message || "{% trans 'Something went wrong.' %}", true);
+        return;
+      }
+      showToast("{% trans 'Subscription updated.' %}", false);
+      setTimeout(() => window.location.reload(), 800);
+    } catch (err) {
+      showToast("{% trans 'Network error. Please try again.' %}", true);
+    }
+  });
+});
+</script>
 {% endblock %}

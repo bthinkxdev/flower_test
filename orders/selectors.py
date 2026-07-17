@@ -66,6 +66,21 @@ def get_recent_orders_for_customer(*, customer_profile_id: int, limit: int = 5) 
     page = get_customer_orders(customer_profile=profile, page=1, page_size=limit)
     return page["results"]
 
+def get_order_for_customer(
+    *,
+    order_id: int,
+    customer_profile: Optional[CustomerProfile] = None,
+) -> Optional[Order]:
+    """
+    Return a single order scoped to its owning customer (or None).
+
+    Used by the post-checkout success page. Query guarantee: 1 SELECT with
+    select_related(currency).
+    """
+    queryset = Order.objects.select_related("currency")
+    if customer_profile is not None:
+        queryset = queryset.filter(customer_profile=customer_profile)
+    return queryset.filter(pk=order_id).first()
 
 def get_order_tracking_view(
     *,

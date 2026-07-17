@@ -7,6 +7,7 @@ import json
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
+from cart.selectors import get_cart_for_request, is_product_in_cart
 
 from catalog.selectors import (
     get_category_by_slug,
@@ -125,6 +126,8 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
         )
 
     price_data = get_variant_price(product_id=product.pk)
+    cart = get_cart_for_request(request=request)
+    in_cart = is_product_in_cart(cart=cart, product_id=product.pk)
     reviews = getattr(product, "approved_reviews", [])
     review_count = len(reviews)
     average_rating = None
@@ -143,6 +146,7 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
             "price_data": price_data,
             "delivery_estimate": delivery_estimate,
             "cities": get_active_cities(),
+            "in_cart": in_cart,
             "product_json_ld": json.dumps(
                 build_product_json_ld(
                     product=product,

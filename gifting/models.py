@@ -259,6 +259,88 @@ class GiftAddonEligibility(TimeStampedModel):
     def __str__(self) -> str:
         return f"Add-on {self.addon_product_id} for {self.content_type_id}:{self.object_id}"
 
+class GiftCardEligibility(TimeStampedModel):
+    """Curated greeting-card subset for a product. Falls back to occasion-match when empty."""
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
+        related_name="gift_card_eligibilities", verbose_name="Content type")
+    object_id = models.PositiveBigIntegerField(verbose_name="Object ID")
+    target = GenericForeignKey("content_type", "object_id")
+    greeting_card = models.ForeignKey(GreetingCardDesign, on_delete=models.CASCADE,
+        related_name="gift_card_eligibilities", verbose_name="Greeting card")
+
+    class Meta:
+        verbose_name = "Gift card eligibility"
+        verbose_name_plural = "Gift card eligibilities"
+        constraints = [models.UniqueConstraint(
+            fields=["content_type", "object_id", "greeting_card"],
+            name="gifting_card_eligibility_unique")]
+        indexes = [models.Index(fields=["content_type", "object_id"], name="gifting_card_elig_ct_obj_idx")]
+
+    def __str__(self) -> str:
+        return f"Card {self.greeting_card_id} for {self.content_type_id}:{self.object_id}"
+
+
+class GiftWrapEligibility(TimeStampedModel):
+    """Curated gift-wrap subset for a product. Falls back to all active wraps when empty."""
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
+        related_name="gift_wrap_eligibilities", verbose_name="Content type")
+    object_id = models.PositiveBigIntegerField(verbose_name="Object ID")
+    target = GenericForeignKey("content_type", "object_id")
+    gift_wrap = models.ForeignKey(GiftWrapOption, on_delete=models.CASCADE,
+        related_name="gift_wrap_eligibilities", verbose_name="Gift wrap option")
+
+    class Meta:
+        verbose_name = "Gift wrap eligibility"
+        verbose_name_plural = "Gift wrap eligibilities"
+        constraints = [models.UniqueConstraint(
+            fields=["content_type", "object_id", "gift_wrap"],
+            name="gifting_wrap_eligibility_unique")]
+        indexes = [models.Index(fields=["content_type", "object_id"], name="gifting_wrap_elig_ct_obj_idx")]
+
+    def __str__(self) -> str:
+        return f"Wrap {self.gift_wrap_id} for {self.content_type_id}:{self.object_id}"
+
+
+class RibbonEligibility(TimeStampedModel):
+    """Curated ribbon subset for a product. Falls back to all active ribbons when empty."""
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
+        related_name="ribbon_eligibilities", verbose_name="Content type")
+    object_id = models.PositiveBigIntegerField(verbose_name="Object ID")
+    target = GenericForeignKey("content_type", "object_id")
+    ribbon = models.ForeignKey(RibbonOption, on_delete=models.CASCADE,
+        related_name="ribbon_eligibilities", verbose_name="Ribbon option")
+
+    class Meta:
+        verbose_name = "Ribbon eligibility"
+        verbose_name_plural = "Ribbon eligibilities"
+        constraints = [models.UniqueConstraint(
+            fields=["content_type", "object_id", "ribbon"],
+            name="gifting_ribbon_eligibility_unique")]
+        indexes = [models.Index(fields=["content_type", "object_id"], name="gifting_ribbon_elig_ct_obj_idx")]
+
+    def __str__(self) -> str:
+        return f"Ribbon {self.ribbon_id} for {self.content_type_id}:{self.object_id}"
+
+
+class GiftPhotoUploadEligibility(TimeStampedModel):
+    """Curated photo-upload option subset for a product. Falls back to all active options when empty."""
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE,
+        related_name="gift_photo_eligibilities", verbose_name="Content type")
+    object_id = models.PositiveBigIntegerField(verbose_name="Object ID")
+    target = GenericForeignKey("content_type", "object_id")
+    photo_upload = models.ForeignKey(GiftPhotoUploadOption, on_delete=models.CASCADE,
+        related_name="gift_photo_eligibilities", verbose_name="Photo upload option")
+
+    class Meta:
+        verbose_name = "Photo upload eligibility"
+        verbose_name_plural = "Photo upload eligibilities"
+        constraints = [models.UniqueConstraint(
+            fields=["content_type", "object_id", "photo_upload"],
+            name="gifting_photo_eligibility_unique")]
+        indexes = [models.Index(fields=["content_type", "object_id"], name="gifting_photo_elig_ct_obj_idx")]
+
+    def __str__(self) -> str:
+        return f"Photo option {self.photo_upload_id} for {self.content_type_id}:{self.object_id}"
 
 class GiftLineItemRef(TimeStampedModel):
     """

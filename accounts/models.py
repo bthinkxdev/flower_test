@@ -14,6 +14,7 @@ class OTPPurpose(models.TextChoices):
     LOGIN = "login", "Login"
     SIGNUP = "signup", "Sign Up"
     PASSWORD_RESET = "password_reset", "Password Reset"
+    EMAIL_LOGIN = "email_login", "Email Login"
 
 
 class CorporateApprovalStatus(models.TextChoices):
@@ -112,6 +113,8 @@ class Address(TimeStampedModel):
         verbose_name="Customer profile",
         help_text="Owner of this address.",
     )
+    contact_name = models.CharField(max_length=120, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
     label = models.CharField(
         max_length=50,
         verbose_name="Label",
@@ -277,9 +280,17 @@ class OTPRequest(TimeStampedModel):
 
     phone = models.CharField(
         max_length=20,
+        blank=True,
         db_index=True,
         verbose_name="Phone number",
         help_text="Phone number the OTP was sent to.",
+    )
+    email = models.CharField(
+        max_length=254,
+        blank=True,
+        db_index=True,
+        verbose_name="Email address",
+        help_text="Email the OTP was sent to (email-based purposes only).",
     )
     otp_hash = models.CharField(
         max_length=128,
@@ -317,6 +328,10 @@ class OTPRequest(TimeStampedModel):
             models.Index(
                 fields=["phone", "purpose", "is_used"],
                 name="accounts_otp_phone_purpose_idx",
+            ),
+            models.Index(
+                fields=["email", "purpose", "is_used"], 
+                name="accounts_otp_email_purpose_idx"
             ),
         ]
 

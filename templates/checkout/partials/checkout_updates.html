@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<div id="order-summary-wrapper" hx-swap-oob="true">
+  {% for line in summary.lines %}
+  <div class="d-flex justify-content-between small py-2 border-bottom">
+    <span class="text-truncate me-2">{{ line.product.name }} × {{ line.quantity }}</span>
+    <span class="flex-shrink-0">{{ line.line_subtotal }} QAR</span>
+  </div>
+  {% endfor %}
+  <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
+    <span>{% trans "Subtotal" %}</span>
+    <span>{{ summary.subtotal }} QAR</span>
+  </div>
+  {% if summary.coupon_discount > 0 %}
+  <div class="d-flex justify-content-between small py-2 border-bottom text-success">
+    <span>{% trans "Coupon Discount" %}</span>
+    <span>-{{ summary.coupon_discount }} QAR</span>
+  </div>
+  {% endif %}
+  <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
+    <span>{% trans "Delivery Charge" %}</span>
+    <span>{{ summary.delivery_charge }} QAR</span>
+  </div>
+  <div class="d-flex justify-content-between fw-semibold mt-3 pt-2 border-top">
+    <span>{% trans "Total" %}</span>
+    <span class="text-floward">{{ summary.grand_total }} QAR</span>
+  </div>
+</div>
+
+<div id="delivery-slots-wrapper" hx-swap-oob="true">
+  <label class="form-label small">{% trans "Time slot" %}</label>
+  <select name="delivery_slot_id" class="form-select">
+    <option value="">{% trans "Select slot" %}</option>
+    {% for slot in delivery_slots %}
+    <option value="{{ slot.pk }}" {% if checkout_session.delivery_slot_id == slot.pk %}selected{% endif %}>{{ slot.name }}</option>
+    {% endfor %}
+  </select>
+</div>

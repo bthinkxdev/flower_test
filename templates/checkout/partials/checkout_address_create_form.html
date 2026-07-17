@@ -1,0 +1,10 @@
+{% load i18n %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+{% include "checkout/partials/address_form_fields.html" %}
+<button type="button" class="btn btn-sm btn-floward mt-2" 
+        hx-post="{% url 'checkout:add-address' %}" 
+        hx-target="#address-list-container" 
+        hx-include="#add-address-container input, #add-address-container select"
+        hx-on::after-request="if(event.detail.successful){ bootstrap.Collapse.getOrCreateInstance(document.getElementById('addAddressCollapse')).hide(); }">
+  {% trans "Save Address" %}
+</button>

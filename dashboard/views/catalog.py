@@ -19,8 +19,10 @@ from dashboard.views.base import (
     DashboardUpdateView,
 )
 from django.contrib.contenttypes.models import ContentType
-from gifting.models import GiftCustomizationConfig
-
+from gifting.models import (
+    GiftCustomizationConfig, GiftCardEligibility, GiftWrapEligibility,
+    RibbonEligibility, GiftPhotoUploadEligibility,
+) 
 class ProductListView(DashboardListView):
     model = Product
     template_name = "dashboard/catalog/product_list.html"
@@ -78,6 +80,21 @@ def _get_or_build_gift_config(product):
         config = GiftCustomizationConfig(content_type=content_type, object_id=None)
     return config
 
+_ELIGIBILITY_SPECS = [
+    ("addons", "GiftAddonEligibilityFormSet"),
+    ("cards", "GiftCardEligibilityFormSet"),
+    ("wraps", "GiftWrapEligibilityFormSet"),
+    ("ribbons", "GiftRibbonEligibilityFormSet"),
+    ("photos", "GiftPhotoEligibilityFormSet"),
+]
+
+
+def _build_eligibility_formsets(product, *, data=None):
+    formsets = {}
+    for prefix, formset_name in _ELIGIBILITY_SPECS:
+        formset_cls = getattr(forms, formset_name)
+        formsets[prefix] = formset_cls(data, instance=product, prefix=prefix)
+    return formsets
 
 def _render_product_form(request, product, mode):
     gift_config = _get_or_build_gift_config(product)
@@ -91,9 +108,8 @@ def _render_product_form(request, product, mode):
         gift_config_form = forms.GiftCustomizationConfigForm(
             request.POST, instance=gift_config, prefix="giftconfig"
         )
-        addon_eligibility = forms.GiftAddonEligibilityFormSet(
-            request.POST, instance=product, prefix="addons"
-        ) if product is not None else None
+        eligibility = _build_eligibility_formsets(product, data=request.POST)
+        addon_eligibility = eligibility["addons"]  
 
         valid = form.is_valid() and variants.is_valid() and images.is_valid()
         wants_gift = form.data.get("supports_gift_customization") or (
@@ -102,8 +118,9 @@ def _render_product_form(request, product, mode):
         )
         if wants_gift:
             valid = valid and gift_config_form.is_valid()
-            if addon_eligibility is not None:
-                valid = valid and addon_eligibility.is_valid()
+            for fs in eligibility.values():
+                if fs is not None:
+                    valid = valid and fs.is_valid()
 
         if valid:
             product = form.save()
@@ -118,17 +135,18 @@ def _render_product_form(request, product, mode):
                 )
                 gift_config_form.instance.object_id = product.pk
                 gift_config_form.save()
-                if addon_eligibility is None:
-                    # First save of a brand-new product — rebuild the formset now
-                    # that we finally have a product.pk to attach add-ons to.
-                    addon_eligibility = forms.GiftAddonEligibilityFormSet(
-                        request.POST, instance=product, prefix="addons"
-                    )
-                    if addon_eligibility.is_valid():
-                        addon_eligibility.save()
-                else:
-                    addon_eligibility.instance = product
-                    addon_eligibility.save()
+
+                for prefix, formset_name in _ELIGIBILITY_SPECS:
+                    fs = eligibility[prefix]
+                    if fs is None:
+                        fs = getattr(forms, formset_name)(
+                            request.POST, instance=product, prefix=prefix
+                        )
+                        if fs.is_valid():
+                            fs.save()
+                    else:
+                        fs.instance = product
+                        fs.save()
             else:
                 # Customization turned off — remove the config so the builder
                 # route 404s cleanly instead of leaving an orphaned config row.
@@ -146,18 +164,16 @@ def _render_product_form(request, product, mode):
         gift_config_form = forms.GiftCustomizationConfigForm(
             instance=gift_config, prefix="giftconfig"
         )
-        addon_eligibility = (
-            forms.GiftAddonEligibilityFormSet(instance=product, prefix="addons")
-            if product is not None
-            else None
-        )
+        eligibility = _build_eligibility_formsets(product)
+        addon_eligibility = eligibility["addons"]
 
     for f in [form, *variants.forms, variants.empty_form, *images.forms, images.empty_form,
               gift_config_form]:
         _style(f)
-    if addon_eligibility is not None:
-        for f in [*addon_eligibility.forms, addon_eligibility.empty_form]:
-            _style(f)
+    for fs in eligibility.values():
+        if fs is not None:
+            for f in [*fs.forms, fs.empty_form]:
+                _style(f)
 
     context = {
         "nav_section": "products",
@@ -171,6 +187,12 @@ def _render_product_form(request, product, mode):
         "product": product,
         "cancel_url": reverse("dashboard:product-list"),
     }
+    context.update({
+        "card_eligibility": eligibility["cards"],
+        "wrap_eligibility": eligibility["wraps"],
+        "ribbon_eligibility": eligibility["ribbons"],
+        "photo_eligibility": eligibility["photos"],
+    })
     return render(request, "dashboard/catalog/product_form.html", context)
 
 

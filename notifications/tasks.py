@@ -6,6 +6,9 @@ from celery import shared_task
 
 from notifications.services import create_notification, send_email, send_sms, send_whatsapp
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 @shared_task(name="notifications.tasks.dispatch_sms")
 def dispatch_sms(*, phone: str, message: str) -> None:
@@ -81,3 +84,11 @@ def dispatch_gift_reminder_notification(*, reminder_id: int) -> None:
             send_sms(phone=profile.phone, message=body)
         if profile.notify_via_whatsapp:
             send_whatsapp(phone=profile.phone, message=body)
+
+
+@shared_task(name="notifications.tasks.dispatch_email")
+def dispatch_email(*, email: str, subject: str, message: str) -> None:
+    try:
+        send_email(email=email, subject=subject, message=message)
+    except Exception:
+        logger.exception("Failed to send email to %s", email)

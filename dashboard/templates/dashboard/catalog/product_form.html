@@ -158,6 +158,148 @@
           </template>
         </div>
       </div>
+      {% if wrap_eligibility %}
+      <div class="card mb-3" data-formset="wraps">
+        <div class="card-header panel-header">
+          <div><h3 class="panel-title">Eligible Gift Wrap</h3><p class="panel-sub">Wrap options offered in this product's gift builder. Leave empty to auto-show all active wraps.</p></div>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-formset-add><i class="ti ti-plus me-1"></i>Add wrap</button>
+        </div>
+        <div class="card-body p-0">
+          {{ wrap_eligibility.management_form }}
+          <table class="table repeater align-middle mb-0">
+            <tbody data-formset-body>
+              {% for f in wrap_eligibility %}
+              <tr>
+                {{ f.id }}
+                <td>{{ f.gift_wrap }}</td>
+                <td class="text-center">
+                  {% if f.instance.pk %}
+                  <label class="form-check d-inline-flex m-0" title="Delete on save">{{ f.DELETE }}</label>
+                  {% else %}
+                  <button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <template data-formset-empty>
+            <tr>
+              {{ wrap_eligibility.empty_form.id }}
+              <td>{{ wrap_eligibility.empty_form.gift_wrap }}</td>
+              <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </template>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if ribbon_eligibility %}
+      <div class="card mb-3" data-formset="ribbons">
+        <div class="card-header panel-header">
+          <div><h3 class="panel-title">Eligible Ribbons</h3><p class="panel-sub">Ribbon options offered in this product's gift builder. Leave empty to auto-show all active ribbons.</p></div>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-formset-add><i class="ti ti-plus me-1"></i>Add ribbon</button>
+        </div>
+        <div class="card-body p-0">
+          {{ ribbon_eligibility.management_form }}
+          <table class="table repeater align-middle mb-0">
+            <tbody data-formset-body>
+              {% for f in ribbon_eligibility %}
+              <tr>
+                {{ f.id }}
+                <td>{{ f.ribbon }}</td>
+                <td class="text-center">
+                  {% if f.instance.pk %}
+                  <label class="form-check d-inline-flex m-0" title="Delete on save">{{ f.DELETE }}</label>
+                  {% else %}
+                  <button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <template data-formset-empty>
+            <tr>
+              {{ ribbon_eligibility.empty_form.id }}
+              <td>{{ ribbon_eligibility.empty_form.ribbon }}</td>
+              <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </template>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if photo_eligibility %}
+      <div class="card mb-3" data-formset="photos">
+        <div class="card-header panel-header">
+          <div><h3 class="panel-title">Eligible Photo Options</h3><p class="panel-sub">Photo upload options offered in this product's gift builder. Leave empty to auto-show all active photo options.</p></div>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-formset-add><i class="ti ti-plus me-1"></i>Add photo option</button>
+        </div>
+        <div class="card-body p-0">
+          {{ photo_eligibility.management_form }}
+          <table class="table repeater align-middle mb-0">
+            <tbody data-formset-body>
+              {% for f in photo_eligibility %}
+              <tr>
+                {{ f.id }}
+                <td>{{ f.photo_upload }}</td>
+                <td class="text-center">
+                  {% if f.instance.pk %}
+                  <label class="form-check d-inline-flex m-0" title="Delete on save">{{ f.DELETE }}</label>
+                  {% else %}
+                  <button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <template data-formset-empty>
+            <tr>
+              {{ photo_eligibility.empty_form.id }}
+              <td>{{ photo_eligibility.empty_form.photo_upload }}</td>
+              <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </template>
+        </div>
+      </div>
+      {% endif %}
+      {% if card_eligibility %}
+      <div class="card mb-3" data-formset="cards">
+        <div class="card-header panel-header">
+          <div><h3 class="panel-title">Eligible Greeting Cards</h3><p class="panel-sub">Card designs offered in this product's gift builder. Leave empty to auto-show all cards for this product's occasion.</p></div>
+          <button type="button" class="btn btn-sm btn-outline-primary" data-formset-add><i class="ti ti-plus me-1"></i>Add card</button>
+        </div>
+        <div class="card-body p-0">
+          {{ card_eligibility.management_form }}
+          <table class="table repeater align-middle mb-0">
+            <tbody data-formset-body>
+              {% for f in card_eligibility %}
+              <tr>
+                {{ f.id }}
+                <td>{{ f.greeting_card }}</td>
+                <td class="text-center">
+                  {% if f.instance.pk %}
+                  <label class="form-check d-inline-flex m-0" title="Delete on save">{{ f.DELETE }}</label>
+                  {% else %}
+                  <button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <template data-formset-empty>
+            <tr>
+              {{ card_eligibility.empty_form.id }}
+              <td>{{ card_eligibility.empty_form.greeting_card }}</td>
+              <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
+            </tr>
+          </template>
+        </div>
+      </div>
+      {% endif %}
       {% endif %}
       
       <div class="card mb-3">

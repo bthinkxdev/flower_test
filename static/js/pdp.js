@@ -7,8 +7,22 @@
       fetch(url + (vid ? '?variant_id=' + vid : ''))
         .then(function (r) { return r.json(); })
         .then(function (data) {
-          var el = document.getElementById('pdp-price');
-          if (el) el.textContent = data.price + ' QAR';
+          var priceEl = document.getElementById('pdp-price');
+          if (priceEl) priceEl.textContent = data.price + ' QAR';
+          var stickyPriceEl = document.getElementById('pdp-sticky-price');
+          if (stickyPriceEl) stickyPriceEl.textContent = data.price + ' QAR';
+
+          var inStock = data.is_in_stock === 'true' || data.is_in_stock === true;
+          document.querySelectorAll('.pdp-add-to-cart-btn').forEach(function (btn) {
+            btn.disabled = !inStock || btn.classList.contains('is-in-cart') === false ? !inStock : btn.disabled;
+            btn.disabled = !inStock;
+          });
+          var stockText = document.getElementById('pdp-stock-text');
+          if (stockText) {
+            stockText.textContent = inStock ? 'In stock — order now' : 'Out of stock';
+            stockText.classList.toggle('text-success', inStock);
+            stockText.classList.toggle('text-danger', !inStock);
+          }
         });
     });
   }
@@ -25,4 +39,37 @@
         });
     });
   }
+
+  function openCartDrawer() {
+    var offcanvasEl = document.getElementById('cartOffcanvas');
+    if (offcanvasEl && window.bootstrap) {
+      window.bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl).show();
+    }
+  }
+
+  document.querySelectorAll('.pdp-add-to-cart-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (evt) {
+      if (btn.classList.contains('is-in-cart')) {
+        evt.preventDefault();
+        openCartDrawer();
+      }
+    });
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (event) {
+    var elt = event.detail.elt;
+    if (!elt || !elt.classList || !elt.classList.contains('pdp-add-to-cart-form')) return;
+    if (!event.detail.successful) return;
+
+    var btn = elt.querySelector('.pdp-add-to-cart-btn');
+    if (!btn) return;
+
+    btn.classList.add('is-added');
+    window.setTimeout(function () {
+      btn.classList.remove('is-added');
+      btn.classList.add('is-in-cart');
+      var label = btn.querySelector('.btn-label');
+      if (label) label.textContent = btn.dataset.addedLabel || 'View Cart';
+    }, 900);
+  });
 })();

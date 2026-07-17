@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 from payments.adapters.concrete import (
     ApplePayAdapter,
     CardGatewayAdapter,
+    CashOnDeliveryAdapter,
     GiftVoucherAdapter,
     GooglePayAdapter,
     QatarLocalGatewayAdapter,
@@ -21,6 +22,7 @@ PAYMENT_GATEWAYS: dict[str, PaymentGatewayAdapter] = {
     ApplePayAdapter.key: ApplePayAdapter(),
     GooglePayAdapter.key: GooglePayAdapter(),
     GiftVoucherAdapter.key: GiftVoucherAdapter(),
+    CashOnDeliveryAdapter.key: CashOnDeliveryAdapter(),
 }
 
 

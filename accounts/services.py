@@ -114,6 +114,97 @@ def _get_active_otp(*, phone: str, purpose: str) -> Optional[OTPRequest]:
         .first()
     )
 
+def _normalize_email(email: str) -> str:
+    return email.strip().lower()
+
+
+def _get_active_email_otp(*, email: str) -> Optional[OTPRequest]:
+    return (
+        OTPRequest.objects.filter(email=_normalize_email(email), purpose=OTPPurpose.EMAIL_LOGIN, is_used=False)
+        .order_by("-created_at")
+        .first()
+    )
+
+
+@transaction.atomic
+def request_email_otp(*, email: str) -> OTPRequest:
+    """
+    Create a hashed OTP request and dispatch an async email via Celery.
+    Rate-limited to 3 requests per email per 10 minutes via Redis.
+    """
+    from accounts.tasks import send_otp_email
+
+    normalized_email = _normalize_email(email)
+    _check_otp_rate_limit(phone=normalized_email)      
+    _increment_otp_rate_limit(phone=normalized_email)
+
+    otp_code = _generate_otp_code()
+    expires_at = timezone.now() + timedelta(seconds=settings.ACCOUNTS_OTP_EXPIRY_SECONDS)
+
+    otp_request = OTPRequest.objects.create(
+        email=normalized_email,
+        otp_hash=make_password(otp_code),
+        purpose=OTPPurpose.EMAIL_LOGIN,
+        expires_at=expires_at,
+    )
+    send_otp_email.delay(email=normalized_email, otp_code=otp_code)
+    return otp_request
+
+
+def verify_email_otp(*, email: str, otp_code: str) -> OTPRequest:
+    """Validate an email OTP and mark it used on success. Mirrors verify_otp()."""
+    normalized_email = _normalize_email(email)
+    otp_request = (
+        OTPRequest.objects.filter(email=normalized_email, purpose=OTPPurpose.EMAIL_LOGIN)
+        .order_by("-created_at")
+        .first()
+    )
+    if otp_request is None:
+        raise OTPMismatchError("No active OTP found for this email.")
+    if otp_request.is_used:
+        raise OTPAlreadyUsedError("This OTP has already been used.")
+    if timezone.now() > otp_request.expires_at:
+        raise OTPExpiredError("This OTP has expired.")
+
+    max_attempts = settings.ACCOUNTS_OTP_MAX_ATTEMPTS
+    if otp_request.attempt_count >= max_attempts:
+        raise OTPMaxAttemptsError(f"Maximum {max_attempts} verification attempts exceeded.")
+
+    if not check_password(otp_code, otp_request.otp_hash):
+        OTPRequest.objects.filter(pk=otp_request.pk).update(attempt_count=otp_request.attempt_count + 1)
+        otp_request.refresh_from_db()
+        if otp_request.attempt_count >= max_attempts:
+            raise OTPMaxAttemptsError(f"Maximum {max_attempts} verification attempts exceeded.")
+        raise OTPMismatchError("The OTP code is incorrect.")
+
+    otp_request.is_used = True
+    otp_request.save(update_fields=["is_used", "updated_at"])
+    return otp_request
+
+
+@transaction.atomic
+def login_or_create_customer_by_email(*, email: str) -> CustomerProfile:
+    """
+    Find or create a customer profile after successful email OTP verification.
+    This IS the registration step — no separate signup form.
+    """
+    normalized_email = _normalize_email(email)
+    profile = (
+        CustomerProfile.objects.filter(user__email__iexact=normalized_email)
+        .select_related("user")
+        .first()
+    )
+    if profile is not None:
+        return profile
+
+    currency = get_default_currency()
+    if currency is None:
+        raise ValueError("No default currency configured.")
+
+    user = UserModel(username=normalized_email, email=normalized_email)
+    user.set_unusable_password()
+    user.save()
+    return CustomerProfile.objects.create(user=user, preferred_currency=currency)
 
 @transaction.atomic
 def request_otp(*, phone: str, purpose: str) -> OTPRequest:
@@ -411,6 +502,8 @@ def create_address(
     line1: str,
     line2: str,
     city_id: int,
+    contact_name: str = "",
+    phone: str = "",
     is_default: bool = False,
 ) -> Address:
     """
@@ -428,6 +521,8 @@ def create_address(
     """
     address = Address.objects.create(
         customer_profile=customer_profile,
+        contact_name=contact_name, 
+        phone=phone,
         label=label,
         line1=line1,
         line2=line2,

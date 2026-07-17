@@ -156,8 +156,7 @@
             <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">{% trans "My Account" %}</a></li>
             <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">{% trans "Logout" %}</a></li>
             {% else %}
-            <li><a class="dropdown-item" href="{% url 'accounts:login-email' %}">{% trans "Login" %}</a></li>
-            <li><a class="dropdown-item" href="{% url 'accounts:register' %}">{% trans "Register" %}</a></li>
+            <li><a class="dropdown-item" href="{% url 'accounts:login' %}">{% trans "Login" %}</a></li>
             {% endif %}
           </ul>
         </div>

@@ -10,6 +10,8 @@ from notifications.models import Notification
 
 logger = logging.getLogger(__name__)
 
+from django.conf import settings
+from django.core.mail import send_mail
 
 def send_sms(*, phone: str, message: str) -> None:
     """Dispatch an SMS — provider-agnostic stub that logs the payload."""
@@ -17,8 +19,14 @@ def send_sms(*, phone: str, message: str) -> None:
 
 
 def send_email(*, email: str, subject: str, message: str) -> None:
-    """Dispatch an email — provider-agnostic stub that logs the payload."""
-    logger.info("Email to %s [%s]: %s", email, subject, message)
+    """Dispatch a real email via Django's configured SMTP backend."""
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[email],
+        fail_silently=False,
+    )
 
 
 def send_whatsapp(*, phone: str, message: str) -> None:

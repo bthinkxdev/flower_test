@@ -23,7 +23,7 @@ from cart.services import (
 )
 from catalog.selectors import get_product_for_cart_add
 from marketing.exceptions import InvalidCouponError
-
+from cart.exceptions import OutOfStockError
 
 def _cart_drawer_response(request: HttpRequest, *, hx_triggers: dict | None = None) -> HttpResponse:
     """Render cart drawer partial; optionally attach HTMX trigger headers."""
@@ -110,13 +110,21 @@ def cart_add_view(request: HttpRequest) -> HttpResponse:
         gift_selections = json.loads(raw)
 
     cart = get_or_create_cart(request=request)
-    add_to_cart(
-        cart=cart,
-        product=product,
-        variant=variant,
-        quantity=quantity,
-        gift_selections=gift_selections,
-    )
+    try:
+        add_to_cart(
+            cart=cart,
+            product=product,
+            variant=variant,
+            quantity=quantity,
+            gift_selections=gift_selections,
+        )
+    except OutOfStockError as exc:
+        summary = get_cart_summary(cart=cart)
+        return render(
+            request,
+            "cart/partials/drawer.html",
+            {"summary": summary, "cart_count": summary.item_count, "stock_error": str(exc)},
+        )
     return _cart_drawer_response(
         request,
         hx_triggers={"cartItemAdded": None},

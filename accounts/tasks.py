@@ -6,6 +6,7 @@ from celery import shared_task
 
 from accounts.services import notify_admins_corporate_pending
 from accounts.subscription_services import send_due_gift_reminders
+from notifications.tasks import dispatch_email
 
 
 @shared_task(name="accounts.tasks.send_otp_sms")
@@ -26,3 +27,11 @@ def notify_corporate_registration(*, corporate_account_id: int) -> None:
 def send_due_gift_reminders_task() -> int:
     """Daily beat task for gift calendar reminders."""
     return send_due_gift_reminders()
+
+@shared_task(name="accounts.tasks.send_otp_email")
+def send_otp_email(*, email: str, otp_code: str) -> None:
+    dispatch_email.delay(
+        email=email,
+        subject="Your Floward verification code",
+        message=f"Your Floward login code is: {otp_code}. It expires shortly — do not share it.",
+    )

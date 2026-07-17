@@ -5,7 +5,8 @@ from __future__ import annotations
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from recurring.models import RecurrenceFrequency 
-from accounts.models import Address
+from accounts.models import Address, GiftOccasionType
+from recurring.models import RecurrenceFrequency
 
 
 class EmailLoginForm(AuthenticationForm):
@@ -98,7 +99,7 @@ class AddressForm(forms.ModelForm):
 
     class Meta:
         model = Address
-        fields = ("label", "line1", "line2", "city", "is_default")
+        fields = ("label", "contact_name", "phone", "line1", "line2", "city", "is_default")
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -110,28 +111,79 @@ class AddressForm(forms.ModelForm):
 class CorporateRegistrationForm(forms.Form):
     """B2B corporate account registration form."""
 
-    email = forms.EmailField(label="Work email")
-    password = forms.CharField(widget=forms.PasswordInput, min_length=8, label="Password")
-    name = forms.CharField(max_length=150, label="Contact name")
-    company_name = forms.CharField(max_length=200, label="Company name")
-    trade_license_number = forms.CharField(max_length=100, label="Trade license number")
+    email = forms.EmailField(
+        label="Work email",
+        widget=forms.EmailInput(attrs={"class": "form-control"}),
+    )
+    password = forms.CharField(
+        min_length=8,
+        label="Password",
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+    )
+    name = forms.CharField(
+        max_length=150,
+        label="Contact name",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    company_name = forms.CharField(
+        max_length=200,
+        label="Company name",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    trade_license_number = forms.CharField(
+        max_length=100,
+        label="Trade license number",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+
+class EmailOTPRequestForm(forms.Form):
+    """Request an OTP for email-based customer login."""
+    email = forms.EmailField(label="Email")
+
+
+class EmailOTPVerifyForm(forms.Form):
+    """Verify an email OTP code."""
+    email = forms.EmailField(widget=forms.HiddenInput())
+    otp_code = forms.CharField(max_length=6, min_length=6, label="OTP code")
 
 class SubscriptionCreateForm(forms.Form):
-    product_id = forms.IntegerField(widget=forms.HiddenInput)
-    delivery_address_id = forms.ModelChoiceField(
-        queryset=Address.objects.none(),
-        label="Delivery address",
-    )
-    frequency = forms.ChoiceField(choices=RecurrenceFrequency.choices, label="Frequency")
-    next_run_date = forms.DateField(
-        label="First delivery date",
-        widget=forms.DateInput(attrs={"type": "date"}),
-    )
-    quantity = forms.IntegerField(min_value=1, initial=1, label="Quantity")
+    """Create a recurring subscription. Product + address are scoped to the requesting customer."""
 
-    def __init__(self, *args, customer_profile=None, **kwargs):
+    product_id = forms.ModelChoiceField(queryset=None, widget=forms.HiddenInput())
+    delivery_address_id = forms.ModelChoiceField(
+        queryset=None,
+        label="Delivery address",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    frequency = forms.ChoiceField(
+        choices=RecurrenceFrequency.choices,
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    next_run_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"})
+    )
+    quantity = forms.IntegerField(
+        min_value=1,
+        initial=1,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
+    def __init__(self, *args, customer_profile=None, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        if customer_profile is not None:
-            self.fields["delivery_address_id"].queryset = Address.objects.filter(
-                customer_profile=customer_profile
-            )
+        from catalog.models import Product
+
+        self.fields["product_id"].queryset = Product.objects.filter(is_active=True)
+        self.fields["delivery_address_id"].queryset = (
+            Address.objects.filter(customer_profile=customer_profile)
+            if customer_profile is not None
+            else Address.objects.none()
+        )
+
+class GiftReminderForm(forms.Form):
+    """Add an occasion to the personal gift calendar."""
+
+    occasion_type = forms.ChoiceField(choices=GiftOccasionType.choices)
+    reminder_date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+    recipient_name = forms.CharField(max_length=120)
+    notes = forms.CharField(widget=forms.Textarea, required=False)
+    notify_days_before = forms.IntegerField(min_value=0, initial=7)

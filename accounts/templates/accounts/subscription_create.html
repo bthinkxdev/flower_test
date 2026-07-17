@@ -8,13 +8,47 @@
   <div class="row justify-content-center">
     <div class="col-md-6">
       <div class="card p-4">
-        <h1 class="section-title h4 mb-3">{% trans "Set Up a Subscription" %}</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h1 class="section-title h4 mb-0">{% trans "Set Up a Subscription" %}</h1>
+          <a href="{% url 'accounts:subscription-list' %}" class="btn btn-outline-floward btn-sm">
+            {% trans "View My Subscriptions" %}
+          </a>
+        </div>
         {% if errors %}
         <div class="alert alert-danger py-2" role="alert">{{ errors }}</div>
         {% endif %}
         <form method="post">
           {% csrf_token %}
-          {{ form.product_id }}
+          <div class="mb-3">
+            <label class="form-label small">{% trans "Product" %}</label>
+            {{ form.product_id }}
+            <div class="sub-product-picker">
+              <button type="button" class="form-select text-start" id="sub-product-trigger">
+                <span id="sub-product-selected" class="d-flex align-items-center gap-2 text-muted">
+                  {% trans "Choose a product" %}
+                </span>
+              </button>
+              <div class="sub-product-panel" id="sub-product-panel">
+                <input type="text" class="form-control form-control-sm m-2 w-auto" id="sub-product-search" placeholder="{% trans 'Search products...' %}">
+                <div class="sub-product-list" id="sub-product-list">
+                  {% for p in products %}
+                  <button type="button"
+                          class="sub-product-option"
+                          data-id="{{ p.id }}"
+                          data-name="{{ p.name }}">
+                    {% if p.thumbnail %}
+                    <img src="{{ p.thumbnail }}" alt="" class="sub-product-thumb">
+                    {% else %}
+                    <span class="sub-product-thumb sub-product-thumb--empty"></span>
+                    {% endif %}
+                    <span>{{ p.name }}</span>
+                  </button>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            {% if form.product_id.errors %}<div class="text-danger small">{{ form.product_id.errors }}</div>{% endif %}
+          </div>
           <div class="mb-3">
             <label class="form-label" for="id_delivery_address_id">{% trans "Delivery address" %}</label>
             {{ form.delivery_address_id }}

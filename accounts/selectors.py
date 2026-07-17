@@ -197,6 +197,7 @@ def get_wishlist(
     *,
     customer_profile: Optional[CustomerProfile] = None,
     share_token: Optional[str] = None,
+    wishlist: Optional[Wishlist] = None,
 ) -> Optional[WishlistView]:
     from django.core import signing
 
@@ -213,6 +214,16 @@ def get_wishlist(
             ),
         ),
     )
+
+    if wishlist is not None:
+        resolved = (
+            Wishlist.objects.filter(pk=wishlist.pk)
+            .prefetch_related(items_prefetch)
+            .first()
+        )
+        if resolved is None:
+            return None
+        return WishlistView(wishlist=resolved, items=list(resolved.items.all()), readonly=False)
 
     if share_token:
         try:
@@ -248,33 +259,22 @@ class SubscriptionListItem:
     subscription: Subscription
 
 
-def get_customer_subscriptions(
-    *,
-    customer_profile: CustomerProfile,
-    status: Optional[str] = None,
-) -> list[Subscription]:
-    """
-    Return a customer's subscriptions, optionally filtered by status.
-
-    Query guarantee: 1 SELECT with select_related on product and recurring_schedule.
-    """
-    queryset = Subscription.objects.select_related(
-        "product", "recurring_schedule", "delivery_address"
-    ).filter(customer_profile=customer_profile)
-    if status:
-        queryset = queryset.filter(status=status)
-    return list(queryset.order_by("-created_at"))
+def get_customer_subscriptions(*, customer_profile: CustomerProfile) -> list[Subscription]:
+    """Return all subscriptions for a customer, most recent first. Query guarantee: 1 SELECT."""
+    return list(
+        Subscription.objects.filter(customer_profile=customer_profile)
+        .select_related("product", "delivery_address", "delivery_address__city", "recurring_schedule")
+        .order_by("-created_at")
+    )
 
 
 def get_customer_subscription_by_id(
-    *,
-    subscription_id: int,
-    customer_profile: CustomerProfile,
+    *, subscription_id: int, customer_profile: CustomerProfile
 ) -> Optional[Subscription]:
-    """Return a single subscription owned by the customer, or None."""
+    """Return a single subscription scoped to its owner (or None). Query guarantee: 1 SELECT."""
     return (
-        Subscription.objects.select_related("product", "recurring_schedule", "delivery_address")
-        .filter(pk=subscription_id, customer_profile=customer_profile)
+        Subscription.objects.filter(pk=subscription_id, customer_profile=customer_profile)
+        .select_related("product", "delivery_address", "recurring_schedule")
         .first()
     )
 

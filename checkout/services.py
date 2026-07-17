@@ -21,6 +21,25 @@ from marketing.services import record_coupon_redemption
 from orders.models import Order, OrderItem, OrderStatus
 from orders.services import generate_order_number
 from gifting.models import GiftCustomizationSnapshot
+from cart.services import recalculate_delivery_charge
+from django.core import signing
+
+GUEST_ORDER_TOKEN_SALT = "checkout.guest-order-confirmation"
+GUEST_ORDER_TOKEN_MAX_AGE = 60 * 60 * 24  # 24 hours
+
+
+def build_guest_order_token(*, order_id: int) -> str:
+    """Sign a short-lived token proving a guest just placed this specific order."""
+    return signing.dumps({"order_id": order_id}, salt=GUEST_ORDER_TOKEN_SALT)
+
+
+def verify_guest_order_token(*, token: str, order_id: int) -> bool:
+    """Validate a guest order-confirmation token against the requested order_id."""
+    try:
+        data = signing.loads(token, salt=GUEST_ORDER_TOKEN_SALT, max_age=GUEST_ORDER_TOKEN_MAX_AGE)
+    except signing.BadSignature:
+        return False
+    return data.get("order_id") == order_id
 
 
 @transaction.atomic
@@ -56,16 +75,25 @@ def update_checkout_session(
     delivery_date: Optional[date] = None,
     delivery_slot_id: Optional[int] = None,
     invoice_details: Optional[dict[str, Any]] = None,
+    guest_details: Optional[dict[str, Any]] = None,
 ) -> CheckoutSession:
-    """Persist checkout step data on the session."""
+    """Persist checkout step data on the session and recalculate delivery charge."""
     if address is not None:
         checkout_session.address = address
+        # Call the cart recalculate service if the address contains a city
+        if address.city:
+            recalculate_delivery_charge(
+                cart=checkout_session.cart,
+                destination_city=address.city
+            )
     if delivery_date is not None:
         checkout_session.delivery_date = delivery_date
     if delivery_slot_id is not None:
         checkout_session.delivery_slot_id = delivery_slot_id
     if invoice_details is not None:
         checkout_session.invoice_details = invoice_details
+    if guest_details is not None:
+        checkout_session.guest_details = guest_details
     checkout_session.save()
     return checkout_session
 
@@ -75,7 +103,7 @@ def place_order(
     *,
     checkout_session_id: int,
     idempotency_key: str,
-    customer_profile: CustomerProfile,
+    customer_profile: Optional[CustomerProfile] = None,
 ) -> Order:
     """
     Atomically place an order from a checkout session.
@@ -155,6 +183,17 @@ def place_order(
             "line2": addr.line2,
             "city": addr.city.name if addr.city_id else "",
         }
+    elif session.guest_details:
+        gd = session.guest_details
+        address_snapshot = {
+            "label": "Guest",
+            "line1": gd.get("line1", ""),
+            "line2": gd.get("line2", ""),
+            "city": gd.get("city_name", ""),
+            "guest_name": gd.get("full_name", ""),
+            "guest_email": gd.get("email", ""),
+            "guest_phone": gd.get("phone", ""),
+        }
 
     try:
         order = Order.objects.create(
@@ -193,7 +232,7 @@ def place_order(
             is_locked=True
         )
 
-    if session.cart.coupon_code:
+    if session.cart.coupon_code and customer_profile is not None:
         coupon = Coupon.objects.filter(
             code__iexact=session.cart.coupon_code.strip(),
             is_active=True,

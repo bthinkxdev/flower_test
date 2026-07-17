@@ -10,4 +10,5 @@ app_name = "corporate"
 
 urlpatterns = [
     path("dashboard/", views.corporate_dashboard_view, name="dashboard"),
+    path("quote/new/", views.corporate_quote_request_view, name="quote-request"),
 ]

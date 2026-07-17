@@ -1,0 +1,44 @@
+{% load i18n %}
+<div class="mb-2">
+  <label class="form-label small mb-1">{% trans "Label (e.g. Home, Office)" %}</label>
+  <input type="text" name="label" class="form-control form-control-sm" required value="{{ address_form.label.value|default:'' }}">
+  {% if address_form.label.errors %}<div class="text-danger small">{{ address_form.label.errors.0 }}</div>{% endif %}
+</div>
+<div class="mb-2">
+  <label class="form-label small mb-1">{% trans "Contact Name" %}</label>
+  <input type="text" name="contact_name" class="form-control form-control-sm" required value="{{ address_form.contact_name.value|default:'' }}">
+  {% if address_form.contact_name.errors %}<div class="text-danger small">{{ address_form.contact_name.errors.0 }}</div>{% endif %}
+</div>
+<div class="mb-2">
+  <label class="form-label small mb-1">{% trans "Phone" %}</label>
+  <input type="tel" name="phone" class="form-control form-control-sm" required value="{{ address_form.phone.value|default:'' }}">
+  {% if address_form.phone.errors %}<div class="text-danger small">{{ address_form.phone.errors.0 }}</div>{% endif %}
+</div>
+<div class="mb-2">
+  <label class="form-label small mb-1">{% trans "Address Line 1" %}</label>
+  <input type="text" name="line1" class="form-control form-control-sm" required value="{{ address_form.line1.value|default:'' }}">
+  {% if address_form.line1.errors %}<div class="text-danger small">{{ address_form.line1.errors.0 }}</div>{% endif %}
+</div>
+<div class="mb-2">
+  <label class="form-label small mb-1">{% trans "Address Line 2" %}</label>
+  <input type="text" name="line2" class="form-control form-control-sm" value="{{ address_form.line2.value|default:'' }}">
+  {% if address_form.line2.errors %}<div class="text-danger small">{{ address_form.line2.errors.0 }}</div>{% endif %}
+</div>
+<div class="mb-2">
+  <label class="form-label small mb-1">{% trans "City" %}</label>
+  <select name="city" class="form-select form-select-sm" required
+        hx-post="{% url 'checkout:preview-delivery' %}"
+        hx-trigger="change"
+        hx-target="this"
+        hx-swap="none">
+    <option value="">{% trans "Select City" %}</option>
+    {% for city in address_form.fields.city.queryset %}
+      <option value="{{ city.pk }}" {% if address_form.city.value|add:0 == city.pk %}selected{% endif %}>{{ city.name }}</option>
+    {% endfor %}
+  </select>
+  {% if address_form.city.errors %}<div class="text-danger small">{{ address_form.city.errors.0 }}</div>{% endif %}
+</div>
+<div class="form-check mb-2">
+  <input class="form-check-input" type="checkbox" name="is_default" id="id_is_default" {% if address_form.is_default.value %}checked{% endif %}>
+  <label class="form-check-label small" for="id_is_default">{% trans "Set as default address" %}</label>
+</div>

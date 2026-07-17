@@ -18,6 +18,10 @@
         <p class="small mb-1"><strong>{% trans "Phone" %}:</strong> {{ dashboard.profile.phone|default:"—" }}</p>
         <p class="small mb-0"><strong>{% trans "Currency" %}:</strong> {{ dashboard.profile.preferred_currency.code }}</p>
       </div>
+      <div class="card p-3" id="dashboard-address-wrapper">
+        <h2 class="h6 mb-3">{% trans "Saved Addresses" %}</h2>
+        {% include "accounts/partials/address_list_partial.html" %}
+      </div>
     </div>
     <div class="col-md-8">
       <div class="card p-3 mb-4">

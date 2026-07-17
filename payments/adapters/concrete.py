@@ -199,3 +199,41 @@ class GiftVoucherAdapter(PaymentGatewayAdapter):
 
     def refund(self, *, transaction_id: str, amount: Decimal) -> PaymentCaptureResult:
         return PaymentCaptureResult(success=True, transaction_id=f"voucher_refund_{transaction_id}")
+
+class CashOnDeliveryAdapter(PaymentGatewayAdapter):
+    """
+    Cash on Delivery — no upfront capture, no external gateway call.
+
+    Stays PENDING from checkout onward. There's no webhook for COD; the only
+    source of truth that money changed hands is the order being marked
+    DELIVERED. That conversion happens in payments/signals.py, not here.
+    """
+
+    key = "cod"
+    display_name = "Cash on Delivery"
+    is_async = True  # tells process_payment() to skip inline capture
+
+    def create_payment_intent(
+        self,
+        *,
+        amount: Decimal,
+        currency: str,
+        metadata: dict[str, Any],
+    ) -> PaymentIntentResult:
+        intent_id = f"cod_{uuid.uuid4().hex[:16]}"
+        return PaymentIntentResult(
+            intent_id=intent_id,
+            metadata={"amount": str(amount), "currency": currency, **metadata},
+            requires_webhook=False,
+        )
+
+    def verify_webhook(self, *, payload: bytes, signature: str) -> dict[str, Any]:
+        raise NotImplementedError("Cash on Delivery does not use webhooks.")
+
+    def capture(self, *, intent_id: str) -> PaymentCaptureResult:
+        raise NotImplementedError(
+            "Cash on Delivery is never captured directly — it converges on delivery."
+        )
+
+    def refund(self, *, transaction_id: str, amount: Decimal) -> PaymentCaptureResult:
+        return PaymentCaptureResult(success=True, transaction_id=f"cod_refund_{transaction_id}")

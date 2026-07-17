@@ -24,6 +24,10 @@ from gifting.models import (
 from gifting.selectors import (
     get_available_greeting_cards,
     get_eligible_addons,
+    get_eligible_gift_wrap_options,
+    get_eligible_greeting_cards,
+    get_eligible_photo_upload_options,
+    get_eligible_ribbon_options,
     get_gift_customization_config,
 )
 
@@ -191,8 +195,7 @@ def _resolve_selections(
                 "Greeting card is not allowed for this product."
             )
         else:
-            occasion_id = getattr(product_instance, "primary_occasion_id", None)
-            cards = {c.pk: c for c in get_available_greeting_cards(occasion_id=occasion_id)}
+            cards = {c.pk: c for c in get_eligible_greeting_cards(product_instance=product_instance)}
             greeting_card = cards.get(greeting_card_id)
             if greeting_card is None:
                 errors.setdefault("greeting_card_id", []).append("Invalid greeting card.")
@@ -207,7 +210,8 @@ def _resolve_selections(
                 "Gift wrap is not allowed for this product."
             )
         else:
-            gift_wrap = GiftWrapOption.objects.filter(pk=gift_wrap_id, is_active=True).first()
+            eligible_wraps = {w.pk: w for w in get_eligible_gift_wrap_options(product_instance=product_instance)}
+            gift_wrap = eligible_wraps.get(gift_wrap_id)
             if gift_wrap is None:
                 errors.setdefault("gift_wrap_id", []).append("Invalid gift wrap option.")
             else:
@@ -228,7 +232,8 @@ def _resolve_selections(
         if not config.allows_ribbon:
             errors.setdefault("ribbon_id", []).append("Ribbon is not allowed for this product.")
         else:
-            ribbon = RibbonOption.objects.filter(pk=ribbon_id, is_active=True).first()
+            eligible_ribbons = {r.pk: r for r in get_eligible_ribbon_options(product_instance=product_instance)}
+            ribbon = eligible_ribbons.get(ribbon_id)
             if ribbon is None:
                 errors.setdefault("ribbon_id", []).append("Invalid ribbon option.")
             else:
@@ -251,10 +256,8 @@ def _resolve_selections(
                 "Photo upload is not allowed for this product."
             )
         else:
-            photo_upload = GiftPhotoUploadOption.objects.filter(
-                pk=photo_upload_id,
-                is_active=True,
-            ).first()
+            eligible_photos = {p.pk: p for p in get_eligible_photo_upload_options(product_instance=product_instance)}
+            photo_upload = eligible_photos.get(photo_upload_id)
             if photo_upload is None:
                 errors.setdefault("photo_upload_id", []).append("Invalid photo upload option.")
             else:
