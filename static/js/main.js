@@ -34,7 +34,35 @@
     progressEl.setAttribute('aria-hidden', 'true');
   }
 
-  function showHtmxToast() {
+  function showToast(message, kind) {
+    var root = document.getElementById('htmx-toast-root');
+    if (!root) {
+      return;
+    }
+    var toastClass = kind === 'success' ? 'htmx-toast htmx-toast--success' : 'htmx-toast';
+    root.hidden = false;
+    root.innerHTML =
+      '<div class="' + toastClass + '" role="alert">' +
+      '<span class="htmx-toast__message"></span>' +
+      '<button type="button" class="htmx-toast__close btn-ghost" aria-label="Dismiss">&times;</button>' +
+      '</div>';
+    root.querySelector('.htmx-toast__message').textContent = message;
+    var closeBtn = root.querySelector('.htmx-toast__close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        root.hidden = true;
+        root.innerHTML = '';
+      });
+    }
+    window.setTimeout(function () {
+      if (!root.hidden) {
+        root.hidden = true;
+        root.innerHTML = '';
+      }
+    }, 3000);
+  }
+
+  function showHtmxToast(message) {
     var root = document.getElementById('htmx-toast-root');
     if (!root) {
       return;
@@ -42,7 +70,7 @@
     root.hidden = false;
     root.innerHTML =
       '<div class="htmx-toast" role="alert">' +
-      '<span class="htmx-toast__message">Something went wrong, please try again.</span>' +
+      '<span class="htmx-toast__message">' + (message || 'Something went wrong, please try again.') + '</span>' +
       '<button type="button" class="htmx-toast__close btn-ghost" aria-label="Dismiss">&times;</button>' +
       '</div>';
     var closeBtn = root.querySelector('.htmx-toast__close');
@@ -63,6 +91,44 @@
   document.body.addEventListener('htmx:configRequest', function (event) {
     if (csrfToken) {
       event.detail.headers['X-CSRFToken'] = csrfToken;
+    }
+  });
+
+  document.body.addEventListener('htmx:beforeRequest', function (event) {
+    if (triggeringElementHasIndicator(event.detail.elt)) {
+      return;
+    }
+    pendingGlobalProgress += 1;
+    showGlobalProgress();
+  });
+
+  document.body.addEventListener('htmx:afterRequest', function (event) {
+    if (triggeringElementHasIndicator(event.detail.elt)) {
+      return;
+    }
+    pendingGlobalProgress = Math.max(0, pendingGlobalProgress - 1);
+    hideGlobalProgress();
+  });
+
+  document.body.addEventListener('htmx:responseError', function (event) {
+    console.error('[HTMX] responseError', event.detail);
+    showHtmxToast();
+  });
+
+  document.body.addEventListener('htmx:sendError', function (event) {
+    console.error('[HTMX] sendError', event.detail);
+    showHtmxToast();
+  });
+
+  window.showToast = showHtmxToast;
+
+  document.body.addEventListener('addressSaved', function (event) {
+    var message = (event.detail && event.detail.message) || 'Address saved';
+    showToast(message, 'success');
+
+    var collapseEl = document.getElementById('addAddressCollapse');
+    if (collapseEl && window.bootstrap) {
+      bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
     }
   });
 
@@ -507,3 +573,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 })();
+
+// Reset filter selects/inputs visually when "Clear Filters" is clicked
+document.body.addEventListener('click', function (evt) {
+  var btn = evt.target.closest('.plp-clear-filters');
+  if (!btn) return;
+  var form = btn.closest('form');
+  if (!form) return;
+
+  form.querySelectorAll('select').forEach(function (sel) {
+    sel.selectedIndex = 0;
+    var wrapper = sel.closest('.floward-select');
+    if (wrapper) {
+      var label = wrapper.querySelector('.floward-select__label');
+      var opt = sel.options[0];
+      if (label) label.textContent = opt ? opt.textContent : '';
+      wrapper.querySelectorAll('.floward-select__option').forEach(function (o, i) {
+        o.classList.toggle('is-selected', i === 0);
+      });
+    }
+  });
+  form.querySelectorAll('input[type="text"], input[type="number"]').forEach(function (inp) { inp.value = ''; });
+  form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+});

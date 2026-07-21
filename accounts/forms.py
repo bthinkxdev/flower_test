@@ -97,6 +97,11 @@ class ResetPasswordForm(forms.Form):
 class AddressForm(forms.ModelForm):
     """Create or update a customer delivery address."""
 
+    label = forms.ChoiceField(
+        choices=[("Home", "Home"), ("Office", "Office")],
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"}),
+    )
+
     class Meta:
         model = Address
         fields = ("label", "contact_name", "phone", "line1", "line2", "city", "is_default")

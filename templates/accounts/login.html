@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{% trans "Login" %} | Floward{% endblock %}
+{% block title %}{% trans "Login" %} | Story of Flowers{% endblock %}
 
 {% block content %}
 <div class="container page-container py-5">
@@ -19,7 +19,10 @@
             <input type="email" class="form-control" id="id_email" name="email" required autocomplete="email">
           </div>
           <button type="submit" class="btn btn-floward w-100" id="send-otp-btn">
-            {% trans "Send OTP" %}
+            <span class="btn-text">{% trans "Send OTP" %}</span>
+            <span class="btn-loader d-none">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </span>
           </button>
         </form>
 
@@ -28,22 +31,45 @@
           <p class="small text-muted mb-3">
             {% trans "Enter the 6-digit code sent to" %} <strong id="otp-email-display"></strong>
           </p>
-          <div class="mb-3">
-            <label class="form-label" for="id_otp_code">{% trans "OTP code" %}</label>
-            <input type="text" class="form-control" id="id_otp_code" name="otp_code"
-                   inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" required autocomplete="one-time-code">
+          <div class="otp-input-group mb-3" id="otp-input-group">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="0">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="1">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="2">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="3">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="4">
+            <input type="text" class="otp-digit" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" data-index="5">
           </div>
+          <input type="hidden" id="id_otp_code" name="otp_code">
           <button type="submit" class="btn btn-floward w-100 mb-2" id="verify-otp-btn">
-            {% trans "Verify & Sign in" %}
+            <span class="btn-text">{% trans "Verify & Sign in" %}</span>
+            <span class="btn-loader d-none">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </span>
           </button>
-          <button type="button" class="btn btn-link w-100" id="resend-otp-btn">
-            {% trans "Resend code" %}
+          <button type="button" class="btn btn-outline-floward" id="resend-otp-btn">
+            {% trans "Resend OTP" %}
           </button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+.otp-input-group { display: flex; gap: 10px; justify-content: center; }
+.otp-digit {
+  width: 48px; height: 56px; text-align: center; font-size: 22px; font-weight: 600;
+  border: 2px solid #E0E0E0; border-radius: 8px; transition: all .2s ease;
+}
+.otp-digit:focus { outline: none; border-color: var(--bs-primary, #8b1e3f); box-shadow: 0 0 0 3px rgba(139,30,63,.12); }
+#send-otp-btn .btn-loader, #verify-otp-btn .btn-loader { display: inline-flex; align-items: center; justify-content: center; }
+#resend-otp-btn {
+  color: var(--floward-primary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+</style>
 
 <script>
 (function () {
@@ -55,7 +81,11 @@
   const errorBox = document.getElementById("otp-error");
   const emailInput = document.getElementById("id_email");
   const otpDisplay = document.getElementById("otp-email-display");
+  const sendBtn = document.getElementById("send-otp-btn");
+  const verifyBtn = document.getElementById("verify-otp-btn");
   const resendBtn = document.getElementById("resend-otp-btn");
+  const otpHidden = document.getElementById("id_otp_code");
+  const otpDigits = Array.from(document.querySelectorAll(".otp-digit"));
 
   function showError(msg) {
     errorBox.textContent = msg;
@@ -64,6 +94,40 @@
   function clearError() {
     errorBox.classList.add("d-none");
   }
+  function setLoading(btn, isLoading) {
+    btn.disabled = isLoading;
+    btn.querySelector(".btn-text").classList.toggle("d-none", isLoading);
+    btn.querySelector(".btn-loader").classList.toggle("d-none", !isLoading);
+  }
+
+  function updateOtpValue() {
+    otpHidden.value = otpDigits.map(d => d.value).join("");
+  }
+
+  otpDigits.forEach((input, index) => {
+    input.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, "");
+      if (this.value.length === 1 && index < otpDigits.length - 1) {
+        otpDigits[index + 1].focus();
+      }
+      updateOtpValue();
+      clearError();
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Backspace" && this.value === "" && index > 0) {
+        otpDigits[index - 1].focus();
+      }
+    });
+    input.addEventListener("paste", function (e) {
+      e.preventDefault();
+      const pasted = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+      if (pasted.length === otpDigits.length) {
+        otpDigits.forEach((d, i) => { d.value = pasted[i] || ""; });
+        updateOtpValue();
+        otpDigits[otpDigits.length - 1].focus();
+      }
+    });
+  });
 
   async function requestOtp(email) {
     const res = await fetch("{% url 'accounts:otp-email-request' %}", {
@@ -80,22 +144,34 @@
     e.preventDefault();
     clearError();
     const email = emailInput.value.trim();
+    setLoading(sendBtn, true);
     try {
       await requestOtp(email);
       otpDisplay.textContent = email;
       emailForm.classList.add("d-none");
       otpForm.classList.remove("d-none");
+      otpDigits.forEach(d => d.value = "");
+      updateOtpValue();
+      otpDigits[0].focus();
+      if (window.showToast) window.showToast("{% trans 'OTP has been sent to your email.' %}");
     } catch (err) {
       showError(err.message);
+    } finally {
+      setLoading(sendBtn, false);
     }
   });
 
   resendBtn.addEventListener("click", async () => {
     clearError();
+    setLoading(resendBtn, true);
+    resendBtn.disabled = true;
     try {
       await requestOtp(emailInput.value.trim());
+      if (window.showToast) window.showToast("{% trans 'OTP has been resent to your email.' %}");
     } catch (err) {
       showError(err.message);
+    } finally {
+      resendBtn.disabled = false;
     }
   });
 
@@ -103,7 +179,12 @@
     e.preventDefault();
     clearError();
     const email = emailInput.value.trim();
-    const otp_code = document.getElementById("id_otp_code").value.trim();
+    const otp_code = otpHidden.value.trim();
+    if (otp_code.length !== 6) {
+      showError("{% trans 'Please enter the 6-digit code.' %}");
+      return;
+    }
+    setLoading(verifyBtn, true);
     try {
       const res = await fetch("{% url 'accounts:otp-email-verify' %}", {
         method: "POST",
@@ -115,6 +196,7 @@
       window.location.href = nextUrl || "{% url 'accounts:dashboard' %}";
     } catch (err) {
       showError(err.message);
+      setLoading(verifyBtn, false);
     }
   });
 })();

@@ -1,7 +1,10 @@
 {% load i18n %}
 <div class="mb-2">
-  <label class="form-label small mb-1">{% trans "Label (e.g. Home, Office)" %}</label>
-  <input type="text" name="label" class="form-control form-control-sm" required value="{{ address_form.label.value|default:'' }}">
+  <label class="form-label small mb-1">{% trans "Label" %}</label>
+  <select name="label" class="form-select form-select-sm" required>
+    <option value="Home" {% if address_form.label.value == "Home" or not address_form.label.value %}selected{% endif %}>{% trans "Home" %}</option>
+    <option value="Office" {% if address_form.label.value == "Office" %}selected{% endif %}>{% trans "Office" %}</option>
+  </select>
   {% if address_form.label.errors %}<div class="text-danger small">{{ address_form.label.errors.0 }}</div>{% endif %}
 </div>
 <div class="mb-2">

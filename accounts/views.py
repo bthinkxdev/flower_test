@@ -84,6 +84,16 @@ def _error_response(message: str, status: int = 400, code: str = "error") -> Jso
     return JsonResponse({"success": False, "code": code, "message": message}, status=status)
 
 
+def _form_error_message(form) -> str:
+    """Flatten Django form errors into a single readable sentence (no HTML)."""
+    messages: list[str] = []
+    for field, errors in form.errors.items():
+        label = form.fields[field].label if field in form.fields and form.fields[field].label else field.replace("_", " ").capitalize()
+        for err in errors:
+            messages.append(f"{label}: {err}" if field != "__all__" else str(err))
+    return " ".join(messages) or "Please check the form and try again."
+
+
 def _success_response(data: dict[str, Any] | None = None, status: int = 200) -> JsonResponse:
     payload: dict[str, Any] = {"success": True}
     if data:
@@ -145,7 +155,7 @@ def email_otp_request_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = EmailOTPRequestForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         otp_request = request_email_otp(email=form.cleaned_data["email"])
     except OTPRateLimitError as exc:
@@ -161,7 +171,7 @@ def email_otp_verify_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = EmailOTPVerifyForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         verify_email_otp(email=form.cleaned_data["email"], otp_code=form.cleaned_data["otp_code"])
     except OTPVerificationError as exc:
@@ -190,7 +200,7 @@ def otp_request_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = OTPRequestForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         otp_request = request_otp(
             phone=form.cleaned_data["phone"],
@@ -209,7 +219,7 @@ def otp_verify_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = OTPVerifyForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         verify_otp(
             phone=form.cleaned_data["phone"],
@@ -237,7 +247,7 @@ def google_login_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = GoogleLoginForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         profile = authenticate_google(google_id_token=form.cleaned_data["id_token"])
     except GoogleAuthError as exc:
@@ -255,7 +265,7 @@ def guest_checkout_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = GuestCheckoutForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     token = create_guest_checkout_token(cart_id=form.cleaned_data["cart_id"])
     return _success_response({"guest_token": token})
 
@@ -266,7 +276,7 @@ def forgot_password_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = ForgotPasswordForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         request_otp(phone=form.cleaned_data["phone"], purpose=OTPPurpose.PASSWORD_RESET)
     except OTPRateLimitError as exc:
@@ -280,7 +290,7 @@ def reset_password_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = ResetPasswordForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     try:
         user = reset_password_with_otp(
             phone=form.cleaned_data["phone"],
@@ -362,7 +372,7 @@ def address_list_create_view(request: HttpRequest) -> HttpResponse:
     data = _json_body(request) or request.POST.dict()
     form = AddressForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     address = create_address(
         customer_profile=profile,
         label=form.cleaned_data["label"],
@@ -386,7 +396,7 @@ def address_detail_view(request: HttpRequest, address_id: int) -> HttpResponse:
     data = _json_body(request)
     form = AddressForm(data)
     if not form.is_valid():
-        return _error_response(str(form.errors), code="validation_error")
+        return _error_response(_form_error_message(form), code="validation_error")
     address = update_address(
         customer_profile=profile,
         address_id=address_id,
@@ -441,7 +451,7 @@ def corporate_register_view(request: HttpRequest) -> HttpResponse:
     form = CorporateRegistrationForm(data)
     if not form.is_valid():
         if _wants_json(request):
-            return _error_response(str(form.errors), code="validation_error")
+            return _error_response(_form_error_message(form), code="validation_error")
         return render(
             request,
             "accounts/corporate_register.html",
@@ -640,7 +650,7 @@ def subscription_create_view(request: HttpRequest) -> HttpResponse:
     form = SubscriptionCreateForm(data, customer_profile=profile)
     if not form.is_valid():
         if _wants_json(request):
-            return _error_response(str(form.errors), code="validation_error")
+            return _error_response(_form_error_message(form), code="validation_error")
         return render(
             request,
             "accounts/subscription_create.html",

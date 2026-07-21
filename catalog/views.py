@@ -63,26 +63,38 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
         category = get_category_by_slug(slug=category_slug)
         if category is None:
             raise Http404("Category not found")
-        filters["category_id"] = category.pk
+        if "category_id" not in filters and "category" not in request.GET:
+            filters["category_id"] = category.pk
 
     sort = request.GET.get("sort", "newest")
     page = int(request.GET.get("page", 1))
     plp_data = get_plp_products(filters=filters, sort=sort, page=page)
     filter_options = get_plp_filter_options()
+
+    active_category = category
+    selected_category_id = filters.get("category_id")
+    if selected_category_id and (category is None or selected_category_id != category.pk):
+        active_category = next(
+            (c for c in filter_options["categories"] if c.pk == selected_category_id),
+            category,
+        )
+    elif not selected_category_id:
+        active_category = None
+
     title = (
-        resolve_meta_title(obj=category, fallback="Shop All Flowers & Gifts")
-        if category
+        resolve_meta_title(obj=active_category, fallback="Shop All Flowers & Gifts")
+        if active_category
         else "Shop All Flowers & Gifts"
     )
     description = (
-        f"Browse {category.name} flowers and gifts with same-day delivery in Qatar."
-        if category
+        f"Browse {active_category.name} flowers and gifts with same-day delivery in Qatar."
+        if active_category
         else "Browse premium flowers and gifts with same-day delivery across Qatar."
     )
 
     context = seo_context(
         request=request,
-        obj=category,
+        obj=active_category,
         title=f"{title} | Floward",
         description=description,
         canonical_url=build_plp_canonical_url(request=request, category_slug=category_slug),
@@ -97,7 +109,7 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
             "brands": filter_options["brands"],
             "recipients": filter_options["recipients"],
             "view_mode": request.COOKIES.get("plp_view", "grid"),
-            "active_category": category,
+            "active_category": active_category,
         }
     )
 
@@ -137,7 +149,7 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
     context = seo_context(
         request=request,
         obj=product,
-        title=f"{product.name} | Floward",
+        title=f"{product.name} | Story of Flowers",
         description=f"{product.name} — premium flowers and gifts delivered in Qatar.",
     )
     context.update(

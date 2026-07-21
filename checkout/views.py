@@ -25,7 +25,7 @@ from accounts.models import Address
 from django.urls import reverse
 from core.page_rerender import is_htmx_request
 from orders.selectors import get_order_for_customer
-
+import json
 
 @require_GET
 def checkout_view(request: HttpRequest) -> HttpResponse:
@@ -97,13 +97,25 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
 
     if profile:
         address_form = CheckoutAddressForm(request.POST)
-        if address_form.is_valid() and address_form.cleaned_data.get("address_id"):
-            address = get_address_by_id(
-                address_id=address_form.cleaned_data["address_id"],
-                customer_profile=profile,
+        if not address_form.is_valid():
+            return render(
+                request,
+                "checkout/partials/errors.html",
+                {"errors": {"address": ["Please select a delivery address."]}},
+                status=400,
             )
-            if address:
-                update_checkout_session(checkout_session=session, address=address)
+        address = get_address_by_id(
+            address_id=address_form.cleaned_data["address_id"],
+            customer_profile=profile,
+        )
+        if address is None:
+            return render(
+                request,
+                "checkout/partials/errors.html",
+                {"errors": {"address": ["The selected address is no longer available. Please choose another."]}},
+                status=400,
+            )
+        update_checkout_session(checkout_session=session, address=address)
     else:
         guest_form = CheckoutGuestDetailsForm(request.POST)
         if not guest_form.is_valid():
@@ -128,12 +140,18 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
         )
 
     delivery_form = CheckoutDeliveryForm(request.POST)
-    if delivery_form.is_valid():
-        update_checkout_session(
-            checkout_session=session,
-            delivery_date=delivery_form.cleaned_data.get("delivery_date"),
-            delivery_slot_id=delivery_form.cleaned_data.get("delivery_slot_id"),
+    if not delivery_form.is_valid():
+        return render(
+            request,
+            "checkout/partials/errors.html",
+            {"errors": delivery_form.errors},
+            status=400,
         )
+    update_checkout_session(
+        checkout_session=session,
+        delivery_date=delivery_form.cleaned_data.get("delivery_date"),
+        delivery_slot_id=delivery_form.cleaned_data.get("delivery_slot_id"),
+    )
 
     order = place_order(
         checkout_session_id=session.pk,
@@ -183,41 +201,53 @@ def checkout_confirmation_view(request: HttpRequest, order_id: int) -> HttpRespo
         raise Http404("Order not found.")
     return render(request, "checkout/order_confirmation.html", {"order": order})
 
-@login_required
 @require_POST
 def checkout_update_session_view(request: HttpRequest) -> HttpResponse:
-    """HTMX endpoint to update draft session options (address, date) and recalculate delivery charges."""
+    """HTMX endpoint to update draft session options (address, date, guest city) and recalculate delivery charges. Works for guests too."""
+    from delivery.models import City
+    from cart.services import recalculate_delivery_charge
+
     cart = get_or_create_cart(request=request)
-    profile = request.user.customer_profile
+    profile = request.user.customer_profile if request.user.is_authenticated else None
     session = create_checkout_session(
         cart=cart,
         customer_profile=profile,
         session_key=request.session.session_key or "",
     )
-    
+
     address_id = request.POST.get("address_id")
     delivery_date_str = request.POST.get("delivery_date")
-    
-    if address_id:
+    city_id = request.POST.get("city")
+
+    city = None
+    if address_id and profile:
         address = get_address_by_id(address_id=int(address_id), customer_profile=profile)
         if address:
             update_checkout_session(checkout_session=session, address=address)
-            
+            city = address.city
+    elif not profile and city_id:
+        city = City.objects.filter(pk=city_id, is_active=True).first()
+        if city:
+            recalculate_delivery_charge(cart=cart, destination_city=city)
+
     if delivery_date_str:
         try:
             delivery_date = date.fromisoformat(delivery_date_str)
             update_checkout_session(checkout_session=session, delivery_date=delivery_date)
         except ValueError:
             pass
-            
+
+    cart.refresh_from_db()
+
     summary = get_cart_summary(cart=cart)
-    
-    city = session.address.city if session.address_id else None
+
+    if city is None:
+        city = session.address.city if session.address_id else None
     delivery_date_iso = session.delivery_date.isoformat() if session.delivery_date else None
     delivery_slots = []
     if city and delivery_date_iso:
         delivery_slots = get_available_slots(city=city, delivery_date=delivery_date_iso)
-        
+
     return render(
         request,
         "checkout/partials/checkout_updates.html",
@@ -228,7 +258,6 @@ def checkout_update_session_view(request: HttpRequest) -> HttpResponse:
         },
     )
 
-@login_required
 @require_POST
 def checkout_add_address_view(request: HttpRequest) -> HttpResponse:
     """Endpoint for HTMX address creation during checkout and reload lists/summaries."""
@@ -247,12 +276,15 @@ def checkout_add_address_view(request: HttpRequest) -> HttpResponse:
     address = create_address(
         customer_profile=profile,
         label=form.cleaned_data["label"],
+        contact_name=form.cleaned_data.get("contact_name", ""),
+        phone=form.cleaned_data.get("phone", ""),
         line1=form.cleaned_data["line1"],
         line2=form.cleaned_data.get("line2", ""),
         city_id=form.cleaned_data["city"].pk,
         is_default=form.cleaned_data.get("is_default", False),
     )
     update_checkout_session(checkout_session=session, address=address)
+    cart.refresh_from_db()
 
     summary = get_cart_summary(cart=cart)
     addresses = get_saved_addresses(customer_profile=profile, page=1)["results"]
@@ -262,7 +294,7 @@ def checkout_add_address_view(request: HttpRequest) -> HttpResponse:
     if city and delivery_date_iso:
         delivery_slots = get_available_slots(city=city, delivery_date=delivery_date_iso)
 
-    return render(
+    response = render(
         request,
         "checkout/partials/address_added.html",
         {
@@ -273,6 +305,8 @@ def checkout_add_address_view(request: HttpRequest) -> HttpResponse:
             "address_form": AddressForm(),
         }
     )
+    response["HX-Trigger"] = json.dumps({"addressSaved": {"message": "Address saved"}})
+    return response
 
 
 @require_GET
@@ -319,7 +353,9 @@ def checkout_edit_address_view(request: HttpRequest, address_id: int) -> HttpRes
     cart = get_or_create_cart(request=request)
     session = create_checkout_session(cart=cart, customer_profile=profile)
     update_checkout_session(checkout_session=session, address=address)
-    
+
+    cart.refresh_from_db()
+
     summary = get_cart_summary(cart=cart)
     addresses = get_saved_addresses(customer_profile=profile, page=1)["results"]
     
@@ -329,7 +365,7 @@ def checkout_edit_address_view(request: HttpRequest, address_id: int) -> HttpRes
     if city and delivery_date_iso:
         delivery_slots = get_available_slots(city=city, delivery_date=delivery_date_iso)
         
-    return render(
+    response = render(
         request,
         "checkout/partials/address_added.html",
         {
@@ -340,6 +376,8 @@ def checkout_edit_address_view(request: HttpRequest, address_id: int) -> HttpRes
             "address_form": AddressForm(),
         }
     )
+    response["HX-Trigger"] = json.dumps({"addressSaved": {"message": "Address updated"}})
+    return response
 
 @require_POST
 def checkout_delete_address_view(request: HttpRequest, address_id: int) -> HttpResponse:

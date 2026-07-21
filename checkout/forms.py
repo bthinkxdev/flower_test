@@ -14,8 +14,8 @@ class CheckoutAddressForm(forms.Form):
 class CheckoutDeliveryForm(forms.Form):
     """Delivery date and slot selection."""
 
-    delivery_date = forms.DateField(required=False)
-    delivery_slot_id = forms.IntegerField(required=False)
+    delivery_date = forms.DateField(required=True)
+    delivery_slot_id = forms.IntegerField(required=True)
 
 
 class CheckoutPaymentForm(forms.Form):

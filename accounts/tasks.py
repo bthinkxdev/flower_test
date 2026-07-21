@@ -14,7 +14,7 @@ def send_otp_sms(*, phone: str, otp_code: str) -> None:
     """Dispatch OTP SMS via the notifications app's send_sms service."""
     from notifications.tasks import dispatch_sms
 
-    dispatch_sms.delay(phone=phone, message=f"Your Floward verification code is: {otp_code}")
+    dispatch_sms.delay(phone=phone, message=f"Your Story of Flowers verification code is: {otp_code}")
 
 
 @shared_task(name="accounts.tasks.notify_corporate_registration")
@@ -32,6 +32,6 @@ def send_due_gift_reminders_task() -> int:
 def send_otp_email(*, email: str, otp_code: str) -> None:
     dispatch_email.delay(
         email=email,
-        subject="Your Floward verification code",
-        message=f"Your Floward login code is: {otp_code}. It expires shortly — do not share it.",
+        subject="Your Story of Flowers verification code",
+        message=f"Your Story of Flowers login code is: {otp_code}. It expires shortly — do not share it.",
     )

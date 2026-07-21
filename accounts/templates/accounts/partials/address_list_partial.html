@@ -10,6 +10,7 @@
     <button class="btn btn-sm btn-link text-danger p-0" 
             hx-post="{% url 'accounts:dashboard-delete-address' address_id=addr.pk %}" 
             hx-target="#dashboard-address-wrapper" 
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-confirm="{% trans 'Are you sure you want to delete this address?' %}">{% trans "Delete" %}</button>
   </div>
   {% empty %}

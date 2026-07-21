@@ -88,13 +88,15 @@
           <ul class="navbar-nav">
             {% for cat in category_tree %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="{% url 'catalog:plp-category' category_slug=cat.slug %}" data-bs-toggle="dropdown">{{ cat.name }}</a>
               {% if cat.children.all %}
+              <a class="nav-link dropdown-toggle" href="{% url 'catalog:plp-category' category_slug=cat.slug %}" data-bs-toggle="dropdown">{{ cat.name }}</a>
               <ul class="dropdown-menu">
                 {% for child in cat.children.all %}
                 <li><a class="dropdown-item" href="{% url 'catalog:plp-category' category_slug=child.slug %}">{{ child.name }}</a></li>
                 {% endfor %}
               </ul>
+              {% else %}
+              <a class="nav-link" href="{% url 'catalog:plp-category' category_slug=cat.slug %}">{{ cat.name }}</a>
               {% endif %}
             </li>
             {% endfor %}
@@ -102,7 +104,10 @@
         </div>
       </div>
 
-      <a class="navbar-brand navbar-col navbar-col--brand" href="{% url 'cms:homepage' %}">Floward</a>
+      <a class="navbar-brand navbar-col navbar-col--brand" href="{% url 'cms:homepage' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Story of Flowers" class="navbar-logo">
+        <span class="navbar-name d-none d-lg-inline">Story of Flowers</span>
+      </a>
 
       <div class="navbar-col navbar-col--end">
         <div class="search-wrap search-wrap--header position-relative d-none d-lg-block">

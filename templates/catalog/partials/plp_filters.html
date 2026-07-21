@@ -56,4 +56,13 @@
     </select>
   </div>
   <button type="submit" class="btn btn-floward btn-sm w-100">{% trans "Apply" %}</button>
+  <a href="{{ request.path }}"
+     class="btn btn-outline-floward btn-sm w-100 mt-2 plp-clear-filters"
+     hx-get="{{ request.path }}"
+     hx-target="#product-grid"
+     hx-swap="innerHTML"
+     hx-push-url="true"
+     hx-indicator="#product-grid">
+    {% trans "Clear Filters" %}
+  </a>
 </form>

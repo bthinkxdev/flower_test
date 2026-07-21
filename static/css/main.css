@@ -209,11 +209,10 @@ img { max-width: 100%; height: auto; display: block; }
   box-shadow: 0 0 0 3px rgba(139, 58, 74, 0.15);
 }
 
-.navbar-brand {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--floward-primary) !important;
+.navbar-logo {
+  height: 52px;
+  width: auto;
+  display: block;
 }
 .nav-link {
   font-size: 0.875rem;
@@ -224,6 +223,135 @@ img { max-width: 100%; height: auto; display: block; }
   transition: background var(--floward-transition), color var(--floward-transition);
 }
 .nav-link:hover { background: var(--floward-bg); color: var(--floward-primary) !important; }
+
+/* ============================================
+   Global <select> styling — replaces the browser-default
+   look used across PDP, PLP filters, checkout, subscriptions
+   ============================================ */
+select.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--floward-white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238b3a4a' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 12px 8px;
+  border: 1px solid var(--floward-border);
+  border-radius: var(--floward-radius);
+  color: var(--floward-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  padding: 0.55rem 2.25rem 0.55rem 0.9rem;
+  box-shadow: none;
+  transition: border-color var(--floward-transition), box-shadow var(--floward-transition);
+}
+select.form-select:hover { border-color: var(--floward-primary); }
+select.form-select:focus {
+  border-color: var(--floward-primary);
+  box-shadow: 0 0 0 3px rgba(139, 58, 74, 0.12);
+  outline: none;
+}
+select.form-select:disabled {
+  background-color: var(--floward-bg);
+  color: var(--floward-muted);
+  cursor: not-allowed;
+}
+select.form-select-sm {
+  padding: 0.4rem 2rem 0.4rem 0.7rem;
+  font-size: 0.8125rem;
+  background-position: right 0.7rem center;
+  background-size: 10px 7px;
+}
+
+/* ============================================
+   Custom dropdown UI (replaces native option list,
+   which can't be restyled cross-browser)
+   ============================================ */
+.floward-select { position: relative; }
+.floward-select__native {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+.floward-select__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background-color: var(--floward-white);
+  border: 1px solid var(--floward-border);
+  border-radius: var(--floward-radius);
+  color: var(--floward-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--floward-transition), box-shadow var(--floward-transition);
+}
+.floward-select--sm .floward-select__trigger {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8125rem;
+}
+.floward-select__trigger:hover { border-color: var(--floward-primary); }
+.floward-select.is-open .floward-select__trigger,
+.floward-select__trigger:focus-visible {
+  border-color: var(--floward-primary);
+  box-shadow: 0 0 0 3px rgba(139, 58, 74, 0.12);
+  outline: none;
+}
+.floward-select__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.floward-select__chevron {
+  flex-shrink: 0;
+  display: inline-flex;
+  transition: transform var(--floward-transition);
+}
+.floward-select.is-open .floward-select__chevron { transform: rotate(180deg); }
+.floward-select__panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--floward-white);
+  border: 1px solid var(--floward-border);
+  border-radius: var(--floward-radius-lg);
+  box-shadow: var(--floward-shadow-lg);
+  padding: 0.4rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.floward-select.is-open .floward-select__panel { display: block; }
+.floward-select__option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--floward-radius);
+  font-size: 0.875rem;
+  color: var(--floward-text);
+  cursor: pointer;
+}
+.floward-select__option:hover { background: var(--floward-primary-light); color: var(--floward-primary); }
+.floward-select__option.is-selected { font-weight: 600; color: var(--floward-primary); }
+.floward-select.is-disabled .floward-select__trigger,
+.floward-select__trigger:disabled {
+  background-color: var(--floward-bg);
+  color: var(--floward-muted);
+  cursor: not-allowed;
+}
+
 .dropdown-menu {
   border: 1px solid var(--floward-border);
   border-radius: var(--floward-radius-lg);
@@ -1194,6 +1322,11 @@ body.mobile-search-open { overflow: hidden; }
   font-weight: 700;
   color: var(--floward-primary);
 }
+.footer-logo {
+  height: 45px;
+  width: auto;
+  display: block;
+}
 .site-footer .footer-copy {
   font-size: 0.75rem;
   color: var(--floward-muted);
@@ -1508,6 +1641,9 @@ body.mobile-search-open { overflow: hidden; }
   font-size: 0.875rem;
   color: var(--floward-text);
 }
+.htmx-toast--success {
+  border-left-color: #198754;
+}
 .htmx-toast__message { flex: 1; line-height: 1.4; }
 .htmx-toast__close {
   flex-shrink: 0;
@@ -1548,6 +1684,30 @@ body.mobile-search-open { overflow: hidden; }
   justify-self: center;
   margin: 0;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.navbar-name {
+  font-family: "Gilroy", var(--font-sans);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--floward-primary);
+}
+.navbar-tagline {
+  font-size: 0.8125rem;
+  font-style: italic;
+  color: var(--floward-muted);
+  border-right: 1px solid var(--floward-border);
+  padding-right: 0.6rem;
+  white-space: nowrap;
+}
+[dir="rtl"] .navbar-tagline {
+  border-right: none;
+  border-left: 1px solid var(--floward-border);
+  padding-right: 0;
+  padding-left: 0.6rem;
 }
 .navbar-col--end {
   grid-column: 3;
@@ -2073,3 +2233,32 @@ body.mobile-search-open { overflow: hidden; }
   flex-shrink: 0;
 }
 .sub-product-thumb--empty { background: #eee; display: inline-block; }
+
+/* otp button */
+
+#resend-otp-btn.btn-outline-floward {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--floward-radius-pill);
+  border: 1px solid var(--floward-primary);
+  background: #fff;
+  color: var(--floward-primary);
+  transition: background var(--floward-transition), color var(--floward-transition);
+}
+
+#resend-otp-btn.btn-outline-floward:hover,
+#resend-otp-btn.btn-outline-floward:focus {
+  background: var(--floward-primary);
+  color: #fff;
+}
+
+#resend-otp-btn.btn-outline-floward:disabled {
+  color: var(--floward-muted);
+  border-color: var(--floward-border);
+  background: transparent;
+}

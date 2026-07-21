@@ -539,14 +539,35 @@ def delete_address(*, customer_profile: CustomerProfile, address_id: int) -> Non
     """
     Delete an address and clear profile.default_address if it pointed here.
 
+    Also clears the delivery charge on any DRAFT checkout session (and its
+    cart) that currently has this address selected, so a stale delivery
+    charge never survives an address deletion — regardless of whether the
+    delete happened from checkout, the address book, or the dashboard.
+
     Params:
         customer_profile: Owner profile.
         address_id: Primary key of the address to remove.
     """
+    from decimal import Decimal
+    from checkout.models import CheckoutSession, CheckoutSessionStatus
+
     address = Address.objects.get(pk=address_id, customer_profile=customer_profile)
     if customer_profile.default_address_id == address.pk:
         customer_profile.default_address = None
         customer_profile.save(update_fields=["default_address", "updated_at"])
+
+    affected_sessions = CheckoutSession.objects.filter(
+        address_id=address.pk,
+        status=CheckoutSessionStatus.DRAFT,
+    ).select_related("cart")
+    for session in affected_sessions:
+        session.address = None
+        session.save(update_fields=["address", "updated_at"])
+        cart = session.cart
+        cart.destination_city = None
+        cart.delivery_charge = Decimal("0.00")
+        cart.save(update_fields=["destination_city", "delivery_charge", "updated_at"])
+
     address.delete()
 
 

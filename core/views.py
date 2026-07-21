@@ -25,8 +25,8 @@ def about_us_view(request: HttpRequest) -> HttpResponse:
     """Render the static About Us page."""
     context = seo_context(
         request=request,
-        title=_("About Us | Floward Qatar"),
-        description=_("Learn more about Floward Qatar and our mission to deliver flowers and gifts."),
+        title=_("About Us | Story of Flowers"),
+        description=_("Learn more about Story of Flowers and our mission to deliver flowers and gifts."),
     )
     return render(request, "core/about_us.html", context)
 
@@ -36,8 +36,8 @@ def privacy_policy_view(request: HttpRequest) -> HttpResponse:
     """Render the static Privacy Policy page."""
     context = seo_context(
         request=request,
-        title=_("Privacy Policy | Floward Qatar"),
-        description=_("Read Floward Qatar's privacy policy to learn how we collect and use your data."),
+        title=_("Privacy Policy | Story of Flowers"),
+        description=_("Read Story of Flower's privacy policy to learn how we collect and use your data."),
     )
     return render(request, "core/privacy_policy.html", context)
 
@@ -47,8 +47,8 @@ def contact_us_view(request: HttpRequest) -> HttpResponse:
     """Render the static Contact Us page."""
     context = seo_context(
         request=request,
-        title=_("Contact Us | Floward Qatar"),
-        description=_("Get in touch with Floward Qatar customer support."),
+        title=_("Contact Us | Story of Flowers"),
+        description=_("Get in touch with Story of Flowers customer support."),
     )
     return render(request, "core/contact_us.html", context)
 
@@ -58,8 +58,8 @@ def faq_view(request: HttpRequest) -> HttpResponse:
     """Render the static FAQ page."""
     context = seo_context(
         request=request,
-        title=_("FAQ | Floward Qatar"),
-        description=_("Frequently asked questions about ordering, delivery, and payments at Floward Qatar."),
+        title=_("FAQ | Story of Flowers"),
+        description=_("Frequently asked questions about ordering, delivery, and payments at Story of Flowers."),
     )
     return render(request, "core/faq.html", context)
 
