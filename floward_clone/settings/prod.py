@@ -28,3 +28,6 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1","storyofflowers.bthinkx.com","www.storyofflowers.com","storyofflowers.com"])
+STATIC_ROOT = "/opt/flower_test/staticfiles"
+MEDIA_ROOT = "/opt/flower_test/media"

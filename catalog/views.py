@@ -108,7 +108,7 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
             "occasions": filter_options["occasions"],
             "brands": filter_options["brands"],
             "recipients": filter_options["recipients"],
-            "view_mode": request.COOKIES.get("plp_view", "grid"),
+            "view_mode": "grid",
             "active_category": active_category,
         }
     )
