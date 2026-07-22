@@ -9,7 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import translation
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from core.page_rerender import is_htmx_request, rerender_app_shell
 from core.seo import seo_context
@@ -42,14 +42,28 @@ def privacy_policy_view(request: HttpRequest) -> HttpResponse:
     return render(request, "core/privacy_policy.html", context)
 
 
-@require_GET
+@require_http_methods(["GET", "POST"])
 def contact_us_view(request: HttpRequest) -> HttpResponse:
-    """Render the static Contact Us page."""
+    """Render the Contact Us page and handle message submissions."""
+    from core.forms import ContactForm
+
+    submitted = False
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            submitted = True
+            form = ContactForm()
+    else:
+        form = ContactForm()
+
     context = seo_context(
         request=request,
         title=_("Contact Us | Story of Flowers"),
         description=_("Get in touch with Story of Flowers customer support."),
     )
+    context["form"] = form
+    context["submitted"] = submitted
     return render(request, "core/contact_us.html", context)
 
 

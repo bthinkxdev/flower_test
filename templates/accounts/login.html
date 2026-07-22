@@ -47,7 +47,10 @@
             </span>
           </button>
           <button type="button" class="btn btn-outline-floward" id="resend-otp-btn">
-            {% trans "Resend OTP" %}
+            <span class="btn-text">{% trans "Resend OTP" %}</span>
+            <span class="btn-loader d-none">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </span>
           </button>
         </form>
       </div>
@@ -164,14 +167,13 @@
   resendBtn.addEventListener("click", async () => {
     clearError();
     setLoading(resendBtn, true);
-    resendBtn.disabled = true;
     try {
       await requestOtp(emailInput.value.trim());
       if (window.showToast) window.showToast("{% trans 'OTP has been resent to your email.' %}");
     } catch (err) {
       showError(err.message);
     } finally {
-      resendBtn.disabled = false;
+      setLoading(resendBtn, false);
     }
   });
 

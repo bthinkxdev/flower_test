@@ -13,6 +13,9 @@
         {% for value, label in statuses %}<option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>{% endfor %}
       </select>
       <button type="submit" class="btn btn-outline-secondary"><i class="ti ti-search"></i></button>
+      {% if search_query or current_status %}
+      <a href="{% url 'dashboard:payment-list' %}" class="btn btn-outline-secondary">Clear</a>
+      {% endif %}
     </form>
 
     <div class="card table-responsive">

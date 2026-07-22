@@ -202,10 +202,21 @@
     });
   }
 
+  function initAutoDismissAlerts() {
+    document.querySelectorAll(".alert-dismissible").forEach(function (alertEl) {
+      window.setTimeout(function () {
+        if (window.bootstrap && document.body.contains(alertEl)) {
+          bootstrap.Alert.getOrCreateInstance(alertEl).close();
+        }
+      }, 3000);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initSidebar();
     initFormValidation();
     initCharts();
     initFormsets();
+    initAutoDismissAlerts();
   });
 })();

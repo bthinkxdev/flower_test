@@ -23,7 +23,7 @@ from orders.services import generate_order_number
 from gifting.models import GiftCustomizationSnapshot
 from cart.services import recalculate_delivery_charge
 from django.core import signing
-
+from decimal import Decimal
 GUEST_ORDER_TOKEN_SALT = "checkout.guest-order-confirmation"
 GUEST_ORDER_TOKEN_MAX_AGE = 60 * 60 * 24  # 24 hours
 
@@ -259,5 +259,19 @@ def place_order(
     )
 
     CartItem.objects.filter(cart=session.cart).delete()
+
+    session.cart.coupon_code = ""
+    session.cart.coupon_discount = Decimal("0.00")
+    session.cart.delivery_charge = Decimal("0.00")
+    session.cart.destination_city = None
+    session.cart.save(
+        update_fields=[
+            "coupon_code",
+            "coupon_discount",
+            "delivery_charge",
+            "destination_city",
+            "updated_at",
+        ]
+    )
 
     return order

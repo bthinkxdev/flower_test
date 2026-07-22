@@ -2262,3 +2262,35 @@ body.mobile-search-open { overflow: hidden; }
   border-color: var(--floward-border);
   background: transparent;
 }
+
+/* Review-star ratinf */
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  width: fit-content;
+}
+.star-rating input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.star-rating label {
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--floward-border);
+  cursor: pointer;
+  transition: color var(--floward-transition);
+}
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: var(--floward-primary);
+}
+.star-rating input:focus-visible ~ label {
+  outline: 2px solid var(--floward-primary);
+  outline-offset: 2px;
+}

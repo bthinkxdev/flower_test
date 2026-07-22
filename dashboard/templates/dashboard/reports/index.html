@@ -26,6 +26,9 @@
         <input type="date" name="end" value="{{ end|date:'Y-m-d' }}" class="form-control" />
       </div>
       <button type="submit" class="btn btn-outline-secondary">Apply</button>
+      {% if request.GET.start or request.GET.end %}
+      <a href="{% url 'dashboard:reports' %}" class="btn btn-outline-secondary">Clear</a>
+      {% endif %}
     </form>
   </div>
 </div>

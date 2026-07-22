@@ -4,7 +4,23 @@ from __future__ import annotations
 
 from django import forms
 
-from core.models import Currency
+from core.models import Currency, ContactMessage
+
+
+class ContactForm(forms.ModelForm):
+    """Public-facing Contact Us form."""
+
+    class Meta:
+        model = ContactMessage
+        fields = ["name", "email", "subject", "message"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Your name"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "placeholder": "john@example.com"}),
+            "subject": forms.TextInput(attrs={"class": "form-control", "placeholder": "Subject"}),
+            "message": forms.Textarea(
+                attrs={"class": "form-control", "rows": 5, "placeholder": "Tell us how we can help you…"}
+            ),
+        }
 
 
 class CurrencyAdminForm(forms.ModelForm):

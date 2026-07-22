@@ -11,6 +11,7 @@ app_name = "catalog"
 urlpatterns = [
     path("search/suggest/", views.search_suggestions_view, name="search-suggest"),
     path("products/<slug:slug>/", views.pdp_view, name="pdp"),
+    path("products/<slug:slug>/review/", views.review_create_view, name="review-create"),
     path(
         "products/<int:product_id>/variant-price/",
         views.variant_price_view,

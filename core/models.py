@@ -234,3 +234,21 @@ class SiteSettings(TimeStampedModel):
 
     def delete(self, *args, **kwargs) -> tuple[int, dict[str, int]]:
         raise RuntimeError("SiteSettings singleton cannot be deleted.")
+
+
+class ContactMessage(TimeStampedModel):
+    """A message submitted through the public Contact Us form."""
+
+    name = models.CharField(max_length=120)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    is_resolved = models.BooleanField(default=False, db_index=True)
+
+    class Meta:
+        verbose_name = "Contact message"
+        verbose_name_plural = "Contact messages"
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.name} - {self.subject}"

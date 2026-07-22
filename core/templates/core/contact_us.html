@@ -5,24 +5,90 @@
 
 {% block content %}
 <div class="container page-container py-4">
-  <h1 class="section-title mb-4">{% trans "Contact Us" %}</h1>
+  <h1 class="section-title mb-1">{% trans "Contact Us" %}</h1>
+  <p class="text-muted mb-4">{% trans "Have a question about an order, a product, or anything else? Send us a message and we'll get back to you within 24 hours." %}</p>
 
   <div class="row g-4">
-    <div class="col-md-6">
-      <div class="card p-4">
+    <div class="col-lg-4">
+      <div class="card p-4 h-100">
         <h6 class="mb-3">{% trans "Get in touch" %}</h6>
-        <p class="small text-muted mb-1">{% trans "Doha, Qatar" %}</p>
-        <p class="small text-muted mb-1">{% trans "Customer support available 24/7" %}</p>
-        <p class="small text-muted mb-0">
-          {% trans "Email" %}: <a href="mailto:support@floward.qa">support@storyofflowers.qa</a>
-        </p>
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <i class="bi bi-geo-alt-fill text-floward"></i>
+          <div>
+            <div class="fw-semibold small">{% trans "Location" %}</div>
+            <p class="small text-muted mb-0">{% trans "Doha, Qatar" %}</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <i class="bi bi-clock-fill text-floward"></i>
+          <div>
+            <div class="fw-semibold small">{% trans "Support hours" %}</div>
+            <p class="small text-muted mb-0">{% trans "Customer support available 24/7" %}</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start gap-3 mb-0">
+          <i class="bi bi-envelope-fill text-floward"></i>
+          <div>
+            <div class="fw-semibold small">{% trans "Email" %}</div>
+            <p class="small text-muted mb-0">
+              <a href="mailto:support@storyofflowers.qa">support@storyofflowers.qa</a>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-md-6">
+
+    <div class="col-lg-8">
+      <div class="card p-4">
+        <h6 class="mb-1">{% trans "Send a message" %}</h6>
+        <p class="small text-muted mb-3">{% trans "Fill in the form below and we'll respond within 1 business day." %}</p>
+
+        {% if submitted %}
+          <div class="alert alert-success" role="alert">
+            {% trans "Thanks for reaching out! We will respond soon." %}
+          </div>
+        {% endif %}
+
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.name.id_for_label }}">{% trans "Name" %} *</label>
+              {{ form.name }}
+              {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.email.id_for_label }}">{% trans "Email" %} *</label>
+              {{ form.email }}
+              {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="{{ form.subject.id_for_label }}">{% trans "Subject" %} *</label>
+              {{ form.subject }}
+              {% if form.subject.errors %}<div class="text-danger small mt-1">{{ form.subject.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="{{ form.message.id_for_label }}">{% trans "Your Message" %} *</label>
+              {{ form.message }}
+              {% if form.message.errors %}<div class="text-danger small mt-1">{{ form.message.errors.0 }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-floward w-100">
+                {% trans "Send Message" %} <i class="bi bi-send-fill ms-1"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-12">
       <div class="card p-4">
         <h6 class="mb-3">{% trans "Need quick answers?" %}</h6>
         <p class="mb-3">{% trans "Check our frequently asked questions for common queries about ordering, delivery, and payments." %}</p>
-        <a href="{% url 'core:faq' %}" class="btn btn-floward">{% trans "Visit FAQ" %}</a>
+        <a href="{% url 'core:faq' %}" class="btn btn-outline-floward">{% trans "Visit FAQ" %}</a>
       </div>
     </div>
   </div>

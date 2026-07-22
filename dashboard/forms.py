@@ -189,6 +189,9 @@ class CouponForm(forms.ModelForm):
             "is_active",
         ]
         widgets = {"valid_from": _DATETIME, "valid_until": _DATETIME}
+        help_texts = {
+            "applicable_categories": "Hold Ctrl (Cmd on Mac) and click to select multiple categories.",
+        }
 
 
 class GiftCardForm(forms.ModelForm):

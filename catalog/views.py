@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import json
 
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
-from django.views.decorators.http import require_GET
+from django.shortcuts import redirect, render
+from django.views.decorators.http import require_GET, require_POST
 from cart.selectors import get_cart_for_request, is_product_in_cart
 
+from catalog.forms import ReviewForm
+from catalog.models import ModerationStatus, Review
 from catalog.selectors import (
     get_category_by_slug,
     get_plp_filter_options,
@@ -18,6 +22,8 @@ from catalog.selectors import (
     get_variant_price,
     record_product_view,
 )
+from catalog.services import submit_review
+from orders.models import OrderItem, OrderStatus
 from core.seo import build_plp_canonical_url, build_product_json_ld, resolve_meta_title, seo_context
 from delivery.selectors import (
     get_active_cities,
@@ -146,6 +152,24 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
     if review_count:
         average_rating = sum(r.rating for r in reviews) / review_count
 
+    can_review = False
+    user_review = None
+    if request.user.is_authenticated:
+        customer_profile = getattr(request.user, "customer_profile", None)
+        if customer_profile is not None:
+            user_review = Review.objects.filter(
+                product=product, customer=customer_profile
+            ).first()
+            has_purchased = (
+                OrderItem.objects.filter(
+                    product=product,
+                    order__customer_profile=customer_profile,
+                )
+                .exclude(order__order_status__in=[OrderStatus.CANCELLED, OrderStatus.REFUNDED])
+                .exists()
+            )
+            can_review = has_purchased and user_review is None
+
     context = seo_context(
         request=request,
         obj=product,
@@ -168,9 +192,53 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
                     review_count=review_count,
                 )
             ),
+            "review_form": ReviewForm(),
+            "can_review": can_review,
+            "user_review": user_review,
         }
     )
     return render(request, "catalog/pdp.html", context)
+
+@login_required
+@require_POST
+def review_create_view(request: HttpRequest, slug: str) -> HttpResponse:
+    """Submit a review — only allowed for customers who purchased the product."""
+    product = get_product_detail(slug=slug)
+    if product is None:
+        raise Http404("Product not found")
+
+    customer_profile = getattr(request.user, "customer_profile", None)
+    if customer_profile is None:
+        messages.error(request, "Only customer accounts can write reviews.")
+        return redirect("catalog:pdp", slug=slug)
+
+    has_purchased = (
+        OrderItem.objects.filter(product=product, order__customer_profile=customer_profile)
+        .exclude(order__order_status__in=[OrderStatus.CANCELLED, OrderStatus.REFUNDED])
+        .exists()
+    )
+    if not has_purchased:
+        messages.error(request, "You can review a product only after purchasing it.")
+        return redirect("catalog:pdp", slug=slug)
+
+    if Review.objects.filter(product=product, customer=customer_profile).exists():
+        messages.error(request, "You've already reviewed this product.")
+        return redirect("catalog:pdp", slug=slug)
+
+    form = ReviewForm(request.POST)
+    if form.is_valid():
+        submit_review(
+            product=product,
+            customer=customer_profile,
+            rating=int(form.cleaned_data["rating"]),
+            title=form.cleaned_data["title"],
+            body=form.cleaned_data["body"],
+            is_verified_purchase=True,
+        )
+        messages.success(request, "Thanks! Your review is submitted and pending moderation.")
+    else:
+        messages.error(request, "Please fix the errors and try again.")
+    return redirect("catalog:pdp", slug=slug)
 
 
 @require_GET

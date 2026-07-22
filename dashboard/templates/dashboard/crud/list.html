@@ -18,7 +18,7 @@
       <input type="text" name="q" value="{{ search_query }}" class="form-control" style="max-width: 320px;"
              placeholder="Search {{ plural_name|lower }}..." />
       <button type="submit" class="btn btn-outline-secondary"><i class="ti ti-search"></i></button>
-      {% if search_query %}<a href="?" class="btn btn-link">Clear</a>{% endif %}
+      {% if search_query %}<a href="?" class="btn btn-outline-secondary">Clear</a>{% endif %}
     </form>
     {% endif %}
 

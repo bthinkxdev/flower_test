@@ -40,7 +40,7 @@
       <div class="col-12 col-md-auto d-grid d-md-block">
         <button type="submit" class="btn btn-outline-secondary">Filter</button>
         {% if search_query or status_filter or category_filter %}
-        <a href="{% url 'dashboard:product-list' %}" class="btn btn-link text-secondary">Clear</a>
+        <a href="{% url 'dashboard:product-list' %}" class="btn btn-outline-secondary">Clear</a>
         {% endif %}
       </div>
     </form>
