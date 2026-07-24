@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{{ seo_title }}{% endblock %}
+
+{% block content %}
+<div class="container page-container py-4">
+  <h1 class="section-title text-center mb-5">{% trans "Our Blog" %}</h1>
+  
+  <div class="container mt-5">
+    {% for post in posts %}
+    <article class="row align-items-center mb-5 pb-5 {% if not forloop.last %}border-bottom{% endif %}">
+      
+      {% if forloop.counter|divisibleby:2 %}
+      
+        <!-- Even Posts: Image on Right -->
+        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0 text-center">
+          {% if post.og_image %}
+          <img src="{{ post.og_image.url }}" class="img-fluid rounded-4 shadow" alt="{{ post.title }}" style="max-height: 450px; width: 100%; object-fit: cover;">
+          {% endif %}
+        </div>
+        <div class="col-lg-6 order-lg-1 pe-lg-5">
+          <p class="text-primary small text-uppercase fw-bold mb-2" style="letter-spacing: 2px;">
+            {{ post.publish_at|default:post.created_at|date:"F j, Y" }}
+          </p>
+          <h2 class="display-5 fw-bold mb-4">{{ post.title }}</h2>
+          <div class="blog-content text-secondary lh-lg">
+            {{ post.body|safe }}
+          </div>
+        </div>
+        
+      {% else %}
+      
+        <!-- Odd Posts: Image on Left -->
+        <div class="col-lg-6 mb-4 mb-lg-0 text-center">
+          {% if post.og_image %}
+          <img src="{{ post.og_image.url }}" class="img-fluid rounded-4 shadow" alt="{{ post.title }}" style="max-height: 450px; width: 100%; object-fit: cover;">
+          {% endif %}
+        </div>
+        <div class="col-lg-6 ps-lg-5">
+          <p class="text-primary small text-uppercase fw-bold mb-2" style="letter-spacing: 2px;">
+            {{ post.publish_at|default:post.created_at|date:"F j, Y" }}
+          </p>
+          <h2 class="display-5 fw-bold mb-4">{{ post.title }}</h2>
+          <div class="blog-content text-secondary lh-lg">
+            {{ post.body|safe }}
+          </div>
+        </div>
+        
+      {% endif %}
+      
+    </article>
+    {% empty %}
+    <div class="text-center py-5">
+      <p class="text-muted">{% trans "No blog posts published yet." %}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

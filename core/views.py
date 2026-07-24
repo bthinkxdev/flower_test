@@ -82,6 +82,21 @@ def faq_view(request: HttpRequest) -> HttpResponse:
     return render(request, "core/faq.html", context)
 
 
+@require_GET
+def blog_list_view(request: HttpRequest) -> HttpResponse:
+    """Render the blog list page."""
+    from cms.models import BlogPost
+    posts = BlogPost.objects.filter(is_published=True).order_by("-publish_at", "-created_at")
+
+    context = seo_context(
+        request=request,
+        title=_("Blog | Story of Flowers"),
+        description=_("Read the latest news, tips, and stories from Story of Flowers."),
+    )
+    context["posts"] = posts
+    return render(request, "core/blog.html", context)
+
+
 @require_POST
 def set_language_view(request: HttpRequest) -> HttpResponse:
     """Persist language choice to session and activate translation."""
