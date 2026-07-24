@@ -35,7 +35,14 @@
                 <form method="post" action="{% url 'cart:quantity' %}" hx-post="{% url 'cart:quantity' %}" hx-target="#cart-page-body" hx-swap="outerHTML">
                   {% csrf_token %}
                   <input type="hidden" name="cart_item_id" value="{{ line.item.pk }}">
-                  <input type="hidden" name="delta" value="1">
+                  <input type="hidden" name="delta" value="-1">
+                  <button class="qty-stepper__btn" type="submit" aria-label="{% trans 'Decrease quantity' %}">&minus;</button>
+                </form>
+                <span class="qty-stepper__value">{{ line.quantity }}</span>
+                <form method="post" action="{% url 'cart:quantity' %}" hx-post="{% url 'cart:quantity' %}" hx-target="#cart-page-body" hx-swap="outerHTML">
+                  {% csrf_token %}
+                  <input type="hidden" name="cart_item_id" value="{{ line.item.pk }}">
+                  <input type="hidden" name="delta" value="+1">
                   <button
                     class="qty-stepper__btn"
                     type="submit"
@@ -45,13 +52,6 @@
                     title="{% blocktrans with stock=line.available_stock %}Only {{ stock }} in stock{% endblocktrans %}"
                     {% endif %}
                   >&plus;</button>
-                </form>
-                <span class="qty-stepper__value">{{ line.quantity }}</span>
-                <form method="post" action="{% url 'cart:quantity' %}" hx-post="{% url 'cart:quantity' %}" hx-target="#cart-page-body" hx-swap="outerHTML">
-                  {% csrf_token %}
-                  <input type="hidden" name="cart_item_id" value="{{ line.item.pk }}">
-                  <input type="hidden" name="delta" value="1">
-                  <button class="qty-stepper__btn" type="submit" aria-label="{% trans 'Increase quantity' %}">&plus;</button>
                 </form>
               </div>
 

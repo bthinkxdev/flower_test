@@ -37,6 +37,11 @@ def _get_line_item_ref(*, request: HttpRequest, slug: str):
     return ref
 
 
+def _snapshot_version(snapshot) -> str:
+    """Version marker used to detect whether the cart still matches the current customization."""
+    return snapshot.updated_at.isoformat() if snapshot is not None else ""
+
+
 def _builder_context(*, request: HttpRequest, product, line_item_ref) -> dict:
     config = get_gift_customization_config(product_instance=product, request=request)
     if config is None:
@@ -45,7 +50,7 @@ def _builder_context(*, request: HttpRequest, product, line_item_ref) -> dict:
     selected_addon_ids: list[int] = []
     if snapshot is not None:
         selected_addon_ids = [row.addon_product_id for row in snapshot.snapshot_addons.all()]
-    snapshot_version = snapshot.updated_at.isoformat() if snapshot is not None else ""
+    snapshot_version = _snapshot_version(snapshot)
     stored_version = request.session.get(f"gift_added_ref:{line_item_ref.pk}")
     in_cart = stored_version is not None and stored_version == snapshot_version
     return {
@@ -111,6 +116,11 @@ def gift_builder_preview_view(request: HttpRequest, line_item_id: int) -> HttpRe
                 )
                 context["snapshot"] = get_gift_customization_snapshot(
                     line_item_reference=line_item_ref
+                )
+                context["snapshot_version"] = _snapshot_version(context["snapshot"])
+                stored_version = request.session.get(f"gift_added_ref:{line_item_ref.pk}")
+                context["in_cart"] = (
+                    stored_version is not None and stored_version == context["snapshot_version"]
                 )
                 context["success"] = True
             except GiftCustomizationValidationError as exc:

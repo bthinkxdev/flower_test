@@ -22,7 +22,7 @@
           });
           var stockText = document.getElementById('pdp-stock-text');
           if (stockText) {
-            stockText.textContent = inStock ? 'In stock — order now' : 'Out of stock';
+            stockText.textContent = inStock ? 'In stock(' + data.stock_quantity + ') — order now' : 'Out of stock';
             stockText.classList.toggle('text-success', inStock);
             stockText.classList.toggle('text-danger', !inStock);
           }
@@ -55,7 +55,11 @@
       if (btn.classList.contains('is-in-cart')) {
         evt.preventDefault();
         evt.stopImmediatePropagation();
-        openCartDrawer();
+        if (btn.dataset.cartUrl) {
+          window.location.href = btn.dataset.cartUrl;
+        } else {
+          openCartDrawer();
+        }
       }
     }, true);
   });

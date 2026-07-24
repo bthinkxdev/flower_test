@@ -404,6 +404,8 @@ def address_detail_view(request: HttpRequest, address_id: int) -> HttpResponse:
         line1=form.cleaned_data["line1"],
         line2=form.cleaned_data.get("line2", ""),
         city_id=form.cleaned_data["city"].pk,
+        contact_name=form.cleaned_data.get("contact_name", ""),
+        phone=form.cleaned_data.get("phone", ""),
         is_default=form.cleaned_data.get("is_default", False),
     )
     address = get_address_by_id(address_id=address.pk, customer_profile=profile)

@@ -1,5 +1,8 @@
 (function () {
   'use strict';
+  if (window.htmx && htmx.config && htmx.config.responseHandling) {
+    htmx.config.responseHandling.unshift({ code: '400', swap: true, error: false });
+  }
 
   var csrfMeta = document.querySelector('meta[name="csrf-token"]');
   var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';

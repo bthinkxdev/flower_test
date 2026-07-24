@@ -13,12 +13,17 @@ from cart.services import get_or_create_cart
 from checkout.forms import CheckoutAddressForm, CheckoutDeliveryForm, CheckoutPaymentForm, CheckoutGuestDetailsForm
 from checkout.selectors import get_checkout_session_by_id
 from checkout.services import create_checkout_session, place_order, update_checkout_session, build_guest_order_token, verify_guest_order_token
+from checkout.exceptions import CheckoutError
+from cart.exceptions import OutOfStockError
+from catalog.exceptions import InsufficientStockError
+from delivery.exceptions import SlotFullyBookedError
+from django.utils.translation import gettext as _
 from delivery.selectors import get_available_slots
 from payments.registry import PAYMENT_GATEWAYS
 from payments.services import process_payment
 from datetime import date
 from accounts.forms import AddressForm
-from accounts.services import create_address
+from accounts.services import create_address, update_address
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
 from accounts.models import Address
@@ -26,6 +31,13 @@ from django.urls import reverse
 from core.page_rerender import is_htmx_request
 from orders.selectors import get_order_for_customer
 import json
+
+def _pick_default_address(addresses):
+    """Prefer the address marked as default; fall back to the first saved address."""
+    if not addresses:
+        return None
+    return next((addr for addr in addresses if addr.is_default), addresses[0])
+
 
 @require_GET
 def checkout_view(request: HttpRequest) -> HttpResponse:
@@ -43,8 +55,9 @@ def checkout_view(request: HttpRequest) -> HttpResponse:
 
     if profile and not session.address_id:
         saved_addresses = get_saved_addresses(customer_profile=profile, page=1)["results"]
-        if saved_addresses:
-            update_checkout_session(checkout_session=session, address=saved_addresses[0])
+        default_address = _pick_default_address(saved_addresses)
+        if default_address is not None:
+            update_checkout_session(checkout_session=session, address=default_address)
             summary = get_cart_summary(cart=cart)
     preview_lines = [
         {"product": line.product, "snapshot": line.gift_snapshot} for line in summary.lines
@@ -68,22 +81,90 @@ def checkout_view(request: HttpRequest) -> HttpResponse:
             "address_form": AddressForm() if profile else None,
             "is_guest": profile is None,
             "guest_details_form": CheckoutGuestDetailsForm() if profile is None else None,
+            "checkout_address_form": CheckoutAddressForm() if profile else None,
+            "delivery_form": CheckoutDeliveryForm(
+                initial={
+                    "delivery_date": session.delivery_date,
+                    "delivery_slot_id": session.delivery_slot_id,
+                }
+            ),
+            "payment_form": CheckoutPaymentForm(),
+            "selected_address_id": session.address_id,
+            "selected_delivery_slot_id": session.delivery_slot_id,
+            "selected_gateway_key": None,
         },
+    )
+
+
+def _render_checkout_order_form_errors(
+    request: HttpRequest,
+    *,
+    session,
+    cart,
+    profile,
+    payment_form: CheckoutPaymentForm,
+    delivery_form: CheckoutDeliveryForm,
+    checkout_address_form: CheckoutAddressForm | None,
+    guest_details_form: CheckoutGuestDetailsForm | None,
+    address=None,
+    general_error: str = "",
+) -> HttpResponse:
+    """Re-render the checkout form with bound (invalid) forms so each field shows its own error."""
+    summary = get_cart_summary(cart=cart)
+    addresses = get_saved_addresses(customer_profile=profile, page=1)["results"] if profile else []
+
+    # Prefer whatever the user just submitted (even if some other field on the
+    # form is invalid) over stale session data, so delivery slots line up with
+    # what's currently on screen.
+    city = None
+    if profile:
+        if address is not None:
+            city = address.city
+        elif session.address_id:
+            city = session.address.city
+    else:
+        if guest_details_form is not None:
+            city = guest_details_form.cleaned_data.get("city")
+        if city is None and session.guest_details:
+            from delivery.models import City
+
+            city = City.objects.filter(pk=session.guest_details.get("city_id")).first()
+
+    delivery_date = delivery_form.cleaned_data.get("delivery_date") if delivery_form.is_bound else None
+    if delivery_date is None:
+        delivery_date = session.delivery_date
+    delivery_date_iso = delivery_date.isoformat() if delivery_date else None
+
+    delivery_slots = []
+    if city and delivery_date_iso:
+        delivery_slots = get_available_slots(city=city, delivery_date=delivery_date_iso)
+
+    return render(
+        request,
+        "checkout/partials/checkout_order_form.html",
+        {
+            "checkout_session": session,
+            "summary": summary,
+            "addresses": addresses,
+            "delivery_slots": delivery_slots,
+            "payment_gateways": PAYMENT_GATEWAYS,
+            "is_guest": profile is None,
+            "guest_details_form": guest_details_form,
+            "checkout_address_form": checkout_address_form,
+            "delivery_form": delivery_form,
+            "payment_form": payment_form,
+            "general_error": general_error,
+            "selected_address_id": request.POST.get("address_id"),
+            "selected_delivery_slot_id": request.POST.get("delivery_slot_id"),
+            "selected_gateway_key": request.POST.get("gateway_key"),
+        },
+        status=400,
     )
 
 
 @require_http_methods(["POST"])
 def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
     """Place order and process payment in one HTMX step. Works for guests too."""
-    form = CheckoutPaymentForm(request.POST)
-    if not form.is_valid():
-        return render(
-            request,
-            "checkout/partials/errors.html",
-            {"errors": form.errors},
-            status=400,
-        )
-
     cart = get_cart_for_request(request=request)
     if cart is None:
         raise Http404("Cart not found.")
@@ -95,37 +176,50 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
         session_key=request.session.session_key or "",
     )
 
+    payment_form = CheckoutPaymentForm(request.POST)
+    delivery_form = CheckoutDeliveryForm(request.POST)
+    payment_ok = payment_form.is_valid()
+    delivery_ok = delivery_form.is_valid()
+
+    checkout_address_form = None
+    guest_details_form = None
+    address = None
+
     if profile:
-        address_form = CheckoutAddressForm(request.POST)
-        if not address_form.is_valid():
-            return render(
-                request,
-                "checkout/partials/errors.html",
-                {"errors": {"address": ["Please select a delivery address."]}},
-                status=400,
+        checkout_address_form = CheckoutAddressForm(request.POST)
+        address_ok = checkout_address_form.is_valid()
+        if address_ok:
+            address = get_address_by_id(
+                address_id=checkout_address_form.cleaned_data["address_id"],
+                customer_profile=profile,
             )
-        address = get_address_by_id(
-            address_id=address_form.cleaned_data["address_id"],
-            customer_profile=profile,
+            if address is None:
+                checkout_address_form.add_error(
+                    "address_id",
+                    _("The selected address is no longer available. Please choose another."),
+                )
+                address_ok = False
+    else:
+        guest_details_form = CheckoutGuestDetailsForm(request.POST)
+        address_ok = guest_details_form.is_valid()
+
+    if not (payment_ok and delivery_ok and address_ok):
+        return _render_checkout_order_form_errors(
+            request,
+            session=session,
+            cart=cart,
+            profile=profile,
+            payment_form=payment_form,
+            delivery_form=delivery_form,
+            checkout_address_form=checkout_address_form,
+            guest_details_form=guest_details_form,
+            address=address,
         )
-        if address is None:
-            return render(
-                request,
-                "checkout/partials/errors.html",
-                {"errors": {"address": ["The selected address is no longer available. Please choose another."]}},
-                status=400,
-            )
+
+    if profile:
         update_checkout_session(checkout_session=session, address=address)
     else:
-        guest_form = CheckoutGuestDetailsForm(request.POST)
-        if not guest_form.is_valid():
-            return render(
-                request,
-                "checkout/partials/errors.html",
-                {"errors": guest_form.errors},
-                status=400,
-            )
-        cd = guest_form.cleaned_data
+        cd = guest_details_form.cleaned_data
         update_checkout_session(
             checkout_session=session,
             guest_details={
@@ -139,35 +233,41 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
             },
         )
 
-    delivery_form = CheckoutDeliveryForm(request.POST)
-    if not delivery_form.is_valid():
-        return render(
-            request,
-            "checkout/partials/errors.html",
-            {"errors": delivery_form.errors},
-            status=400,
-        )
     update_checkout_session(
         checkout_session=session,
         delivery_date=delivery_form.cleaned_data.get("delivery_date"),
         delivery_slot_id=delivery_form.cleaned_data.get("delivery_slot_id"),
     )
 
-    order = place_order(
-        checkout_session_id=session.pk,
-        idempotency_key=form.cleaned_data["idempotency_key"],
-        customer_profile=profile,
-    )
+    try:
+        order = place_order(
+            checkout_session_id=session.pk,
+            idempotency_key=payment_form.cleaned_data["idempotency_key"],
+            customer_profile=profile,
+        )
 
-    payment_data = {}
-    if form.cleaned_data.get("voucher_code"):
-        payment_data["voucher_code"] = form.cleaned_data["voucher_code"]
+        payment_data = {}
+        if payment_form.cleaned_data.get("voucher_code"):
+            payment_data["voucher_code"] = payment_form.cleaned_data["voucher_code"]
 
-    process_payment(
-        order=order,
-        gateway_key=form.cleaned_data["gateway_key"],
-        payment_data=payment_data,
-    )
+        process_payment(
+            order=order,
+            gateway_key=payment_form.cleaned_data["gateway_key"],
+            payment_data=payment_data,
+        )
+    except (CheckoutError, SlotFullyBookedError, InsufficientStockError, OutOfStockError) as exc:
+        return _render_checkout_order_form_errors(
+            request,
+            session=session,
+            cart=cart,
+            profile=profile,
+            payment_form=payment_form,
+            delivery_form=delivery_form,
+            checkout_address_form=checkout_address_form,
+            guest_details_form=guest_details_form,
+            address=address,
+            general_error=str(exc),
+        )
 
     redirect_url = reverse("checkout:confirmation", kwargs={"order_id": order.pk})
     if profile is None:
@@ -283,7 +383,8 @@ def checkout_add_address_view(request: HttpRequest) -> HttpResponse:
         city_id=form.cleaned_data["city"].pk,
         is_default=form.cleaned_data.get("is_default", False),
     )
-    update_checkout_session(checkout_session=session, address=address)
+    if address.is_default or not session.address_id:
+        update_checkout_session(checkout_session=session, address=address)
     cart.refresh_from_db()
 
     summary = get_cart_summary(cart=cart)
@@ -303,6 +404,7 @@ def checkout_add_address_view(request: HttpRequest) -> HttpResponse:
             "addresses": addresses,
             "delivery_slots": delivery_slots,
             "address_form": AddressForm(),
+            "selected_address_id": session.address_id,
         }
     )
     response["HX-Trigger"] = json.dumps({"addressSaved": {"message": "Address saved"}})
@@ -339,7 +441,7 @@ def checkout_edit_address_view(request: HttpRequest, address_id: int) -> HttpRes
     """Save modifications to an address during checkout and refresh charges."""
     profile = request.user.customer_profile
     address = get_object_or_404(Address, pk=address_id, customer_profile=profile)
-    
+
     form = AddressForm(request.POST, instance=address)
     if not form.is_valid():
         return render(
@@ -347,12 +449,29 @@ def checkout_edit_address_view(request: HttpRequest, address_id: int) -> HttpRes
             "checkout/partials/checkout_address_edit_form.html",
             {"address_form": form, "address": address}
         )
-        
-    address = form.save()
-    
+
+    # Route through the service (not form.save()) so promoting this address to
+    # default atomically demotes any other default — form.save() would just
+    # flip this row's flag and leave a stale second "default" in place.
+    address = update_address(
+        customer_profile=profile,
+        address_id=address.pk,
+        label=form.cleaned_data["label"],
+        line1=form.cleaned_data["line1"],
+        line2=form.cleaned_data.get("line2", ""),
+        city_id=form.cleaned_data["city"].pk,
+        contact_name=form.cleaned_data.get("contact_name", ""),
+        phone=form.cleaned_data.get("phone", ""),
+        is_default=form.cleaned_data.get("is_default", False),
+    )
+
     cart = get_or_create_cart(request=request)
     session = create_checkout_session(cart=cart, customer_profile=profile)
-    update_checkout_session(checkout_session=session, address=address)
+    # Same rule as adding an address: keep the current selection unless this
+    # address is now the default, is the one already selected, or nothing is
+    # selected yet.
+    if address.is_default or not session.address_id or session.address_id == address.pk:
+        update_checkout_session(checkout_session=session, address=address)
 
     cart.refresh_from_db()
 
@@ -374,6 +493,7 @@ def checkout_edit_address_view(request: HttpRequest, address_id: int) -> HttpRes
             "addresses": addresses,
             "delivery_slots": delivery_slots,
             "address_form": AddressForm(),
+            "selected_address_id": session.address_id,
         }
     )
     response["HX-Trigger"] = json.dumps({"addressSaved": {"message": "Address updated"}})
@@ -396,16 +516,26 @@ def checkout_delete_address_view(request: HttpRequest, address_id: int) -> HttpR
         cart.save(update_fields=["destination_city", "delivery_charge", "updated_at"])
         
     delete_address(customer_profile=profile, address_id=address_id)
-    
-    summary = get_cart_summary(cart=cart)
+
     addresses = get_saved_addresses(customer_profile=profile, page=1)["results"]
-    
+
+    # If checkout is left without a selected address (the one just deleted was
+    # the active one), fall back to the default address rather than leaving
+    # the order unaddressable.
+    if not session.address_id and addresses:
+        fallback_address = _pick_default_address(addresses)
+        if fallback_address is not None:
+            update_checkout_session(checkout_session=session, address=fallback_address)
+            cart.refresh_from_db()
+
+    summary = get_cart_summary(cart=cart)
+
     city = session.address.city if session.address_id else None
     delivery_date_iso = session.delivery_date.isoformat() if session.delivery_date else None
     delivery_slots = []
     if city and delivery_date_iso:
         delivery_slots = get_available_slots(city=city, delivery_date=delivery_date_iso)
-        
+
     return render(
         request,
         "checkout/partials/address_deleted.html",
@@ -414,6 +544,7 @@ def checkout_delete_address_view(request: HttpRequest, address_id: int) -> HttpR
             "summary": summary,
             "addresses": addresses,
             "delivery_slots": delivery_slots,
+            "selected_address_id": session.address_id,
         }
     )
 

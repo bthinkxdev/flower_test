@@ -4,12 +4,14 @@
 {% for addr in addresses %}
 <div class="d-flex justify-content-between align-items-center mb-2">
   <div class="form-check">
-    <input class="form-check-input" type="radio" name="address_id" value="{{ addr.pk }}" id="addr-{{ addr.pk }}" 
-           hx-post="{% url 'checkout:update-session' %}" 
-           hx-trigger="change" 
+    <input class="form-check-input" type="radio" name="address_id" value="{{ addr.pk }}" id="addr-{{ addr.pk }}"
+           hx-post="{% url 'checkout:update-session' %}"
+           hx-trigger="change"
            hx-include="#checkout-form"
-           {% if checkout_session.address_id == addr.pk %}checked{% endif %}>
-    <label class="form-check-label small" for="addr-{{ addr.pk }}">{{ addr.label }} — {{ addr.line1 }}, {{ addr.city.name }}</label>
+           hx-target="this"
+           hx-swap="none"
+           {% if selected_address_id|stringformat:"s" == addr.pk|stringformat:"s" or addr.is_default and not selected_address_id %}checked{% endif %}>
+    <label class="form-check-label small" for="addr-{{ addr.pk }}">{{ addr.label }} — {{ addr.line1 }}, {{ addr.city.name }}{% if addr.is_default %} <span class="badge bg-light text-secondary border">{% trans "Default" %}</span>{% endif %}</label>
   </div>
   <div class="d-flex gap-2">
     <button class="btn btn-sm btn-link p-0 text-secondary small" type="button"

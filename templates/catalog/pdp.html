@@ -30,7 +30,6 @@
         {% endif %}
         {% money_label price_data.price display_currency %}
       </p>
-      {% include "catalog/partials/pdp_delivery.html" %}
       {% if product.variant_list %}
       <div class="mb-3">
         <label class="form-label small fw-medium">{% trans "Select Option" %}</label>
@@ -42,12 +41,13 @@
         </select>
       </div>
       {% endif %}
+      {% include "catalog/partials/pdp_delivery.html" %}
       <div class="d-flex gap-2 mb-3 d-none d-lg-flex">
         <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1 pdp-add-to-cart-form" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
           {% csrf_token %}
           <input type="hidden" name="product_id" value="{{ product.pk }}">
           <input type="hidden" name="variant_id" class="pdp-variant-id-field" value="">
-          <button type="submit" class="btn btn-floward w-100 py-2 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" {% if not product.is_in_stock %}disabled{% endif %}>
+          <button type="submit" class="btn btn-floward w-100 py-2 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" data-cart-url="{% url 'cart:page' %}" {% if not product.is_in_stock %}disabled{% endif %}>
             <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
             <span class="btn-check-icon" aria-hidden="true">✔</span>
           </button>
@@ -71,7 +71,7 @@
         {% elif product.stock_quantity <= product.low_stock_threshold %}
           {% blocktrans with count=product.stock_quantity %}Low stock — only {{ count }} left{% endblocktrans %}
         {% else %}
-          {% trans "In stock — order now" %}
+          {% blocktrans with count=product.stock_quantity %}In stock({{ count }}) — order now{% endblocktrans %}
         {% endif %}
       </p>
     </div>
@@ -83,7 +83,8 @@
     {% csrf_token %}
     <input type="hidden" name="product_id" value="{{ product.pk }}">
     <input type="hidden" name="variant_id" class="pdp-variant-id-field" value="">
-    <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" {% if not product.is_in_stock %}disabled{% endif %}>
+    {% comment %} <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" {% if not product.is_in_stock %}disabled{% endif %}> {% endcomment %}
+    <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" data-cart-url="{% url 'cart:page' %}" {% if not product.is_in_stock %}disabled{% endif %}>
       <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
       <span class="btn-check-icon" aria-hidden="true">✔</span>
     </button>

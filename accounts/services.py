@@ -467,10 +467,12 @@ def update_address(
     line1: str,
     line2: str,
     city_id: int,
+    contact_name: str = "",
+    phone: str = "",
     is_default: bool = False,
 ) -> Address:
     """
-    Update an existing address and optionally promote it to default.
+    Update an existing address and sync its default status both ways.
 
     Params:
         customer_profile: Owner profile.
@@ -479,18 +481,38 @@ def update_address(
         line1: Primary address line.
         line2: Secondary address line.
         city_id: delivery.City primary key.
-        is_default: When True, demotes other defaults atomically.
+        contact_name: Recipient name for this address.
+        phone: Recipient phone number for this address.
+        is_default: When True, promotes this address and atomically demotes any
+            other default. When False and this address was the default,
+            explicitly demotes it (matches an unchecked "set as default"
+            checkbox) instead of silently leaving the stale flag in place.
     Returns:
         Updated Address instance.
     """
     address = Address.objects.get(pk=address_id, customer_profile=customer_profile)
+    was_default = address.is_default
     address.label = label
     address.line1 = line1
     address.line2 = line2
     address.city_id = city_id
-    address.save(update_fields=["label", "line1", "line2", "city_id", "updated_at"])
+    address.contact_name = contact_name
+    address.phone = phone
     if is_default:
+        address.save(
+            update_fields=["label", "line1", "line2", "city_id", "contact_name", "phone", "updated_at"]
+        )
         return set_default_address(customer_profile=customer_profile, address_id=address.pk)
+
+    address.is_default = False
+    address.save(
+        update_fields=[
+            "label", "line1", "line2", "city_id", "contact_name", "phone", "is_default", "updated_at",
+        ]
+    )
+    if was_default and customer_profile.default_address_id == address.pk:
+        customer_profile.default_address = None
+        customer_profile.save(update_fields=["default_address", "updated_at"])
     return address
 
 

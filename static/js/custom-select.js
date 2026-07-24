@@ -1,4 +1,22 @@
 (function () {
+  function destroySelect(wrapper) {
+    // Undo a previous enhancement: put the native <select> back where it was
+    // and drop the decorative trigger/panel, so re-scanning a subtree never
+    // stacks a second wrapper on top of an already-enhanced select.
+    var select = wrapper.querySelector('select');
+    if (select) {
+      delete select.dataset.enhanced;
+      select.classList.remove('floward-select__native');
+      select.removeAttribute('tabindex');
+      wrapper.parentNode.insertBefore(select, wrapper);
+    }
+    wrapper.parentNode.removeChild(wrapper);
+  }
+
+  function resetEnhanced(root) {
+    (root || document).querySelectorAll('.floward-select').forEach(destroySelect);
+  }
+
   function buildSelect(select) {
     if (select.dataset.enhanced || select.multiple) return;
     select.dataset.enhanced = 'true';
@@ -58,6 +76,7 @@
     });
 
     document.addEventListener('click', function (evt) {
+      if (!wrapper.isConnected) return;
       if (!wrapper.contains(evt.target)) closePanel();
     });
 
@@ -78,9 +97,13 @@
   }
 
   function init(root) {
-    (root || document).querySelectorAll('select.form-select:not([multiple])').forEach(buildSelect);
+    var scope = root || document;
+    resetEnhanced(scope);
+    scope.querySelectorAll('select.form-select:not([multiple])').forEach(buildSelect);
   }
 
   document.addEventListener('DOMContentLoaded', function () { init(document); });
-  document.body.addEventListener('htmx:afterSwap', function (evt) { init(evt.target); });
+  document.body.addEventListener('htmx:afterSettle', function (evt) {
+    init((evt.detail && evt.detail.target) || document);
+  });
 })();
