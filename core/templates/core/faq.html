@@ -9,72 +9,28 @@
 
   <div class="accordion" id="faqAccordion">
 
+    {% for faq in faqs %}
     <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-          {% trans "How fast is delivery?" %}
+        <button class="accordion-button{% if not forloop.first %} collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}">
+          {{ faq.question }}
         </button>
       </h2>
-      <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+      <div id="faq{{ faq.id }}" class="accordion-collapse collapse{% if forloop.first %} show{% endif %}" data-bs-parent="#faqAccordion">
         <div class="accordion-body">
-          {% trans "We offer same-day delivery across Doha when orders are placed before the daily cutoff time shown at checkout." %}
+          {{ faq.answer|safe }}
         </div>
       </div>
     </div>
-
-    <div class="accordion-item">
-      <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-          {% trans "What payment methods do you accept?" %}
-        </button>
-      </h2>
-      <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-        <div class="accordion-body">
-          {% trans "We accept major credit and debit cards along with other secure payment options available at checkout." %}
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-          {% trans "Can I schedule a delivery for a future date?" %}
-        </button>
-      </h2>
-      <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-        <div class="accordion-body">
-          {% trans "Yes, you can pick any future delivery date and time slot during checkout." %}
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-          {% trans "What is your cancellation policy?" %}
-        </button>
-      </h2>
-      <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-        <div class="accordion-body">
-          {% trans "Orders can be cancelled or modified up until they are dispatched for delivery. Contact support for assistance." %}
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item">
-      <h2 class="accordion-header">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-          {% trans "Still have questions?" %}
-        </button>
-      </h2>
-      <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-        <div class="accordion-body">
-          {% trans "Reach out to our support team, available 24/7." %}
-          <a href="{% url 'core:contact-us' %}">{% trans "Contact us" %}</a>.
-        </div>
-      </div>
-    </div>
-
+    {% empty %}
+    <p class="text-muted">{% trans "No FAQs available at the moment." %}</p>
+    {% endfor %}
   </div>
+
+  <div class="text-center pt-4">
+    <h4>{% trans "Still have questions?" %}</h4>
+    <p>{% trans "Reach out to our support team, available 24/7." %} <a href="{% url 'core:contact-us' %}">{% trans "Contact us" %}</a>.</p>
+  </div>
+
 </div>
 {% endblock %}
