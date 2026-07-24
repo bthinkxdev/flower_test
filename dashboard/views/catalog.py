@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from catalog.models import Brand, Category, Occasion, Product, Recipient, Review
+from catalog.models import Brand, Category, Occasion, Product, ProductVariant, Recipient, Review
 from core.models import Currency
 from dashboard import forms
 from dashboard.access import dashboard_required
@@ -186,6 +186,7 @@ def _render_product_form(request, product, mode):
         "form_mode": mode,
         "product": product,
         "cancel_url": reverse("dashboard:product-list"),
+        "existing_variant_types": sorted(set(v.title() for v in ProductVariant.objects.values_list("variant_type", flat=True) if v)),
     }
     context.update({
         "card_eligibility": eligibility["cards"],

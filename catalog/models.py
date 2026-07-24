@@ -323,8 +323,7 @@ class ProductVariant(TimeStampedModel):
         verbose_name="Product",
     )
     variant_type = models.CharField(
-        max_length=20,
-        choices=VariantType.choices,
+        max_length=50,
         verbose_name="Variant type",
     )
     name = models.CharField(max_length=120, verbose_name="Name")

@@ -137,10 +137,29 @@ class ReviewForm(forms.ModelForm):
         fields = ["moderation_status"]
 
 
+class ProductVariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+        fields = ["variant_type", "name", "price_delta", "sku_suffix", "stock_quantity"]
+        widgets = {
+            "variant_type": forms.TextInput(attrs={"list": "variant-type-list"}),
+        }
+
+    def has_changed(self):
+        if not self.initial:
+            data = self.data
+            prefix = self.prefix
+            variant_type = data.get(f"{prefix}-variant_type", "").strip()
+            name = data.get(f"{prefix}-name", "").strip()
+            if not variant_type and not name:
+                return False
+        return super().has_changed()
+
+
 ProductVariantFormSet = forms.inlineformset_factory(
     Product,
     ProductVariant,
-    fields=["variant_type", "name", "price_delta", "sku_suffix", "stock_quantity"],
+    form=ProductVariantForm,
     extra=1,
     can_delete=True,
 )
