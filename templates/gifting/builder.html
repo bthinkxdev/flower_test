@@ -19,6 +19,9 @@
             hx-trigger="change delay:300ms">
         {% csrf_token %}
         <input type="hidden" name="product_slug" value="{{ product.slug }}">
+        <input type="hidden" name="line_item_ref_id" value="{{ line_item_ref.pk }}">
+        <input type="hidden" name="product_slug" value="{{ product.slug }}">
+        <input type="hidden" name="snapshot_version" id="snapshot-version-field" value="{{ snapshot_version }}">
 
         {% if config.allows_personal_message %}
         <section class="builder-section mb-4" id="section-message">
@@ -186,10 +189,12 @@
                   hx-target="#order-preview" hx-swap="innerHTML" hx-include="#gift-builder-form">
             {% trans "Update Preview" %}
           </button>
-          <button type="submit" id="add-to-cart-btn" class="btn btn-floward"
+          <button type="submit" id="add-to-cart-btn" class="btn btn-floward pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}"
+                  data-added-label="{% trans 'View Cart' %}"
                   hx-post="{% url 'cart:add' %}"
-                  hx-target="#add-to-cart-feedback" hx-swap="innerHTML">
-            {% trans "Add to Cart" %}
+                  hx-target="#cart-drawer-body" hx-swap="innerHTML">
+            <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
+            <span class="btn-check-icon" aria-hidden="true">✔</span>
           </button>
         </div>
         <div id="add-to-cart-feedback" class="small mt-2"></div>
@@ -207,4 +212,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/gift_builder.js' %}"></script>
+<script src="{% static 'js/pdp.js' %}"></script>
 {% endblock %}

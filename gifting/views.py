@@ -22,6 +22,7 @@ from gifting.selectors import (
     get_line_item_ref_by_id,
 )
 from gifting.services import build_gift_customization_snapshot, create_line_item_reference
+from cart.selectors import get_cart_for_request, is_product_in_cart
 
 
 def _get_line_item_ref(*, request: HttpRequest, slug: str):
@@ -44,9 +45,14 @@ def _builder_context(*, request: HttpRequest, product, line_item_ref) -> dict:
     selected_addon_ids: list[int] = []
     if snapshot is not None:
         selected_addon_ids = [row.addon_product_id for row in snapshot.snapshot_addons.all()]
+    snapshot_version = snapshot.updated_at.isoformat() if snapshot is not None else ""
+    stored_version = request.session.get(f"gift_added_ref:{line_item_ref.pk}")
+    in_cart = stored_version is not None and stored_version == snapshot_version
     return {
         "product": product,
         "config": config,
+        "in_cart": in_cart,
+        "snapshot_version": snapshot_version,
         "line_item_ref": line_item_ref,
         "greeting_cards": get_eligible_greeting_cards(product_instance=product),
         "gift_wrap_options": get_eligible_gift_wrap_options(product_instance=product),

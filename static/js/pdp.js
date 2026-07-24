@@ -4,13 +4,16 @@
     variantSelect.addEventListener('change', function () {
       var url = this.getAttribute('data-price-url');
       var vid = this.value;
+      document.querySelectorAll('.pdp-variant-id-field').forEach(function (field) {
+        field.value = vid;
+      });
       fetch(url + (vid ? '?variant_id=' + vid : ''))
         .then(function (r) { return r.json(); })
         .then(function (data) {
           var priceEl = document.getElementById('pdp-price');
-          if (priceEl) priceEl.textContent = data.price + ' QAR';
+          if (priceEl) priceEl.textContent = data.price + ' ' + data.currency_code;
           var stickyPriceEl = document.getElementById('pdp-sticky-price');
-          if (stickyPriceEl) stickyPriceEl.textContent = data.price + ' QAR';
+          if (stickyPriceEl) stickyPriceEl.textContent = data.price + ' ' + data.currency_code;
 
           var inStock = data.is_in_stock === 'true' || data.is_in_stock === true;
           document.querySelectorAll('.pdp-add-to-cart-btn').forEach(function (btn) {
@@ -51,17 +54,21 @@
     btn.addEventListener('click', function (evt) {
       if (btn.classList.contains('is-in-cart')) {
         evt.preventDefault();
+        evt.stopImmediatePropagation();
         openCartDrawer();
       }
-    });
+    }, true);
   });
 
   document.body.addEventListener('htmx:afterRequest', function (event) {
     var elt = event.detail.elt;
-    if (!elt || !elt.classList || !elt.classList.contains('pdp-add-to-cart-form')) return;
+    if (!elt || !elt.classList) return;
+    var isCartForm = elt.classList.contains('pdp-add-to-cart-form');
+    var isCartBtn = elt.classList.contains('pdp-add-to-cart-btn');
+    if (!isCartForm && !isCartBtn) return;
     if (!event.detail.successful) return;
 
-    var btn = elt.querySelector('.pdp-add-to-cart-btn');
+    var btn = isCartBtn ? elt : elt.querySelector('.pdp-add-to-cart-btn');
     if (!btn) return;
 
     btn.classList.add('is-added');

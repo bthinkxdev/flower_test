@@ -61,6 +61,7 @@ class CartSummaryLine:
     gift_snapshot: Any
     line_subtotal: Decimal
     gift_customization_delta: Decimal
+    available_stock: int
 
 
 @dataclass
@@ -106,6 +107,23 @@ def is_product_in_cart(*, cart: Optional[Cart], product_id: int) -> bool:
     if cart is None:
         return False
     return CartItem.objects.filter(cart=cart, product_id=product_id).exists()
+
+
+def is_product_in_wishlist(*, request: HttpRequest, product_id: int) -> bool:
+    """Return True if the product is already in the current visitor's wishlist."""
+    from accounts.models import WishlistItem
+
+    if request.user.is_authenticated and hasattr(request.user, "customer_profile"):
+        return WishlistItem.objects.filter(
+            wishlist__customer_profile=request.user.customer_profile,
+            product_id=product_id,
+        ).exists()
+    if not request.session.session_key:
+        return False
+    return WishlistItem.objects.filter(
+        wishlist__session_key=request.session.session_key,
+        product_id=product_id,
+    ).exists()
 
 def get_cart_count(*, request: HttpRequest) -> int:
     """
@@ -178,6 +196,7 @@ def get_cart_summary(*, cart: Cart) -> CartSummary:
         line_subtotal = line_base + gift_delta * item.quantity
         subtotal += line_subtotal
         item_count += item.quantity
+        available_stock = item.variant.stock_quantity if item.variant else item.product.stock_quantity
         lines.append(
             CartSummaryLine(
                 item=item,
@@ -188,6 +207,7 @@ def get_cart_summary(*, cart: Cart) -> CartSummary:
                 gift_snapshot=gift_snapshot,
                 line_subtotal=line_subtotal,
                 gift_customization_delta=gift_delta,
+                available_stock=available_stock,
             )
         )
 

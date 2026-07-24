@@ -137,13 +137,16 @@ def adjust_cart_item_quantity(
     other into a lost update. Quantity dropping to zero or below deletes the
     line instead of persisting a non-positive quantity.
 
-    Returns:
-        The updated CartItem, or None if the line was deleted.
-
     Raises:
         CartItemNotFoundError: When no matching line exists on this cart.
+        OutOfStockError: When incrementing would exceed real available stock.
     """
-    item = CartItem.objects.select_for_update().filter(cart=cart, pk=cart_item_id).first()
+    item = (
+        CartItem.objects.select_for_update()
+        .select_related("product", "variant")
+        .filter(cart=cart, pk=cart_item_id)
+        .first()
+    )
     if item is None:
         raise CartItemNotFoundError("Cart item not found.")
 
@@ -151,6 +154,13 @@ def adjust_cart_item_quantity(
     if new_quantity < 1:
         item.delete()
         return None
+
+    if delta > 0:
+        available = item.variant.stock_quantity if item.variant else item.product.stock_quantity
+        if new_quantity > available:
+            raise OutOfStockError(
+                f"Only {available} unit(s) of '{item.product.name}' available."
+            )
 
     item.quantity = new_quantity
     item.save(update_fields=["quantity", "updated_at"])

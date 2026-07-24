@@ -1,5 +1,3 @@
-
-
 :root {
   --floward-primary: #8b3a4a;
   --floward-primary-dark: #6b2d3a;
@@ -1115,6 +1113,20 @@ body.mobile-search-open { overflow: hidden; }
 }
 .pdp-add-to-cart-btn.is-in-cart {
   background-color: var(--floward-primary, #b3486b);
+}
+.pdp-wishlist-btn.is-wishlisted {
+  color: #e63757;
+  border-color: #e63757;
+  background-color: rgba(230, 55, 87, 0.08);
+}
+.pdp-wishlist-btn.is-wishlisted:hover,
+.pdp-wishlist-btn.is-wishlisted:focus {
+  color: #fff;
+  background-color: #e63757;
+  border-color: #e63757;
+}
+.pdp-low-stock-text {
+  color: #b54708;
 }
 .pdp-add-to-cart-btn:disabled {
   opacity: 0.55;

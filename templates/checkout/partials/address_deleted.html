@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load storefront_tags %}
 
 {% for addr in addresses %}
 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -35,26 +36,26 @@
   {% for line in summary.lines %}
   <div class="d-flex justify-content-between small py-2 border-bottom">
     <span class="text-truncate me-2">{{ line.product.name }} × {{ line.quantity }}</span>
-    <span class="flex-shrink-0">{{ line.line_subtotal }} QAR</span>
+    <span class="flex-shrink-0">{% money_label line.line_subtotal display_currency %}</span>
   </div>
   {% endfor %}
   <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
     <span>{% trans "Subtotal" %}</span>
-    <span>{{ summary.subtotal }} QAR</span>
+    <span>{% money_label summary.subtotal display_currency %}</span>
   </div>
   {% if summary.coupon_discount > 0 %}
   <div class="d-flex justify-content-between small py-2 border-bottom text-success">
     <span>{% trans "Coupon Discount" %}</span>
-    <span>-{{ summary.coupon_discount }} QAR</span>
+    <span>-{% money_label summary.coupon_discount display_currency %}</span>
   </div>
   {% endif %}
   <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
     <span>{% trans "Delivery Charge" %}</span>
-    <span>{{ summary.delivery_charge }} QAR</span>
+    <span>{% money_label summary.delivery_charge display_currency %}</span>
   </div>
   <div class="d-flex justify-content-between fw-semibold mt-3 pt-2 border-top">
     <span>{% trans "Total" %}</span>
-    <span class="text-floward">{{ summary.grand_total }} QAR</span>
+    <span class="text-floward">{% money_label summary.grand_total display_currency %}</span>
   </div>
 </div>
 

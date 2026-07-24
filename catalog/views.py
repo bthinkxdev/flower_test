@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_GET, require_POST
-from cart.selectors import get_cart_for_request, is_product_in_cart
+from cart.selectors import get_cart_for_request, is_product_in_cart, is_product_in_wishlist
 
 from catalog.forms import ReviewForm
 from catalog.models import ModerationStatus, Review
@@ -146,6 +146,7 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
     price_data = get_variant_price(product_id=product.pk)
     cart = get_cart_for_request(request=request)
     in_cart = is_product_in_cart(cart=cart, product_id=product.pk)
+    in_wishlist = is_product_in_wishlist(request=request, product_id=product.pk)
     reviews = getattr(product, "approved_reviews", [])
     review_count = len(reviews)
     average_rating = None
@@ -183,6 +184,7 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
             "delivery_estimate": delivery_estimate,
             "cities": get_active_cities(),
             "in_cart": in_cart,
+            "in_wishlist": in_wishlist,
             "product_json_ld": json.dumps(
                 build_product_json_ld(
                     product=product,
@@ -261,10 +263,21 @@ def search_suggestions_view(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def variant_price_view(request: HttpRequest, product_id: int) -> JsonResponse:
-    """JSON endpoint for variant price updates on PDP."""
+    """JSON endpoint for variant price updates on PDP — converts to the session's active currency."""
+    from core.selectors import get_currency_by_code, get_default_currency
+    from core.templatetags.storefront_tags import in_display_currency
+
     variant_id = request.GET.get("variant_id")
     parsed_variant = int(variant_id) if variant_id else None
     data = get_variant_price(product_id=product_id, variant_id=parsed_variant)
+
+    session_currency = request.session.get("storefront_currency", "")
+    currency = get_currency_by_code(code=session_currency) if session_currency else get_default_currency()
+
+    data["price"] = in_display_currency(data["price"], currency)
+    if "original_price" in data:
+        data["original_price"] = in_display_currency(data["original_price"], currency)
+    data["currency_code"] = currency.code if currency else "QAR"
     return JsonResponse(data)
 
 

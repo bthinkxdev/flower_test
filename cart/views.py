@@ -23,7 +23,7 @@ from cart.services import (
 )
 from catalog.selectors import get_product_for_cart_add
 from marketing.exceptions import InvalidCouponError
-from cart.exceptions import OutOfStockError
+from cart.exceptions import CartItemNotFoundError, OutOfStockError
 
 def _cart_drawer_response(request: HttpRequest, *, hx_triggers: dict | None = None) -> HttpResponse:
     """Render cart drawer partial; optionally attach HTMX trigger headers."""
@@ -109,7 +109,14 @@ def cart_add_view(request: HttpRequest) -> HttpResponse:
     if raw := request.POST.get("gift_selections"):
         gift_selections = json.loads(raw)
 
+    line_item_ref_id = request.POST.get("line_item_ref_id")
+    snapshot_version = request.POST.get("snapshot_version", "")
+    session_flag_key = f"gift_added_ref:{line_item_ref_id}" if line_item_ref_id else None
+
     cart = get_or_create_cart(request=request)
+    if session_flag_key and request.session.get(session_flag_key) == snapshot_version:
+        return _cart_drawer_response(request, hx_triggers={"cartItemAdded": None})
+
     try:
         add_to_cart(
             cart=cart,
@@ -118,6 +125,8 @@ def cart_add_view(request: HttpRequest) -> HttpResponse:
             quantity=quantity,
             gift_selections=gift_selections,
         )
+        if session_flag_key:
+            request.session[session_flag_key] = snapshot_version
     except OutOfStockError as exc:
         summary = get_cart_summary(cart=cart)
         return render(
@@ -168,6 +177,8 @@ def cart_quantity_view(request: HttpRequest) -> HttpResponse:
         )
     except CartItemNotFoundError:
         return _cart_page_response(request, error=_("That item is no longer in your cart."))
+    except OutOfStockError as exc:
+        return _cart_page_response(request, hx_triggers={"stockLimitReached": {"message": str(exc)}})
 
     return _cart_page_response(request, hx_triggers={"cartUpdated": None})
 

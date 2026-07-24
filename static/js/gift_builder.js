@@ -35,11 +35,21 @@
         product_id: form.dataset.productId,
         quantity: form.querySelector('[name="quantity"]')?.value || 1,
         gift_selections: JSON.stringify(collectSelections()),
+        line_item_ref_id: form.querySelector('[name="line_item_ref_id"]')?.value || "",
+        snapshot_version: form.querySelector('[name="snapshot_version"]')?.value || "",
       };
       return;
     }
 
     event.detail.parameters["addon_product_ids"] = collectAddonIds().join(",");
+  });
+
+  form.addEventListener("change", function () {
+    const btn = document.getElementById("add-to-cart-btn");
+    if (!btn || !btn.classList.contains("is-in-cart")) return;
+    btn.classList.remove("is-in-cart");
+    const label = btn.querySelector(".btn-label");
+    if (label) label.textContent = "Add to Cart";
   });
 
   document.body.addEventListener("cartItemAdded", function () {

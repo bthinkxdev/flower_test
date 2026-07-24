@@ -132,6 +132,11 @@
     }
   });
 
+  document.body.addEventListener('stockLimitReached', function (event) {
+    var message = (event.detail && event.detail.message) || 'No more stock available.';
+    showToast(message);
+  });
+
   document.body.addEventListener('htmx:beforeRequest', function (event) {
     if (triggeringElementHasIndicator(event.detail.elt)) {
       return;

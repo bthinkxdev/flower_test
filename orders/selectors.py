@@ -29,13 +29,18 @@ def get_customer_orders(
     """
     Return a paginated page of orders for a customer dashboard.
 
-    Query guarantee: 2 queries — COUNT + page SELECT with select_related.
     """
     queryset = (
         Order.objects.select_related(
             "currency",
             "delivery_slot_booking",
             "delivery_slot_booking__slot",
+        )
+        .prefetch_related(
+            Prefetch(
+                "items",
+                queryset=OrderItem.objects.select_related("product", "variant"),
+            ),
         )
         .filter(customer_profile=customer_profile)
         .order_by("-created_at")

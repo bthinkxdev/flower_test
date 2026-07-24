@@ -4,7 +4,9 @@
     <div class="row g-4">
       <div class="col-md-4 col-lg-2">
         <div class="footer-brand mb-2">
-          <img src="{% static 'img/logo.png' %}" alt="Story of Flowers" class="footer-logo">
+          <a href="{% url 'cms:homepage' %}" class="footer-brand-link">
+            <img src="{% static 'img/logo.png' %}" alt="Story of Flowers" class="footer-logo">
+          </a>
         </div>
         <p class="small text-muted mb-0">{% trans "Online flowers & gifts delivery in Qatar. Same-day delivery available." %}</p>
       </div>

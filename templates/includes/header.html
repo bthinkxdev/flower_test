@@ -28,7 +28,8 @@
                 hx-post="{% url 'core:set-country' %}"
                 hx-trigger="change"
                 hx-target="#floward-app-shell"
-                hx-swap="innerHTML"
+                hx-select="#floward-app-shell"
+                hx-swap="outerHTML"
                 hx-indicator="#htmx-progress">
           {% for country in countries %}
           <option value="{{ country.code }}" {% if active_country and active_country.code == country.code %}selected{% endif %}>{{ country.name }}</option>
@@ -45,7 +46,8 @@
                 hx-post="{% url 'core:set-language' %}"
                 hx-trigger="change"
                 hx-target="#floward-app-shell"
-                hx-swap="innerHTML"
+                hx-select="#floward-app-shell"
+                hx-swap="outerHTML"
                 hx-indicator="#htmx-progress">
           <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
           <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>العربية</option>
@@ -57,7 +59,8 @@
                 hx-post="{% url 'core:set-currency' %}"
                 hx-trigger="change"
                 hx-target="#floward-app-shell"
-                hx-swap="innerHTML"
+                hx-select="#floward-app-shell"
+                hx-swap="outerHTML"
                 hx-indicator="#htmx-progress">
           <option value="QAR" {% if session_currency == 'QAR' or not session_currency %}selected{% endif %}>QAR</option>
           <option value="USD" {% if session_currency == 'USD' %}selected{% endif %}>USD</option>
