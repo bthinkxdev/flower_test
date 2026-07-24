@@ -79,6 +79,7 @@ class ProductForm(SlugAutoMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
+        self.fields["slug"].help_text = "Optional"
 
 
 class CategoryForm(SlugAutoMixin):
@@ -144,6 +145,10 @@ class ProductVariantForm(forms.ModelForm):
         widgets = {
             "variant_type": forms.TextInput(attrs={"list": "variant-type-list"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["sku_suffix"].required = False
 
     def has_changed(self):
         if not self.initial:
