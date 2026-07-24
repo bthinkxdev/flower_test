@@ -58,7 +58,7 @@ class GiftWrapListView(DashboardListView):
     singular_name = "Gift Wrap Option"
     plural_name = "Gift Wrap Options"
     columns = [
-        {"label": "Name", "name": "get_name_display"},
+        {"label": "Name", "name": "name"},
         {"label": "Price delta", "name": "price_delta", "type": "money"},
         {"label": "Active", "name": "is_active", "type": "bool"},
     ]
@@ -94,7 +94,7 @@ class RibbonListView(DashboardListView):
     singular_name = "Ribbon Option"
     plural_name = "Ribbon Options"
     columns = [
-        {"label": "Name", "name": "get_name_display"},
+        {"label": "Name", "name": "name"},
         {"label": "Price delta", "name": "price_delta", "type": "money"},
         {"label": "Active", "name": "is_active", "type": "bool"},
     ]
