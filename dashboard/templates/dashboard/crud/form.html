@@ -42,3 +42,29 @@
   </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const multiSelects = document.querySelectorAll('select[multiple]');
+    multiSelects.forEach(select => {
+        const container = document.createElement('ul');
+        container.className = 'mt-4 mb-0 ps-4 text-secondary selected-items-container';
+        select.parentNode.insertBefore(container, select.nextSibling);
+
+        function updateSelected() {
+            container.innerHTML = '';
+            Array.from(select.selectedOptions).forEach(option => {
+                const item = document.createElement('li');
+                item.className = 'mb-2 fs-6 fw-medium text-dark';
+                item.textContent = option.text;
+                container.appendChild(item);
+            });
+        }
+
+        select.addEventListener('change', updateSelected);
+        updateSelected();
+    });
+});
+</script>
+{% endblock %}
