@@ -137,6 +137,13 @@ def approve_and_convert_to_order(*, corporate_order: CorporateOrder) -> Order:
     corporate_order.retail_order = order
     corporate_order.quote_status = CorporateQuoteStatus.ORDERED
     corporate_order.save(update_fields=["retail_order", "quote_status", "updated_at"])
+
+    from notifications.models import Notification
+    Notification.objects.filter(
+        title=f"Corporate quote requested — {corporate_order.corporate_account.company_name}",
+        body=f"Corporate order #{corporate_order.pk} awaits review."
+    ).delete()
+
     return order
 
 

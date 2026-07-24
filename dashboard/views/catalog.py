@@ -403,8 +403,23 @@ class ReviewUpdateView(DashboardUpdateView):
     singular_name = "Review"
 
     def form_valid(self, form):
-        form.instance.moderated_by = self.request.user
-        return super().form_valid(form)
+        from catalog.models import ModerationStatus
+        
+        status = form.cleaned_data.get("moderation_status")
+        if status in {ModerationStatus.APPROVED, ModerationStatus.REJECTED}:
+            form.instance.moderated_by = self.request.user
+
+        response = super().form_valid(form)
+
+        review = form.instance
+        if status == ModerationStatus.APPROVED:
+            from notifications.models import Notification
+            Notification.objects.filter(
+                title="Review pending moderation",
+                body=f'Review "{review.title}" on {review.product.name} awaits approval.'
+            ).delete()
+
+        return response
 
 
 class ReviewDeleteView(DashboardDeleteView):

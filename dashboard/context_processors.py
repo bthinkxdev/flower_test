@@ -21,7 +21,7 @@ def dashboard_chrome(request: HttpRequest) -> dict:
         return {}
 
     notifications = list(
-        Notification.objects.filter(user=user, is_read=False).order_by("-created_at")[:5]
+        Notification.objects.filter(user=user, is_read=False).order_by("-created_at")[:50]
     )
     unread_count = Notification.objects.filter(user=user, is_read=False).count()
     return {

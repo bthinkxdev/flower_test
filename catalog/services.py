@@ -146,8 +146,16 @@ def moderate_review(
     if decision not in (ModerationStatus.APPROVED, ModerationStatus.REJECTED):
         raise ValueError(f"Invalid moderation decision: {decision}")
 
-    review = Review.objects.select_for_update().get(pk=review_id)
+    review = Review.objects.select_for_update().select_related("product").get(pk=review_id)
     review.moderation_status = decision
     review.moderated_by = moderator
     review.save(update_fields=["moderation_status", "moderated_by", "updated_at"])
+
+    if decision == ModerationStatus.APPROVED:
+        from notifications.models import Notification
+        Notification.objects.filter(
+            title="Review pending moderation",
+            body=f'Review "{review.title}" on {review.product.name} awaits approval.'
+        ).delete()
+
     return review
