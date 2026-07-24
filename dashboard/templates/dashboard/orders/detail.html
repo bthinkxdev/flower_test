@@ -102,7 +102,7 @@
           <div class="mb-3">
             <label class="form-label">New status</label>
             <select name="new_status" class="form-select" required>
-              {% for value, label in allowed_choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
+              {% for value, label in allowed_choices %}<option value="{{ value }}" {% if value == order.order_status %}selected{% endif %}>{{ label }}</option>{% endfor %}
             </select>
           </div>
           <div class="mb-3">
