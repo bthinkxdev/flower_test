@@ -50,7 +50,7 @@
           <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
           <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>العربية</option>
         </select>
-        <span class="text-muted">|</span>
+        <span class="pref-divider" aria-hidden="true"></span>
         <select name="currency"
                 class="preference-switcher"
                 aria-label="{% trans 'Currency' %}"

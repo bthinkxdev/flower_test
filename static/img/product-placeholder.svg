@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Floward">
-  <rect width="400" height="400" fill="#fdf8f9"/>
-  <g fill="none" stroke="#c98a99" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Story of Flowers">
+  <rect width="400" height="400" fill="#eef4f4"/>
+  <g fill="none" stroke="#c5a585" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M200 205v130"/>
     <path d="M200 300c-30-10-55-5-70-25 25-8 52-8 70 25z"/>
     <path d="M200 275c28-10 52-6 66-26-24-8-50-6-66 26z"/>
@@ -9,6 +9,6 @@
     <circle cx="160" cy="172" r="27"/>
     <circle cx="240" cy="172" r="27"/>
     <circle cx="200" cy="152" r="27"/>
-    <circle cx="200" cy="152" r="9" fill="#c98a99"/>
+    <circle cx="200" cy="152" r="9" fill="#c5a585"/>
   </g>
 </svg>
