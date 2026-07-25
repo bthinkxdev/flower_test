@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 
-from catalog.models import Brand, Category, Occasion, Product, Recipient, Review
+from catalog.models import Brand, Category, Occasion, Product, ProductVariant, Recipient, Review
 from core.models import Currency
 from dashboard import forms
 from dashboard.access import dashboard_required
@@ -186,6 +186,7 @@ def _render_product_form(request, product, mode):
         "form_mode": mode,
         "product": product,
         "cancel_url": reverse("dashboard:product-list"),
+        "existing_variant_types": sorted(set(v.title() for v in ProductVariant.objects.values_list("variant_type", flat=True) if v)),
     }
     context.update({
         "card_eligibility": eligibility["cards"],
@@ -403,8 +404,23 @@ class ReviewUpdateView(DashboardUpdateView):
     singular_name = "Review"
 
     def form_valid(self, form):
-        form.instance.moderated_by = self.request.user
-        return super().form_valid(form)
+        from catalog.models import ModerationStatus
+        
+        status = form.cleaned_data.get("moderation_status")
+        if status in {ModerationStatus.APPROVED, ModerationStatus.REJECTED}:
+            form.instance.moderated_by = self.request.user
+
+        response = super().form_valid(form)
+
+        review = form.instance
+        if status == ModerationStatus.APPROVED:
+            from notifications.models import Notification
+            Notification.objects.filter(
+                title="Review pending moderation",
+                body=f'Review "{review.title}" on {review.product.name} awaits approval.'
+            ).delete()
+
+        return response
 
 
 class ReviewDeleteView(DashboardDeleteView):
@@ -412,3 +428,16 @@ class ReviewDeleteView(DashboardDeleteView):
     nav_section = "reviews"
     url_basename = "review"
     singular_name = "Review"
+
+    def form_valid(self, form):
+        #clear notification 
+        original_review = self.get_object()
+        from notifications.models import Notification
+        body_text = f'Review "{original_review.title}" on {original_review.product.name} awaits approval.'
+        Notification.objects.filter(
+            title="Review pending moderation", 
+            body=body_text,
+            is_read=False
+        ).update(is_read=True)
+        
+        return super().form_valid(form)

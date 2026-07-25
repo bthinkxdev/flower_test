@@ -69,13 +69,32 @@ def contact_us_view(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def faq_view(request: HttpRequest) -> HttpResponse:
-    """Render the static FAQ page."""
+    """Render the dynamic FAQ page."""
+    from cms.models import FAQItem
+    faqs = FAQItem.objects.filter(is_published=True).order_by("display_order")
+
     context = seo_context(
         request=request,
         title=_("FAQ | Story of Flowers"),
         description=_("Frequently asked questions about ordering, delivery, and payments at Story of Flowers."),
     )
+    context["faqs"] = faqs
     return render(request, "core/faq.html", context)
+
+
+@require_GET
+def blog_list_view(request: HttpRequest) -> HttpResponse:
+    """Render the blog list page."""
+    from cms.models import BlogPost
+    posts = BlogPost.objects.filter(is_published=True).order_by("-publish_at", "-created_at")
+
+    context = seo_context(
+        request=request,
+        title=_("Blog | Story of Flowers"),
+        description=_("Read the latest news, tips, and stories from Story of Flowers."),
+    )
+    context["posts"] = posts
+    return render(request, "core/blog.html", context)
 
 
 @require_POST

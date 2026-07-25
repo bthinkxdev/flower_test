@@ -79,6 +79,7 @@ class ProductForm(SlugAutoMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["slug"].required = False
+        self.fields["slug"].help_text = "Optional"
 
 
 class CategoryForm(SlugAutoMixin):
@@ -137,10 +138,33 @@ class ReviewForm(forms.ModelForm):
         fields = ["moderation_status"]
 
 
+class ProductVariantForm(forms.ModelForm):
+    class Meta:
+        model = ProductVariant
+        fields = ["variant_type", "name", "price_delta", "sku_suffix", "stock_quantity"]
+        widgets = {
+            "variant_type": forms.TextInput(attrs={"list": "variant-type-list"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["sku_suffix"].required = False
+
+    def has_changed(self):
+        if not self.initial:
+            data = self.data
+            prefix = self.prefix
+            variant_type = data.get(f"{prefix}-variant_type", "").strip()
+            name = data.get(f"{prefix}-name", "").strip()
+            if not variant_type and not name:
+                return False
+        return super().has_changed()
+
+
 ProductVariantFormSet = forms.inlineformset_factory(
     Product,
     ProductVariant,
-    fields=["variant_type", "name", "price_delta", "sku_suffix", "stock_quantity"],
+    form=ProductVariantForm,
     extra=1,
     can_delete=True,
 )

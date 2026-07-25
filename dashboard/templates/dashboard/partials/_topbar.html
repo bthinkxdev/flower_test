@@ -22,12 +22,12 @@
         </a>
         <div class="dropdown-menu dropdown-menu-end dropdown-menu-md p-0">
           <div class="px-3 py-2 border-bottom fw-semibold small">Notifications</div>
-          <ul class="list-unstyled p-0 m-0">
+          <ul class="list-unstyled p-0 m-0 overflow-auto" style="max-height: 400px;">
             {% for note in dashboard_notifications %}
             <li class="p-3 border-bottom">
               <div class="small">
                 <p class="mb-0 fw-semibold">{{ note.title }}</p>
-                <p class="mb-1 text-truncate">{{ note.body }}</p>
+                <p class="mb-1 text-break">{{ note.body }}</p>
                 <div class="text-secondary">{{ note.created_at|timesince }} ago</div>
               </div>
             </li>

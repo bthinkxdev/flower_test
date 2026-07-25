@@ -94,4 +94,15 @@ class CorporateUpdateView(DashboardUpdateView):
         status = form.cleaned_data.get("approval_status")
         if status in {CorporateApprovalStatus.APPROVED, CorporateApprovalStatus.REJECTED}:
             form.instance.approved_by = self.request.user
-        return super().form_valid(form)
+
+        response = super().form_valid(form)
+
+        if status == CorporateApprovalStatus.APPROVED:
+            from notifications.models import Notification
+            account = form.instance
+            Notification.objects.filter(
+                title="New corporate account pending approval",
+                body=f"{account.company_name} ({account.trade_license_number}) awaits review."
+            ).delete()
+
+        return response

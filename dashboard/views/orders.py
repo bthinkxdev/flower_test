@@ -66,9 +66,7 @@ def order_detail(request: HttpRequest, pk: int) -> HttpResponse:
     payments = order.payment_transactions.select_related("currency").all()
     pod = getattr(order, "proof_of_delivery", None)
 
-    allowed = sorted(ALLOWED_STATUS_TRANSITIONS.get(order.order_status, set()))
-    status_labels = dict(OrderStatus.choices)
-    allowed_choices = [(s, status_labels.get(s, s)) for s in allowed]
+    allowed_choices = [(s, label) for s, label in OrderStatus.choices]
 
     context = {
         "nav_section": "orders",
@@ -91,7 +89,7 @@ def order_transition(request: HttpRequest, pk: int) -> HttpResponse:
     new_status = request.POST.get("new_status", "")
     note = request.POST.get("note", "")
     try:
-        transition_order_status(order=order, new_status=new_status, actor=request.user, note=note)
+        transition_order_status(order=order, new_status=new_status, actor=request.user, note=note, force=True)
         messages.success(
             request, f"Order moved to {dict(OrderStatus.choices).get(new_status, new_status)}."
         )

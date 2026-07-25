@@ -30,23 +30,48 @@
         if (overlay) overlay.classList.remove("show");
       });
     }
+
+    if (sidebar) {
+      var activeLink = sidebar.querySelector(".nav-link.active");
+      if (activeLink) {
+        var linkOffset = activeLink.offsetTop;
+        var sidebarHeight = sidebar.clientHeight;
+        sidebar.scrollTop = linkOffset - (sidebarHeight / 2) + (activeLink.clientHeight / 2);
+      }
+    }
   }
 
 
   function initFormValidation() {
     var forms = document.querySelectorAll(".needs-validation");
     Array.prototype.forEach.call(forms, function (form) {
-      form.addEventListener(
-        "submit",
-        function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
+      form.addEventListener("submit", function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+          form.querySelectorAll(".is-invalid").forEach(function(el) { el.classList.remove("is-invalid"); });
+          form.querySelectorAll(":invalid").forEach(function(el) {
+              el.classList.add("is-invalid");
+              var parent = el.parentNode;
+              var feedback = parent.querySelector(".invalid-feedback");
+              if (!feedback) {
+                  feedback = document.createElement("div");
+                  feedback.className = "invalid-feedback";
+                  parent.appendChild(feedback);
+              }
+              feedback.style.display = "block";
+              feedback.textContent = el.validationMessage || "Please fill out this field.";
+          });
+        }
+      }, false);
+      
+      form.addEventListener("input", function(e) {
+          if (e.target.classList.contains("is-invalid") && e.target.checkValidity()) {
+              e.target.classList.remove("is-invalid");
+              var feedback = e.target.parentNode.querySelector(".invalid-feedback");
+              if (feedback) feedback.style.display = "none";
           }
-          form.classList.add("was-validated");
-        },
-        false
-      );
+      });
     });
   }
 
@@ -196,6 +221,14 @@
           if (prev) {
             prev.src = URL.createObjectURL(inp.files[0]);
             prev.classList.remove("d-none");
+          }
+          if (prefix === "images") {
+            var checkboxes = wrap.querySelectorAll('input[type="checkbox"][name$="-is_primary"]');
+            var isAnyPrimary = Array.prototype.some.call(checkboxes, function (cb) { return cb.checked; });
+            if (!isAnyPrimary) {
+              var currentCb = row ? row.querySelector('input[type="checkbox"][name$="-is_primary"]') : null;
+              if (currentCb) currentCb.checked = true;
+            }
           }
         }
       });

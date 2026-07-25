@@ -155,8 +155,7 @@ class GiftWrapOption(BaseCustomizationOption):
     """Selectable gift-wrap style with a price delta."""
 
     name = models.CharField(
-        max_length=30,
-        choices=GiftWrapName.choices,
+        max_length=50,
         unique=True,
         verbose_name="Name",
     )
@@ -166,7 +165,7 @@ class GiftWrapOption(BaseCustomizationOption):
         verbose_name_plural = "Gift wrap options"
 
     def __str__(self) -> str:
-        return self.get_name_display()
+        return self.name
 
 
 class RibbonName(models.TextChoices):
@@ -185,8 +184,7 @@ class RibbonOption(BaseCustomizationOption):
     """Selectable ribbon colour with a price delta."""
 
     name = models.CharField(
-        max_length=20,
-        choices=RibbonName.choices,
+        max_length=50,
         unique=True,
         verbose_name="Name",
     )
@@ -196,7 +194,7 @@ class RibbonOption(BaseCustomizationOption):
         verbose_name_plural = "Ribbon options"
 
     def __str__(self) -> str:
-        return self.get_name_display()
+        return self.name
 
 
 class GiftPhotoUploadOption(BaseCustomizationOption):
