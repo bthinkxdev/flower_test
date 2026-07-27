@@ -7,6 +7,7 @@ from typing import Any
 from django import forms
 
 from gifting.constants import PERSONAL_MESSAGE_MAX_LENGTH
+from gifting.models import validate_image_size
 
 
 class GiftBuilderForm(forms.Form):
@@ -21,7 +22,8 @@ class GiftBuilderForm(forms.Form):
     gift_wrap_id = forms.IntegerField(required=False)
     ribbon_id = forms.IntegerField(required=False)
     photo_upload_id = forms.IntegerField(required=False)
-    uploaded_photo_file = forms.ImageField(required=False)
+    uploaded_photo_file = forms.ImageField(required=False, validators=[validate_image_size])
+    clear_photo = forms.BooleanField(required=False)
     addon_product_ids = forms.CharField(required=False)
     delivery_date = forms.DateField(required=False)
     delivery_slot_id = forms.IntegerField(required=False)
@@ -46,6 +48,7 @@ class GiftBuilderForm(forms.Form):
             "ribbon_id": cleaned.get("ribbon_id"),
             "photo_upload_id": cleaned.get("photo_upload_id"),
             "uploaded_photo_file": cleaned.get("uploaded_photo_file"),
+            "clear_photo": cleaned.get("clear_photo", False),
             "addon_product_ids": addon_ids,
             "delivery_date": cleaned.get("delivery_date"),
             "delivery_slot_id": cleaned.get("delivery_slot_id"),

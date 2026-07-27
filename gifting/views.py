@@ -126,7 +126,12 @@ def gift_builder_preview_view(request: HttpRequest, line_item_id: int) -> HttpRe
             except GiftCustomizationValidationError as exc:
                 context["field_errors"] = exc.as_dict()
         else:
-            context["field_errors"] = form.errors
+            context["field_errors"] = dict(form.errors)
+            
+        if "field_errors" in context and "uploaded_photo_file" in context["field_errors"]:
+            context["photo_error"] = context["field_errors"].pop("uploaded_photo_file")
+            if not context["field_errors"]:
+                del context["field_errors"]
 
     return render(request, "gifting/partials/order_preview.html", context)
 

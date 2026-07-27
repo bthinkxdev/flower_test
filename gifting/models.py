@@ -4,11 +4,19 @@ from __future__ import annotations
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from catalog.models import Occasion, Product
 from core.models import TimeStampedModel
 from gifting.constants import PERSONAL_MESSAGE_MAX_LENGTH
+
+
+def validate_image_size(value):
+    """Restrict file uploads to 5MB."""
+    limit_mb = 5
+    if value.size > limit_mb * 1024 * 1024:
+        raise ValidationError(f"Image size must be under {limit_mb}MB.")
 
 
 class BaseCustomizationOption(TimeStampedModel):
@@ -414,6 +422,7 @@ class GiftCustomizationSnapshot(TimeStampedModel):
         upload_to="gifting/customer_photos/",
         null=True,
         blank=True,
+        validators=[validate_image_size],
         verbose_name="Uploaded photo file",
     )
     delivery_date = models.DateField(
@@ -422,6 +431,14 @@ class GiftCustomizationSnapshot(TimeStampedModel):
         db_index=True,
         verbose_name="Delivery date",
     )
+
+    @property
+    def uploaded_photo_filename(self) -> str:
+        if self.uploaded_photo_file:
+            import os
+            return os.path.basename(self.uploaded_photo_file.name)
+        return ""
+
     delivery_slot = models.ForeignKey(
         "delivery.DeliverySlot",
         on_delete=models.SET_NULL,

@@ -107,6 +107,8 @@ def build_gift_customization_snapshot(
     )
 
     final_uploaded_photo = resolved.get("uploaded_photo_file") or (existing.uploaded_photo_file if existing else None)
+    if selections.get("clear_photo"):
+        final_uploaded_photo = None
     snapshot_json["selections"]["has_uploaded_photo_file"] = bool(final_uploaded_photo)
 
     snapshot, _created = GiftCustomizationSnapshot.objects.update_or_create(

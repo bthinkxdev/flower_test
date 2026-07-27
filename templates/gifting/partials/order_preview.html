@@ -101,3 +101,38 @@
     {% endif %}
   </div>
 </div>
+
+{% if request.method == 'POST' and config.allows_photo_upload %}
+<div id="photo-upload-loading" style="display: none;" class="mt-2 text-muted small" hx-swap-oob="true">
+  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+  {% trans "Uploading photo..." %}
+</div>
+
+<div id="photo-upload-error-container" class="mt-1" hx-swap-oob="true">
+{% if photo_error %}
+  <span class="text-danger small">{{ photo_error.0 }}</span>
+{% endif %}
+</div>
+
+<div id="photo-thumbnail-container" class="mt-2" hx-swap-oob="true">
+{% if snapshot.uploaded_photo_file %}
+  <span class="small text-success d-block mb-2 fw-medium">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-check-circle-fill me-1 mb-1" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    </svg>
+    {% trans "Photo successfully uploaded" %}
+  </span>
+  <div class="position-relative d-inline-block mt-1">
+    <img src="{{ snapshot.uploaded_photo_file.url }}" alt="{% trans 'Uploaded photo' %}" class="img-thumbnail shadow-sm"
+      style="max-width: 120px; max-height: 120px; object-fit: cover; border-radius: 8px;">
+    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center shadow" style="width: 28px; height: 28px; border: 2px solid white;" title="{% trans 'Remove photo' %}" onclick="document.getElementById('clear-photo-input').checked = true; document.getElementById('photo-upload-error-container').innerHTML=''; document.getElementById('photo-thumbnail-container').style.display = 'none'; document.getElementById('photo-upload-input-container').style.display = 'block'; document.querySelector('input[name=\'uploaded_photo_file\']').value = ''; document.getElementById('gift-builder-form').dispatchEvent(new Event('change', {bubbles: true}));">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+      </svg>
+    </button>
+  </div>
+  <input type="checkbox" name="clear_photo" id="clear-photo-input" class="d-none">
+{% endif %}
+</div>
+{% endif %}
