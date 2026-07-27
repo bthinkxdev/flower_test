@@ -1,0 +1,21 @@
+{% load i18n %}
+<meta http-equiv="refresh" content="3">
+<div class="checkout-confirmation checkout-confirmation--pending text-center py-4">
+  <div class="checkout-confirmation__icon checkout-confirmation__icon--pending mb-3">
+    <span class="payment-pending-spinner" aria-hidden="true">
+      <span class="payment-pending-spinner__ring"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--floward-primary)" stroke-width="1.5">
+        <rect x="3" y="6" width="18" height="13" rx="2"/>
+        <path d="M3 10h18"/>
+        <path d="M7 15h4"/>
+      </svg>
+    </span>
+  </div>
+  <h2 class="section-title mb-2">{% trans "Confirming your payment" %}<span class="payment-pending-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h2>
+  <p class="text-muted mb-4">
+    {% blocktrans with number=order.order_number %}We're waiting to hear back from your payment provider for order <strong>{{ number }}</strong>. This usually only takes a few seconds — no need to refresh, we'll do it for you.{% endblocktrans %}
+  </p>
+  <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+    <a href="{{ request.path }}{% if request.GET.gt %}?gt={{ request.GET.gt }}{% endif %}" class="btn btn-outline-floward">{% trans "Refresh now" %}</a>
+  </div>
+</div>
