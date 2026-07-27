@@ -11,23 +11,116 @@ from dashboard.access import dashboard_required
 from dashboard.views.base import DashboardListView, DashboardUpdateView
 
 
+import datetime
+from dataclasses import dataclass
+from orders.models import Order
+from django.db.models import Max
+
+@dataclass
+class CustomerItem:
+    pk: int
+    name: str
+    email: str
+    phone: str
+    preferred_language: str
+    phone_verified: bool
+    is_guest: bool
+    latest_activity: datetime.datetime
+
 class CustomerListView(DashboardListView):
     model = CustomerProfile
     nav_section = "customers"
     url_basename = "customer"
     singular_name = "Customer"
     plural_name = "Customers"
-    search_fields = ["user__email", "user__username", "phone"]
-    select_related = ["user"]
+    search_fields = ["name", "email", "phone"]
     can_create = False
     can_delete = False
     columns = [
-        {"label": "Name", "name": "user.get_full_name"},
-        {"label": "Email", "name": "user.email"},
+        {"label": "Name", "name": "name"},
+        {"label": "Email", "name": "email"},
         {"label": "Phone", "name": "phone"},
         {"label": "Language", "name": "preferred_language"},
         {"label": "Verified", "name": "phone_verified", "type": "bool"},
     ]
+
+    def get_queryset(self):
+        query = self.request.GET.get("q", "").strip().lower()
+        items = []
+
+        seen_emails = set()
+        
+        #1.logged customers
+        profiles = CustomerProfile.objects.select_related("user").prefetch_related("addresses").annotate(
+            latest_order=Max('orders__created_at')
+        )
+        for p in profiles:
+            name = p.user.get_full_name().strip()
+            if not name:
+                default_address = p.addresses.filter(is_default=True).first() or p.addresses.first()
+                if default_address:
+                    name = default_address.contact_name
+            
+            phone = p.phone
+            if not phone:
+                default_address = p.addresses.filter(is_default=True).first() or p.addresses.first()
+                if default_address:
+                    phone = default_address.phone
+            
+            email = p.user.email
+            if email:
+                seen_emails.add(email.strip())
+            
+            if query:
+                search_target = f"{name} {email} {phone}".lower()
+                if query not in search_target:
+                    continue
+                    
+            items.append(CustomerItem(
+                pk=p.pk,
+                name=name or "",
+                email=email or "",
+                phone=phone or "",
+                preferred_language=p.preferred_language,
+                phone_verified=p.phone_verified,
+                is_guest=False,
+                latest_activity=p.latest_order or p.created_at
+            ))
+
+        #2.guest customers
+        guest_orders = Order.objects.filter(customer_profile__isnull=True).exclude(delivery_address_snapshot={}).order_by('-created_at')
+        
+        for o in guest_orders:
+            snap = o.delivery_address_snapshot
+            if not isinstance(snap, dict):
+                continue
+                
+            email = snap.get("guest_email", "").strip()
+            if not email or email in seen_emails:
+                continue
+                
+            name = snap.get("guest_name", "").strip()
+            phone = snap.get("guest_phone", "").strip()
+            
+            if query:
+                search_target = f"{name} {email} {phone}".lower()
+                if query not in search_target:
+                    continue
+                    
+            seen_emails.add(email)
+            items.append(CustomerItem(
+                pk=0,
+                name=name,
+                email=email,
+                phone=phone,
+                preferred_language="en",
+                phone_verified=False,
+                is_guest=True,
+                latest_activity=o.created_at
+            ))
+
+        items.sort(key=lambda x: x.latest_activity, reverse=True)
+        return items
 
 
 class CustomerUpdateView(DashboardUpdateView):
