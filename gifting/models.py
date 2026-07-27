@@ -410,6 +410,12 @@ class GiftCustomizationSnapshot(TimeStampedModel):
         related_name="snapshots",
         verbose_name="Photo upload",
     )
+    uploaded_photo_file = models.ImageField(
+        upload_to="gifting/customer_photos/",
+        null=True,
+        blank=True,
+        verbose_name="Uploaded photo file",
+    )
     delivery_date = models.DateField(
         null=True,
         blank=True,

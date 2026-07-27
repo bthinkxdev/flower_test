@@ -106,7 +106,7 @@ def gift_builder_preview_view(request: HttpRequest, line_item_id: int) -> HttpRe
     context = _builder_context(request=request, product=product, line_item_ref=line_item_ref)
 
     if request.method == "POST":
-        form = GiftBuilderForm(request.POST)
+        form = GiftBuilderForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 build_gift_customization_snapshot(

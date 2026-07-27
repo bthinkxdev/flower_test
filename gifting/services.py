@@ -106,6 +106,9 @@ def build_gift_customization_snapshot(
         selections=selections,
     )
 
+    final_uploaded_photo = resolved.get("uploaded_photo_file") or (existing.uploaded_photo_file if existing else None)
+    snapshot_json["selections"]["has_uploaded_photo_file"] = bool(final_uploaded_photo)
+
     snapshot, _created = GiftCustomizationSnapshot.objects.update_or_create(
         line_item_content_type=line_item_ct,
         line_item_object_id=line_item_reference.pk,
@@ -115,6 +118,7 @@ def build_gift_customization_snapshot(
             "gift_wrap_id": resolved.get("gift_wrap_id"),
             "ribbon_id": resolved.get("ribbon_id"),
             "photo_upload_id": resolved.get("photo_upload_id"),
+            "uploaded_photo_file": final_uploaded_photo,
             "delivery_date": resolved.get("delivery_date"),
             "delivery_slot_id": resolved.get("delivery_slot_id"),
             "delivery_instructions": resolved.get("delivery_instructions", ""),
@@ -221,7 +225,7 @@ def _resolve_selections(
                     {
                         "type": "gift_wrap",
                         "id": gift_wrap.pk,
-                        "label": gift_wrap.get_name_display(),
+                        "label": gift_wrap.name,
                         "price": str(gift_wrap.price_delta),
                     }
                 )
@@ -243,7 +247,7 @@ def _resolve_selections(
                     {
                         "type": "ribbon",
                         "id": ribbon.pk,
-                        "label": ribbon.get_name_display(),
+                        "label": ribbon.name,
                         "price": str(ribbon.price_delta),
                     }
                 )
@@ -270,6 +274,22 @@ def _resolve_selections(
                         "label": photo_upload.name,
                         "price": str(photo_upload.price_delta),
                     }
+                )
+
+    uploaded_photo_file = selections.get("uploaded_photo_file")
+    
+    line_item_ct = ContentType.objects.get_for_model(product_instance.__class__)
+    
+    if uploaded_photo_file:
+        if not config.allows_photo_upload:
+            errors.setdefault("uploaded_photo_file", []).append(
+                "Photo upload is not allowed for this product."
+            )
+        else:
+            resolved["uploaded_photo_file"] = uploaded_photo_file
+            if not photo_upload_id:
+                errors.setdefault("photo_upload_id", []).append(
+                    "Please select a photo size/style to determine the price."
                 )
 
     addon_ids = selections.get("addon_product_ids") or []
@@ -355,6 +375,7 @@ def _resolve_selections(
             "gift_wrap_id": resolved.get("gift_wrap_id"),
             "ribbon_id": resolved.get("ribbon_id"),
             "photo_upload_id": resolved.get("photo_upload_id"),
+            "has_uploaded_photo_file": bool(resolved.get("uploaded_photo_file")),
             "addon_product_ids": [a["product_id"] for a in resolved_addons],
             "delivery_date": (
                 resolved["delivery_date"].isoformat() if resolved.get("delivery_date") else None
@@ -401,8 +422,8 @@ def _build_resolved_labels(
         ]
     return {
         "greeting_card": greeting_card.name if greeting_card else None,
-        "gift_wrap": gift_wrap.get_name_display() if gift_wrap else None,
-        "ribbon": ribbon.get_name_display() if ribbon else None,
+        "gift_wrap": gift_wrap.name if gift_wrap else None,
+        "ribbon": ribbon.name if ribbon else None,
         "photo_upload": photo_upload.name if photo_upload else None,
         "addons": addon_labels,
     }
