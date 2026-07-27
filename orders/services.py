@@ -24,6 +24,51 @@ ALLOWED_STATUS_TRANSITIONS: dict[str, set[str]] = {
 }
 
 
+def merge_past_guest_orders(*, user) -> None:
+    """
+    Merge past unassigned guest orders that match the newly-logged-in user's email,
+    and auto-fill missing profile details from the most recent guest order.
+    """
+    if not hasattr(user, "customer_profile") or not user.email:
+        return
+    
+    #auto-fill missing user details from the most recent guest order
+    all_guest_orders = Order.objects.filter(
+        delivery_address_snapshot__guest_email=user.email
+    )
+    
+    most_recent_order = all_guest_orders.order_by("-created_at").first()
+    if most_recent_order:
+        snapshot = most_recent_order.delivery_address_snapshot
+        guest_name = snapshot.get("guest_name", "").strip()
+        guest_phone = snapshot.get("guest_phone", "").strip()
+
+        needs_user_save = False
+        needs_profile_save = False
+
+        if guest_name and not (user.first_name or user.last_name):
+            parts = guest_name.split(" ", 1)
+            user.first_name = parts[0][:150]
+            if len(parts) > 1:
+                user.last_name = parts[1][:150]
+            needs_user_save = True
+        
+        if guest_phone and not user.customer_profile.phone:
+            user.customer_profile.phone = guest_phone[:20]
+            needs_profile_save = True
+
+        if needs_user_save:
+            user.save(update_fields=["first_name", "last_name"])
+        if needs_profile_save:
+            user.customer_profile.save(update_fields=["phone"])
+
+    Order.objects.filter(
+        customer_profile__isnull=True,
+        delivery_address_snapshot__guest_email=user.email
+    ).update(customer_profile=user.customer_profile)
+
+
+
 def generate_order_number() -> str:
     """Return a unique human-readable order number."""
     return f"FLW-{uuid.uuid4().hex[:12].upper()}"

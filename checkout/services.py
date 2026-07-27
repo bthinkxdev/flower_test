@@ -28,6 +28,20 @@ GUEST_ORDER_TOKEN_SALT = "checkout.guest-order-confirmation"
 GUEST_ORDER_TOKEN_MAX_AGE = 60 * 60 * 24  # 24 hours
 
 
+def merge_checkouts(*, user, old_session_key: str) -> None:
+    """
+    Merge guest checkout sessions into the newly-logged-in customer's profile.
+    Must be called with the session key captured *before* login().
+    """
+    if not old_session_key or not hasattr(user, "customer_profile"):
+        return
+    CheckoutSession.objects.filter(
+        session_key=old_session_key,
+        customer_profile__isnull=True
+    ).update(customer_profile=user.customer_profile)
+
+
+
 def build_guest_order_token(*, order_id: int) -> str:
     """Sign a short-lived token proving a guest just placed this specific order."""
     return signing.dumps({"order_id": order_id}, salt=GUEST_ORDER_TOKEN_SALT)

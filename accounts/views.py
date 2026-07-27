@@ -58,6 +58,8 @@ from accounts.services import (
 )
 from core.decorators import role_required
 from cart.services import merge_carts
+from checkout.services import merge_checkouts
+from orders.services import merge_past_guest_orders
 from accounts.selectors import get_customer_subscriptions, get_customer_subscription_by_id, get_saved_addresses, get_upcoming_gift_reminders
 from accounts.forms import SubscriptionCreateForm, AddressForm, GiftReminderForm
 from accounts.subscription_services import (
@@ -181,6 +183,8 @@ def email_otp_verify_view(request: HttpRequest) -> HttpResponse:
     old_session_key = request.session.session_key
     login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
     merge_carts(user=profile.user, old_session_key=old_session_key)
+    merge_checkouts(user=profile.user, old_session_key=old_session_key)
+    merge_past_guest_orders(user=profile.user)
     merge_session_wishlist_to_user(old_session_key=old_session_key, user=profile.user)
     return _success_response({"user_id": profile.user_id})
 
@@ -235,6 +239,8 @@ def otp_verify_view(request: HttpRequest) -> HttpResponse:
         old_session_key = request.session.session_key
         login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
         merge_carts(user=profile.user, old_session_key=old_session_key)
+        merge_checkouts(user=profile.user, old_session_key=old_session_key)
+        merge_past_guest_orders(user=profile.user)
         merge_session_wishlist_to_user(old_session_key=old_session_key, user=profile.user)
         return _success_response({"user_id": profile.user_id})
 
@@ -255,6 +261,8 @@ def google_login_view(request: HttpRequest) -> HttpResponse:
     old_session_key = request.session.session_key
     login(request, profile.user, backend="django.contrib.auth.backends.ModelBackend")
     merge_carts(user=profile.user, old_session_key=old_session_key)
+    merge_checkouts(user=profile.user, old_session_key=old_session_key)
+    merge_past_guest_orders(user=profile.user)
     merge_session_wishlist_to_user(old_session_key=old_session_key, user=profile.user)
     return _success_response({"user_id": profile.user_id})
 
@@ -304,6 +312,8 @@ def reset_password_view(request: HttpRequest) -> HttpResponse:
     old_session_key = request.session.session_key
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
     merge_carts(user=user, old_session_key=old_session_key)
+    merge_checkouts(user=user, old_session_key=old_session_key)
+    merge_past_guest_orders(user=user)
     merge_session_wishlist_to_user(old_session_key=old_session_key, user=user)
     return _success_response({"user_id": user.pk})
 
