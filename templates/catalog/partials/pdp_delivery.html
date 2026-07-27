@@ -6,7 +6,11 @@
     <option value="{{ city.slug }}" {% if delivery_estimate.city == city.name %}selected{% endif %}>{{ city.name }}</option>
     {% endfor %}
   </select>
-  <p id="delivery-estimate-text" class="delivery-widget__text mb-0">
+  <p id="delivery-estimate-text"
+     class="delivery-widget__text mb-0"
+     data-label-delivery="{% trans 'Delivery:' %}"
+     data-label-to="{% trans 'to' %}"
+     data-label-select-city="{% trans 'Select a city' %}">
     {% if delivery_estimate %}
     {% blocktrans with label=delivery_estimate.label city=delivery_estimate.city %}Delivery: {{ label }} to {{ city }}{% endblocktrans %}
     {% else %}{% trans "Select a city" %}{% endif %}

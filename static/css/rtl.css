@@ -13,3 +13,26 @@
 [dir="rtl"] .cart-line { flex-direction: row-reverse; }
 [dir="rtl"] .floward-select__panel { text-align: right; }
 [dir="rtl"] .floward-select__option { text-align: right; }
+
+/* Gift builder + checkout — logical alignment for RTL */
+[dir="rtl"] .gift-builder__header,
+[dir="rtl"] .checkout-page__header {
+  text-align: right;
+}
+[dir="rtl"] .builder-section__head,
+[dir="rtl"] .checkout-step__head {
+  flex-direction: row;
+}
+[dir="rtl"] .option-chip,
+[dir="rtl"] .addon-card,
+[dir="rtl"] .builder-toggle,
+[dir="rtl"] .checkout-payment__option {
+  text-align: right;
+}
+[dir="rtl"] .checkout-address {
+  text-align: right;
+}
+[dir="rtl"] .gift-builder__actions,
+[dir="rtl"] .gift-builder__mobile-bar {
+  flex-direction: row;
+}

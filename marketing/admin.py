@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from marketing.models import (
     AbandonedCartRecovery,
@@ -45,9 +46,9 @@ class GiftCardAdmin(admin.ModelAdmin):
 
 
 @admin.register(FlashSale)
-class FlashSaleAdmin(admin.ModelAdmin):
+class FlashSaleAdmin(TabbedTranslationAdmin):
     list_display = ("name", "discount_percentage", "starts_at", "ends_at", "is_active")
-    list_filter = ("is_active",)
+    list_filter = ("is_active", "ar_translation_source")
     filter_horizontal = ("products",)
 
 

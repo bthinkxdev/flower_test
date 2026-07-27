@@ -39,8 +39,8 @@
   <div class="mb-3">
     <label class="form-label small">{% trans "Price" %}</label>
     <div class="input-group input-group-sm">
-      <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.GET.min_price }}">
-      <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.GET.max_price }}">
+      <input type="number" name="min_price" class="form-control" placeholder="{% trans 'Min' %}" value="{{ request.GET.min_price }}">
+      <input type="number" name="max_price" class="form-control" placeholder="{% trans 'Max' %}" value="{{ request.GET.max_price }}">
     </div>
   </div>
   <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="same_day" value="1" id="f-sd" {% if filters.same_day %}checked{% endif %}><label class="form-check-label small" for="f-sd">{% trans "Same Day" %}</label></div>

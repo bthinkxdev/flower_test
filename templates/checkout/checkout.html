@@ -1,50 +1,32 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% load i18n %}
-{% load storefront_tags %}
 
-{% block title %}{% trans "Checkout" %} | Story of Flowers{% endblock %}
+{% block title %}{% trans "Checkout" %} | {% trans "Story of Flowers" %}{% endblock %}
 
 {% block content %}
-<div class="container page-container checkout-page">
-  <h1 class="section-title mb-4">{% trans "Checkout" %}</h1>
-  <div class="row g-4">
-    <div class="col-lg-7">
-      {% include "checkout/partials/checkout_order_form.html" %}
-    </div>
+<div class="checkout-page page-container">
+  <div class="container">
+    <header class="checkout-page__header">
+      <h1 class="checkout-page__title">{% trans "Checkout" %}</h1>
+      <p class="checkout-page__lede">{% trans "Confirm delivery details and payment to complete your order." %}</p>
+    </header>
 
-    <div class="col-lg-5">
-      <div class="checkout-step sticky-top" style="top: 100px;">
-        <h2>{% trans "Order Summary" %}</h2>
-                <div id="order-summary-wrapper">
-          {% for line in summary.lines %}
-          <div class="d-flex justify-content-between small py-2 border-bottom">
-            <span class="text-truncate me-2">
-              {{ line.product.name }}{% if line.variant %} — {{ line.variant.name }}{% endif %} × {{ line.quantity }}
-            </span>
-            <span class="flex-shrink-0">{% money_label line.line_subtotal display_currency %}</span>
+    <div class="checkout-page__layout">
+      <div class="checkout-page__main">
+        {% include "checkout/partials/checkout_order_form.html" %}
+      </div>
+
+      <aside class="checkout-page__aside" aria-label="{% trans 'Order Summary' %}">
+        <div class="checkout-summary sticky-top">
+          <div class="checkout-summary__header">
+            <h2 class="checkout-summary__title">{% trans "Order Summary" %}</h2>
           </div>
-          {% endfor %}
-          <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
-            <span>{% trans "Subtotal" %}</span>
-            <span>{% money_label summary.subtotal display_currency %}</span>
-          </div>
-          {% if summary.coupon_discount > 0 %}
-          <div class="d-flex justify-content-between small py-2 border-bottom text-success">
-            <span>{% trans "Coupon Discount" %}</span>
-            <span>-{% money_label summary.coupon_discount display_currency %}</span>
-          </div>
-          {% endif %}
-          <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
-            <span>{% trans "Delivery Charge" %}</span>
-            <span id="checkout-delivery-charge-value">{% money_label summary.delivery_charge display_currency %}</span>
-          </div>
-          <div class="d-flex justify-content-between fw-semibold mt-3 pt-2 border-top">
-            <span>{% trans "Total" %}</span>
-            <span class="text-floward" id="checkout-grand-total-value">{% money_label summary.grand_total display_currency %}</span>
+          <div class="checkout-summary__body" id="order-summary-wrapper">
+            {% include "checkout/partials/order_summary_lines.html" with show_desktop_cta=True %}
           </div>
         </div>
-        <button type="submit" form="checkout-form" class="btn btn-floward w-100 py-2 mt-3 d-none d-lg-block">{% trans "Place Order & Pay" %}</button>
-      </div>
+      </aside>
+    </div>
   </div>
 </div>
 {% endblock %}

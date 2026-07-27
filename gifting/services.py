@@ -22,7 +22,6 @@ from gifting.models import (
     RibbonOption,
 )
 from gifting.selectors import (
-    get_available_greeting_cards,
     get_eligible_addons,
     get_eligible_gift_wrap_options,
     get_eligible_greeting_cards,
@@ -221,7 +220,7 @@ def _resolve_selections(
                     {
                         "type": "gift_wrap",
                         "id": gift_wrap.pk,
-                        "label": gift_wrap.get_name_display(),
+                        "label": gift_wrap.name,
                         "price": str(gift_wrap.price_delta),
                     }
                 )
@@ -243,7 +242,7 @@ def _resolve_selections(
                     {
                         "type": "ribbon",
                         "id": ribbon.pk,
-                        "label": ribbon.get_name_display(),
+                        "label": ribbon.name,
                         "price": str(ribbon.price_delta),
                     }
                 )
@@ -401,8 +400,8 @@ def _build_resolved_labels(
         ]
     return {
         "greeting_card": greeting_card.name if greeting_card else None,
-        "gift_wrap": gift_wrap.get_name_display() if gift_wrap else None,
-        "ribbon": ribbon.get_name_display() if ribbon else None,
+        "gift_wrap": gift_wrap.name if gift_wrap else None,
+        "ribbon": ribbon.name if ribbon else None,
         "photo_upload": photo_upload.name if photo_upload else None,
         "addons": addon_labels,
     }

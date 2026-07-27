@@ -2,6 +2,18 @@
   const form = document.getElementById("gift-builder-form");
   if (!form) return;
 
+  const qtyPrimary = form.querySelector('[name="quantity"]');
+  const qtyMirror = document.querySelector("[data-qty-mirror]");
+  if (qtyPrimary && qtyMirror) {
+    const sync = (from, to) => {
+      from.addEventListener("input", () => {
+        to.value = from.value;
+      });
+    };
+    sync(qtyPrimary, qtyMirror);
+    sync(qtyMirror, qtyPrimary);
+  }
+
   function collectAddonIds() {
     const checked = form.querySelectorAll('input[name="addon_product_ids"]:checked');
     return Array.from(checked).map((el) => el.value);
@@ -27,8 +39,13 @@
     };
   }
 
-  form.addEventListener("htmx:configRequest", function (event) {
-    const isAddToCart = event.detail.elt && event.detail.elt.id === "add-to-cart-btn";
+  document.body.addEventListener("htmx:configRequest", function (event) {
+    const elt = event.detail.elt;
+    if (!elt) return;
+    const eltId = elt.id;
+    const fromForm = elt === form || form.contains(elt);
+    const isAddToCart = eltId === "add-to-cart-btn" || eltId === "add-to-cart-btn-mobile";
+    if (!fromForm && !isAddToCart) return;
 
     if (isAddToCart) {
       event.detail.parameters = {
@@ -44,18 +61,24 @@
     event.detail.parameters["addon_product_ids"] = collectAddonIds().join(",");
   });
 
-  form.addEventListener("change", function () {
-    const btn = document.getElementById("add-to-cart-btn");
-    if (!btn || !btn.classList.contains("is-in-cart")) return;
-    btn.classList.remove("is-in-cart");
-    const label = btn.querySelector(".btn-label");
-    if (label) label.textContent = "Add to Cart";
-  });
+  function resetCartButtons() {
+    ["add-to-cart-btn", "add-to-cart-btn-mobile"].forEach((id) => {
+      const btn = document.getElementById(id);
+      if (!btn || !btn.classList.contains("is-in-cart")) return;
+      btn.classList.remove("is-in-cart");
+      const label = btn.querySelector(".btn-label");
+      if (label) {
+        label.textContent = form.dataset.addToCartLabel || "Add to Cart";
+      }
+    });
+  }
+
+  form.addEventListener("change", resetCartButtons);
 
   document.body.addEventListener("cartItemAdded", function () {
     const el = document.getElementById("add-to-cart-feedback");
     if (el) {
-      el.textContent = "Added to cart!";
+      el.textContent = form.dataset.addedToCartLabel || "Added to cart!";
       setTimeout(() => { el.textContent = ""; }, 3000);
     }
   });

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET
 
 from catalog.selectors import get_homepage_product_rails
@@ -27,8 +28,8 @@ def homepage_view(request: HttpRequest) -> HttpResponse:
     ]
     context = seo_context(
         request=request,
-        title="Luxury Flowers & Gifts | Story of Flowers",
-        description="Send premium flowers and gifts with same-day delivery across Qatar.",
+        title=_("Luxury Flowers & Gifts | Story of Flowers"),
+        description=_("Send premium flowers and gifts with same-day delivery across Qatar."),
     )
     context["section_contexts"] = section_contexts
     return render(request, "cms/homepage.html", context)

@@ -1,0 +1,11 @@
+{% load i18n %}
+<label class="form-label" for="id_delivery_slot">{% trans "Time slot" %}</label>
+<select id="id_delivery_slot" name="delivery_slot_id" class="form-select{% if delivery_form and delivery_form.delivery_slot_id.errors %} is-invalid{% endif %}">
+  <option value="">{% trans "Select slot" %}</option>
+  {% for slot in delivery_slots %}
+  <option value="{{ slot.pk }}" {% if selected_delivery_slot_id|stringformat:"s" == slot.pk|stringformat:"s" or checkout_session.delivery_slot_id == slot.pk %}selected{% endif %}>{{ slot.name }}</option>
+  {% endfor %}
+</select>
+{% if delivery_form and delivery_form.delivery_slot_id.errors %}
+<div class="invalid-feedback d-block small">{{ delivery_form.delivery_slot_id.errors.0 }}</div>
+{% endif %}

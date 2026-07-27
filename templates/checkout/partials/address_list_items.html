@@ -1,0 +1,36 @@
+{% load i18n %}
+{% for address in addresses %}
+<div class="checkout-address">
+  <div class="form-check mb-0">
+    <input class="form-check-input" type="radio" name="address_id" value="{{ address.pk }}" id="addr-{{ address.pk }}"
+        hx-post="{% url 'checkout:update-session' %}"
+        hx-trigger="change"
+        hx-include="#checkout-form"
+        hx-target="this"
+        hx-swap="none"
+        {% if selected_address_id|stringformat:"s" == address.pk|stringformat:"s" or address.is_default and not selected_address_id %}checked{% endif %}>
+    <label class="form-check-label small" for="addr-{{ address.pk }}">
+      <strong class="d-block mb-1">{{ address.label }}{% if address.is_default %} <span class="badge bg-light text-secondary border">{% trans "Default" %}</span>{% endif %}</strong>
+      <span class="text-muted">{{ address.line1 }}, {{ address.city.name }}</span>
+    </label>
+  </div>
+  <div class="checkout-address__actions">
+    <button class="btn btn-sm btn-link p-0 text-secondary small" type="button"
+            hx-get="{% url 'checkout:address-form' address_id=address.pk %}"
+            hx-target="#add-address-container"
+            hx-swap="innerHTML"
+            data-bs-toggle="collapse"
+            data-bs-target="#addAddressCollapse">
+      {% trans "Edit" %}
+    </button>
+    <button class="btn btn-sm btn-link p-0 text-danger small" type="button"
+            hx-post="{% url 'checkout:delete-address' address_id=address.pk %}"
+            hx-target="#address-list-container"
+            hx-confirm="{% trans 'Are you sure you want to delete this address?' %}">
+      {% trans "Delete" %}
+    </button>
+  </div>
+</div>
+{% empty %}
+<p class="text-muted small mb-0">{% trans "Add an address in your account." %}</p>
+{% endfor %}

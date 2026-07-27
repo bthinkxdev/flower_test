@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from delivery.models import (
     City,
@@ -14,14 +15,14 @@ from delivery.models import (
 
 
 @admin.register(Country)
-class CountryAdmin(admin.ModelAdmin):
+class CountryAdmin(TabbedTranslationAdmin):
     list_display = ("name", "code", "is_active", "updated_at")
-    list_filter = ("is_active",)
+    list_filter = ("is_active", "ar_translation_source")
     search_fields = ("name", "code")
 
 
 @admin.register(City)
-class CityAdmin(admin.ModelAdmin):
+class CityAdmin(TabbedTranslationAdmin):
     """Admin interface for deliverable cities."""
 
     list_display = (
@@ -33,20 +34,20 @@ class CityAdmin(admin.ModelAdmin):
         "is_active",
         "updated_at",
     )
-    list_filter = ("is_active", "country")
+    list_filter = ("is_active", "country", "ar_translation_source")
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
     ordering = ("name",)
 
 
 @admin.register(DeliveryZone)
-class DeliveryZoneAdmin(admin.ModelAdmin):
+class DeliveryZoneAdmin(TabbedTranslationAdmin):
     list_display = ("name", "city", "radius_km", "is_active")
-    list_filter = ("is_active", "city")
+    list_filter = ("is_active", "city", "ar_translation_source")
 
 
 @admin.register(DeliverySlot)
-class DeliverySlotAdmin(admin.ModelAdmin):
+class DeliverySlotAdmin(TabbedTranslationAdmin):
     list_display = (
         "name",
         "slot_type",
@@ -55,7 +56,7 @@ class DeliverySlotAdmin(admin.ModelAdmin):
         "max_capacity_per_day",
         "is_active",
     )
-    list_filter = ("is_active", "slot_type")
+    list_filter = ("is_active", "slot_type", "ar_translation_source")
 
 
 @admin.register(DeliverySlotBooking)

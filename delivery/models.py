@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from django.db import models
 
-from core.models import TimeStampedModel
+from core.models import ArabicTranslationMixin, TimeStampedModel
 
 
-class Country(TimeStampedModel):
+class Country(ArabicTranslationMixin, TimeStampedModel):
     """Country used to group deliverable cities."""
 
     name = models.CharField(max_length=120, verbose_name="Country name")
@@ -31,7 +31,7 @@ class Country(TimeStampedModel):
         return self.name
 
 
-class City(TimeStampedModel):
+class City(ArabicTranslationMixin, TimeStampedModel):
     """Deliverable city used for address validation and delivery zone routing."""
 
     country = models.ForeignKey(
@@ -83,7 +83,7 @@ class City(TimeStampedModel):
         return self.name
 
 
-class DeliveryZone(TimeStampedModel):
+class DeliveryZone(ArabicTranslationMixin, TimeStampedModel):
     """
     Service area within a city.
 
@@ -147,7 +147,7 @@ class DeliverySlotType(models.TextChoices):
     MIDNIGHT = "midnight", "Midnight"
 
 
-class DeliverySlot(TimeStampedModel):
+class DeliverySlot(ArabicTranslationMixin, TimeStampedModel):
     """Deliverable time window with per-day capacity."""
 
     name = models.CharField(

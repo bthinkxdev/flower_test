@@ -65,7 +65,12 @@
         {% trans "Customize as Gift" %}
       </a>
       {% endif %}
-      <p class="small {% if not product.is_in_stock %}text-danger{% elif product.stock_quantity <= product.low_stock_threshold %}pdp-low-stock-text{% else %}text-success{% endif %} mb-0" id="pdp-stock-text">
+      <p class="small {% if not product.is_in_stock %}text-danger{% elif product.stock_quantity <= product.low_stock_threshold %}pdp-low-stock-text{% else %}text-success{% endif %} mb-0"
+         id="pdp-stock-text"
+         data-label-in-stock="{% trans 'In stock' %}"
+         data-label-order-now="{% trans '— order now' %}"
+         data-label-out-of-stock="{% trans 'Out of stock' %}"
+         data-label-low-stock="{% trans 'Low stock — only %(count)s left' %}">
         {% if not product.is_in_stock %}
           {% trans "Out of stock" %}
         {% elif product.stock_quantity <= product.low_stock_threshold %}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from core.forms import CurrencyAdminForm
 from core.models import Currency, SiteSettings
@@ -20,8 +21,10 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 
 @admin.register(SiteSettings)
-class SiteSettingsAdmin(admin.ModelAdmin):
+class SiteSettingsAdmin(TabbedTranslationAdmin):
     """Singleton site settings — only one row (pk=1)."""
+
+    list_filter = ("ar_translation_source",)
 
     def has_add_permission(self, request) -> bool:
         return not SiteSettings.objects.exists()

@@ -6,7 +6,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils import timezone
 
-from core.models import SEOModel, TimeStampedModel
+from core.models import ArabicTranslationMixin, SEOModel, TimeStampedModel
 
 
 class HomepageSectionType(models.TextChoices):
@@ -55,7 +55,7 @@ class PublishableModel(models.Model):
         return True
 
 
-class HomepageSection(TimeStampedModel):
+class HomepageSection(ArabicTranslationMixin, TimeStampedModel):
     """Configurable homepage section rendered via cms/sections/<type>.html partials."""
 
     section_type = models.CharField(
@@ -86,7 +86,7 @@ class HomepageSection(TimeStampedModel):
         return f"{self.get_section_type_display()} (#{self.display_order})"
 
 
-class HeroSlide(TimeStampedModel):
+class HeroSlide(ArabicTranslationMixin, TimeStampedModel):
     """A single hero banner slide backed by an uploaded photo or video file."""
 
     title = models.CharField(
@@ -147,7 +147,7 @@ class HeroSlide(TimeStampedModel):
         return self.poster.url if self.poster else ""
 
 
-class BlogPost(TimeStampedModel, SEOModel, PublishableModel):
+class BlogPost(ArabicTranslationMixin, TimeStampedModel, SEOModel, PublishableModel):
     """CMS blog article."""
 
     title = models.CharField(max_length=255)
@@ -161,7 +161,7 @@ class BlogPost(TimeStampedModel, SEOModel, PublishableModel):
         verbose_name_plural = "Blog posts"
 
 
-class Page(TimeStampedModel, SEOModel, PublishableModel):
+class Page(ArabicTranslationMixin, TimeStampedModel, SEOModel, PublishableModel):
     """Static CMS page (About, Contact, etc.)."""
 
     title = models.CharField(max_length=255)
@@ -174,7 +174,7 @@ class Page(TimeStampedModel, SEOModel, PublishableModel):
         verbose_name_plural = "Pages"
 
 
-class FAQItem(TimeStampedModel, PublishableModel):
+class FAQItem(ArabicTranslationMixin, TimeStampedModel, PublishableModel):
     """Frequently asked question."""
 
     question = models.CharField(max_length=255)
@@ -187,7 +187,7 @@ class FAQItem(TimeStampedModel, PublishableModel):
         verbose_name_plural = "FAQ items"
 
 
-class PolicyDocument(TimeStampedModel, SEOModel, PublishableModel):
+class PolicyDocument(ArabicTranslationMixin, TimeStampedModel, SEOModel, PublishableModel):
     """Legal/policy document (privacy, terms, etc.)."""
 
     title = models.CharField(max_length=255)

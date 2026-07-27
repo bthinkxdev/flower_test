@@ -6,7 +6,7 @@
       <p class="section-subtitle mb-4">{% trans "Get exclusive offers and gifting inspiration." %}</p>
       <form class="newsletter-form" method="post" action="{% url 'marketing:newsletter-subscribe' %}">
         {% csrf_token %}
-        <input type="email" name="email" class="form-control" placeholder="{{ section_context.placeholder|default:'Email address' }}" required aria-label="{% trans 'Email' %}">
+        <input type="email" name="email" class="form-control" placeholder="{% if section_context.placeholder %}{{ section_context.placeholder }}{% else %}{% trans 'Email address' %}{% endif %}" required aria-label="{% trans 'Email' %}">
         <button type="submit" class="btn btn-floward">{% trans "Subscribe" %}</button>
       </form>
     </div>

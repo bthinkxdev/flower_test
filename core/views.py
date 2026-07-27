@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -99,31 +97,41 @@ def blog_list_view(request: HttpRequest) -> HttpResponse:
 
 @require_POST
 def set_language_view(request: HttpRequest) -> HttpResponse:
-    """Persist language choice to session and activate translation."""
+    """
+    Persist language choice and navigate to the matching localized URL.
+
+    With ``prefix_default_language=False``, Arabic pages live under ``/ar/...``.
+    Session/cookie alone are not enough on reload of ``/`` because
+    LocaleMiddleware treats the bare path as English. Redirecting to the
+    translated path keeps language stable across reloads.
+    """
+    from urllib.parse import urlparse
+
+    from core.i18n_urls import localize_storefront_path
+
     language = request.POST.get("language", "en")
     if language not in ("en", "ar"):
         if is_htmx_request(request):
             return HttpResponse("Invalid language", status=400)
         return redirect("/")
 
+    raw = request.headers.get("HX-Current-URL") or request.META.get("HTTP_REFERER") or "/"
+    parsed = urlparse(raw)
+    path = parsed.path or "/"
+    localized = localize_storefront_path(path, language)
+    target = f"{localized}?{parsed.query}" if parsed.query else localized
+
     request.session["django_language"] = language
     translation.activate(language)
 
-    if not is_htmx_request(request):
-        response = redirect(request.META.get("HTTP_REFERER", "/"))
-        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
-        return response
+    if is_htmx_request(request):
+        # Full navigation so the address bar matches the active language.
+        response = HttpResponse(status=204)
+        response["HX-Redirect"] = target
+    else:
+        response = redirect(target)
 
-    response = rerender_app_shell(request)
     response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
-    response["HX-Trigger"] = json.dumps(
-        {
-            "preferencesUpdated": {
-                "lang": language,
-                "dir": "rtl" if language == "ar" else "ltr",
-            }
-        }
-    )
     return response
 
 

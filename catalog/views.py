@@ -8,11 +8,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_POST
 from cart.selectors import get_cart_for_request, is_product_in_cart, is_product_in_wishlist
 
 from catalog.forms import ReviewForm
-from catalog.models import ModerationStatus, Review
+from catalog.models import Review
 from catalog.selectors import (
     get_category_by_slug,
     get_plp_filter_options,
@@ -88,20 +89,21 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
         active_category = None
 
     title = (
-        resolve_meta_title(obj=active_category, fallback="Shop All Flowers & Gifts")
+        resolve_meta_title(obj=active_category, fallback=_("Shop All Flowers & Gifts"))
         if active_category
-        else "Shop All Flowers & Gifts"
+        else _("Shop All Flowers & Gifts")
     )
     description = (
-        f"Browse {active_category.name} flowers and gifts with same-day delivery in Qatar."
+        _("Browse %(name)s flowers and gifts with same-day delivery in Qatar.")
+        % {"name": active_category.name}
         if active_category
-        else "Browse premium flowers and gifts with same-day delivery across Qatar."
+        else _("Browse premium flowers and gifts with same-day delivery across Qatar.")
     )
 
     context = seo_context(
         request=request,
         obj=active_category,
-        title=f"{title} | Floward",
+        title=_("%(title)s | Story of Flowers") % {"title": title},
         description=description,
         canonical_url=build_plp_canonical_url(request=request, category_slug=category_slug),
     )
@@ -174,8 +176,11 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
     context = seo_context(
         request=request,
         obj=product,
-        title=f"{product.name} | Story of Flowers",
-        description=f"{product.name} — premium flowers and gifts delivered in Qatar.",
+        title=_("%(name)s | Story of Flowers") % {"name": product.name},
+        description=_(
+            "%(name)s — premium flowers and gifts delivered in Qatar."
+        )
+        % {"name": product.name},
     )
     context.update(
         {

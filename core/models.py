@@ -142,6 +142,38 @@ class SEOModel(models.Model):
         return models.SlugField(**defaults)
 
 
+class ArTranslationSource(models.TextChoices):
+    """How the Arabic fields on a row were produced."""
+
+    AUTO = "auto", "Automatic"
+    MANUAL = "manual", "Manual"
+
+
+class ArabicTranslationMixin(models.Model):
+    """
+    Marks a model as participating in the shared EN→AR content pipeline.
+
+    When ``ar_translation_source`` is MANUAL, the shared translation service
+    never overwrites Arabic fields. Automatic translation lives solely in
+    ``core.translation.service.translate_and_save``.
+    """
+
+    ar_translation_source = models.CharField(
+        max_length=16,
+        choices=ArTranslationSource.choices,
+        default=ArTranslationSource.AUTO,
+        db_index=True,
+        verbose_name="Arabic translation source",
+        help_text=(
+            "Automatic: Arabic is kept in sync from English. "
+            "Manual: Arabic is never overwritten by the translator."
+        ),
+    )
+
+    class Meta:
+        abstract = True
+
+
 class Currency(TimeStampedModel):
     """Supported storefront currency with exchange rate relative to the base unit."""
 
@@ -181,7 +213,7 @@ class Currency(TimeStampedModel):
         return f"{self.code} ({self.symbol})"
 
 
-class SiteSettings(TimeStampedModel):
+class SiteSettings(ArabicTranslationMixin, TimeStampedModel):
     """
     Singleton site configuration (fixed pk=1 via core.services.get_site_settings).
 

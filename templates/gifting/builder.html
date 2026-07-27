@@ -1,211 +1,293 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load i18n static storefront_tags %}
 
 {% block title %}{% trans "Gift Builder" %} | {{ product.name }}{% endblock %}
 
 {% block content %}
-<div class="container py-4 gift-builder">
-  <div class="row g-4">
-    <div class="col-lg-7">
-      <h1 class="h4 mb-1">{% trans "Customize Your Gift" %}</h1>
-      <p class="text-muted mb-4">{{ product.name }}</p>
+<div class="gift-builder page-container">
+  <div class="container">
+    <header class="gift-builder__header">
+      <p class="gift-builder__eyebrow">{{ product.name }}</p>
+      <h1 class="gift-builder__title">{% trans "Customize Your Gift" %}</h1>
+      <p class="gift-builder__lede">{% trans "Choose a message, card, wrap, and delivery details — your preview updates as you go." %}</p>
+    </header>
 
-      <form id="gift-builder-form"
-            method="post"
-            data-product-id="{{ product.pk }}"
-            hx-post="{% url 'gifting:builder-preview' line_item_id=line_item_ref.pk %}?product_slug={{ product.slug }}"
-            hx-target="#order-preview"
-            hx-swap="innerHTML"
-            hx-trigger="change delay:300ms">
-        {% csrf_token %}
-        <input type="hidden" name="product_slug" value="{{ product.slug }}">
-        <input type="hidden" name="line_item_ref_id" value="{{ line_item_ref.pk }}">
-        <input type="hidden" name="product_slug" value="{{ product.slug }}">
-        <input type="hidden" name="snapshot_version" id="snapshot-version-field" value="{{ snapshot_version }}">
+    <div class="gift-builder__layout">
+      <div class="gift-builder__main">
+        <form id="gift-builder-form"
+              class="gift-builder__form"
+              method="post"
+              data-product-id="{{ product.pk }}"
+              data-add-to-cart-label="{% trans 'Add to Cart' %}"
+              data-added-to-cart-label="{% trans 'Added to cart!' %}"
+              hx-post="{% url 'gifting:builder-preview' line_item_id=line_item_ref.pk %}?product_slug={{ product.slug }}"
+              hx-target="#order-preview"
+              hx-swap="innerHTML"
+              hx-trigger="change delay:300ms">
+          {% csrf_token %}
+          <input type="hidden" name="product_slug" value="{{ product.slug }}">
+          <input type="hidden" name="line_item_ref_id" value="{{ line_item_ref.pk }}">
+          <input type="hidden" name="snapshot_version" id="snapshot-version-field" value="{{ snapshot_version }}">
 
-        {% if config.allows_personal_message %}
-        <section class="builder-section mb-4" id="section-message">
-          <h2 class="h6 section-title">{% trans "Personal Message" %}</h2>
-          <textarea name="personal_message" class="form-control" rows="4" maxlength="{{ message_max_length }}"
-                    hx-post="{% url 'gifting:message-preview' %}"
-                    hx-trigger="keyup changed delay:200ms"
-                    hx-target="#message-preview-panel"
-                    hx-swap="innerHTML"
-                    hx-include="[name='personal_message']">{% if snapshot %}{{ snapshot.personal_message }}{% endif %}</textarea>
-          <div id="message-preview-panel" class="mt-2">
-            {% include "gifting/partials/message_preview.html" with message=snapshot.personal_message|default:"" message_max_length=message_max_length %}
-          </div>
-        </section>
-        {% endif %}
+          {% if config.allows_personal_message %}
+          <section class="builder-section" id="section-message" aria-labelledby="title-message">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">1</span>
+              <div>
+                <h2 class="builder-section__title" id="title-message">{% trans "Personal Message" %}</h2>
+                <p class="builder-section__hint">{% trans "Written on your card — keep it short and personal." %}</p>
+              </div>
+            </div>
+            <label class="visually-hidden" for="personal-message-input">{% trans "Personal Message" %}</label>
+            <textarea id="personal-message-input" name="personal_message" class="form-control builder-textarea" rows="4" maxlength="{{ message_max_length }}"
+                      placeholder="{% trans 'Write your message…' %}"
+                      hx-post="{% url 'gifting:message-preview' %}"
+                      hx-trigger="keyup changed delay:200ms"
+                      hx-target="#message-preview-panel"
+                      hx-swap="innerHTML"
+                      hx-include="[name='personal_message']">{% if snapshot %}{{ snapshot.personal_message }}{% endif %}</textarea>
+            <div id="message-preview-panel" class="builder-message-preview">
+              {% include "gifting/partials/message_preview.html" with message=snapshot.personal_message|default:"" message_max_length=message_max_length %}
+            </div>
+          </section>
+          {% endif %}
 
-        {% if config.allows_greeting_card %}
-        <section class="builder-section mb-4" id="section-greeting-card">
-          <h2 class="h6 section-title">{% trans "Greeting Card" %}</h2>
-          <div class="row g-2 greeting-card-gallery">
-            {% for card in greeting_cards %}
-            <div class="col-4 col-md-3">
-              <label class="card-option card h-100 {% if snapshot.greeting_card_id == card.pk %}border-floward{% endif %}">
-                <input type="radio" name="greeting_card_id" value="{{ card.pk }}" class="d-none"
+          {% if config.allows_greeting_card %}
+          <section class="builder-section" id="section-greeting-card" aria-labelledby="title-greeting">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">2</span>
+              <div>
+                <h2 class="builder-section__title" id="title-greeting">{% trans "Greeting Card" %}</h2>
+                <p class="builder-section__hint">{% trans "Pick a card design for your message." %}</p>
+              </div>
+            </div>
+            <div class="greeting-card-gallery" role="radiogroup" aria-labelledby="title-greeting">
+              {% for card in greeting_cards %}
+              <label class="card-option {% if snapshot.greeting_card_id == card.pk %}is-selected{% endif %}">
+                <input type="radio" name="greeting_card_id" value="{{ card.pk }}" class="visually-hidden"
                        {% if snapshot.greeting_card_id == card.pk %}checked{% endif %}>
-                {% if card.image %}
-                <img src="{{ card.image.url }}" alt="{{ card.name }}" class="card-img-top" width="200" height="140" loading="lazy">
-                {% endif %}
-                <div class="card-body p-2 small text-center">{{ card.name }}</div>
+                <span class="card-option__media">
+                  {% if card.image %}
+                  <img src="{{ card.image.url }}" alt="" class="card-option__img" width="200" height="140" loading="lazy"
+                       onerror="this.outerHTML='<span class=&quot;card-option__placeholder&quot; aria-hidden=&quot;true&quot;></span>'">
+                  {% else %}
+                  <span class="card-option__placeholder" aria-hidden="true"></span>
+                  {% endif %}
+                </span>
+                <span class="card-option__label">{{ card.name|display_label }}</span>
               </label>
+              {% empty %}
+              <p class="builder-empty">{% trans "No greeting cards for this occasion." %}</p>
+              {% endfor %}
             </div>
-            {% empty %}
-            <p class="text-muted small">{% trans "No greeting cards for this occasion." %}</p>
-            {% endfor %}
-          </div>
-        </section>
-        {% endif %}
+          </section>
+          {% endif %}
 
-        {% if config.allows_gift_wrap %}
-        <section class="builder-section mb-4" id="section-wrap">
-          <h2 class="h6 section-title">{% trans "Gift Wrap" %}</h2>
-          <div class="d-flex flex-wrap gap-2">
-            {% for wrap in gift_wrap_options %}
-            <label class="swatch-option btn btn-outline-floward btn-sm">
-              <input type="radio" name="gift_wrap_id" value="{{ wrap.pk }}" class="d-none"
-                     {% if snapshot.gift_wrap_id == wrap.pk %}checked{% endif %}>
-              {{ wrap.get_name_display }} (+{{ wrap.price_delta }})
-            </label>
-            {% endfor %}
-          </div>
-        </section>
-        {% endif %}
-
-        {% if config.allows_ribbon %}
-        <section class="builder-section mb-4" id="section-ribbon">
-          <h2 class="h6 section-title">{% trans "Ribbon" %}</h2>
-          <div class="d-flex flex-wrap gap-2">
-            {% for ribbon in ribbon_options %}
-            <label class="swatch-option btn btn-outline-floward btn-sm ribbon-{{ ribbon.name }}">
-              <input type="radio" name="ribbon_id" value="{{ ribbon.pk }}" class="d-none"
-                     {% if snapshot.ribbon_id == ribbon.pk %}checked{% endif %}>
-              {{ ribbon.get_name_display }} (+{{ ribbon.price_delta }})
-            </label>
-            {% endfor %}
-          </div>
-        </section>
-        {% endif %}
-
-        {% if config.allows_photo_upload %}
-        <section class="builder-section mb-4" id="section-photo">
-          <h2 class="h6 section-title">{% trans "Photo Upload" %}</h2>
-          <div class="d-flex flex-wrap gap-2">
-            {% for option in photo_upload_options %}
-            <label class="swatch-option btn btn-outline-floward btn-sm">
-              <input type="radio" name="photo_upload_id" value="{{ option.pk }}" class="d-none"
-                     {% if snapshot.photo_upload_id == option.pk %}checked{% endif %}>
-              {{ option.name }} (+{{ option.price_delta }})
-            </label>
-            {% endfor %}
-          </div>
-        </section>
-        {% endif %}
-
-        {% if config.allows_addons %}
-        <section class="builder-section mb-4" id="section-addons">
-          <h2 class="h6 section-title">{% trans "Add-ons" %}</h2>
-          <div class="row g-2">
-            {% for addon in eligible_addons %}
-            <div class="col-6 col-md-4">
-              <label class="card addon-card h-100">
-                <div class="card-body p-2">
-                  <input type="checkbox" name="addon_product_ids" value="{{ addon.pk }}"
-                         class="form-check-input me-2"
-                         {% if addon.pk in selected_addon_ids %}checked{% endif %}>
-                  <span class="small fw-semibold">{{ addon.name }}</span>
-                  <div class="text-floward small">{{ addon.base_price }} QAR</div>
-                </div>
+          {% if config.allows_gift_wrap %}
+          <section class="builder-section" id="section-wrap" aria-labelledby="title-wrap">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">3</span>
+              <div>
+                <h2 class="builder-section__title" id="title-wrap">{% trans "Gift Wrap" %}</h2>
+                <p class="builder-section__hint">{% trans "How your gift arrives." %}</p>
+              </div>
+            </div>
+            <div class="option-chip-grid" role="radiogroup" aria-labelledby="title-wrap">
+              {% for wrap in gift_wrap_options %}
+              <label class="option-chip">
+                <input type="radio" name="gift_wrap_id" value="{{ wrap.pk }}" class="visually-hidden"
+                       {% if snapshot.gift_wrap_id == wrap.pk %}checked{% endif %}>
+                <span class="option-chip__name">{{ wrap.name|display_label }}</span>
+                <span class="option-chip__price">+{{ wrap.price_delta }}</span>
               </label>
+              {% endfor %}
             </div>
-            {% empty %}
-            <p class="text-muted small">{% trans "No add-ons available." %}</p>
-            {% endfor %}
-          </div>
-        </section>
-        {% endif %}
-
-        <section class="builder-section mb-4" id="section-delivery">
-          <h2 class="h6 section-title">{% trans "Delivery Preferences" %}</h2>
-          <div class="row g-2">
-            <div class="col-md-6">
-              <label class="form-label small">{% trans "Delivery date" %}</label>
-              <input type="date" name="delivery_date" class="form-control"
-                     value="{% if snapshot.delivery_date %}{{ snapshot.delivery_date|date:'Y-m-d' }}{% endif %}">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label small">{% trans "Delivery slot" %}</label>
-              <select name="delivery_slot_id" class="form-select">
-                <option value="">{% trans "Select a slot" %}</option>
-                {% for slot in delivery_slots %}
-                <option value="{{ slot.pk }}" {% if snapshot.delivery_slot_id == slot.pk %}selected{% endif %}>{{ slot.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-12">
-              <label class="form-label small">{% trans "Delivery instructions" %}</label>
-              <textarea name="delivery_instructions" class="form-control" rows="2">{{ snapshot.delivery_instructions }}</textarea>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label small">{% trans "Recipient phone" %}</label>
-              <input type="tel" name="recipient_phone" class="form-control" value="{{ snapshot.recipient_phone }}">
-            </div>
-          </div>
-        </section>
-
-        {% if config.allows_anonymous or config.allows_gift_receipt %}
-        <section class="builder-section mb-4" id="section-options">
-          <h2 class="h6 section-title">{% trans "Gift Options" %}</h2>
-          {% if config.allows_anonymous %}
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" name="is_anonymous" id="is_anonymous"
-                   {% if snapshot.is_anonymous %}checked{% endif %}>
-            <label class="form-check-label" for="is_anonymous">{% trans "Send anonymously" %}</label>
-          </div>
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" name="reveal_sender_after_delivery" id="reveal_sender"
-                   {% if snapshot.reveal_sender_after_delivery %}checked{% endif %}>
-            <label class="form-check-label" for="reveal_sender">{% trans "Reveal sender after delivery" %}</label>
-          </div>
+          </section>
           {% endif %}
-          {% if config.allows_gift_receipt %}
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="is_gift_receipt" id="is_gift_receipt"
-                   {% if snapshot.is_gift_receipt %}checked{% endif %}>
-            <label class="form-check-label" for="is_gift_receipt">{% trans "Gift receipt (hide prices on packing slip)" %}</label>
-          </div>
+
+          {% if config.allows_ribbon %}
+          <section class="builder-section" id="section-ribbon" aria-labelledby="title-ribbon">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">4</span>
+              <div>
+                <h2 class="builder-section__title" id="title-ribbon">{% trans "Ribbon" %}</h2>
+              </div>
+            </div>
+            <div class="option-chip-grid" role="radiogroup" aria-labelledby="title-ribbon">
+              {% for ribbon in ribbon_options %}
+              <label class="option-chip">
+                <input type="radio" name="ribbon_id" value="{{ ribbon.pk }}" class="visually-hidden"
+                       {% if snapshot.ribbon_id == ribbon.pk %}checked{% endif %}>
+                <span class="option-chip__name">{{ ribbon.name|display_label }}</span>
+                <span class="option-chip__price">+{{ ribbon.price_delta }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </section>
           {% endif %}
-        </section>
-        {% endif %}
 
-        <div class="d-flex align-items-center gap-2 mt-3">
-          <label class="form-label small mb-0 me-1">{% trans "Qty" %}</label>
-          <input type="number" name="quantity" value="1" min="1" class="form-control form-control-sm" style="width: 5rem;">
-          <button type="button" class="btn btn-outline-floward btn-sm"
-                  hx-post="{% url 'gifting:builder-preview' line_item_id=line_item_ref.pk %}?product_slug={{ product.slug }}"
-                  hx-target="#order-preview" hx-swap="innerHTML" hx-include="#gift-builder-form">
-            {% trans "Update Preview" %}
-          </button>
-          <button type="submit" id="add-to-cart-btn" class="btn btn-floward pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}"
-                  data-added-label="{% trans 'View Cart' %}"
-                  hx-post="{% url 'cart:add' %}"
-                  hx-target="#cart-drawer-body" hx-swap="innerHTML">
-            <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
-            <span class="btn-check-icon" aria-hidden="true">✔</span>
-          </button>
-        </div>
-        <div id="add-to-cart-feedback" class="small mt-2"></div>
-      </form>
-    </div>
+          {% if config.allows_photo_upload %}
+          <section class="builder-section" id="section-photo" aria-labelledby="title-photo">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">5</span>
+              <div>
+                <h2 class="builder-section__title" id="title-photo">{% trans "Photo Upload" %}</h2>
+              </div>
+            </div>
+            <div class="option-chip-grid" role="radiogroup" aria-labelledby="title-photo">
+              {% for option in photo_upload_options %}
+              <label class="option-chip">
+                <input type="radio" name="photo_upload_id" value="{{ option.pk }}" class="visually-hidden"
+                       {% if snapshot.photo_upload_id == option.pk %}checked{% endif %}>
+                <span class="option-chip__name">{{ option.name|display_label }}</span>
+                <span class="option-chip__price">+{{ option.price_delta }}</span>
+              </label>
+              {% endfor %}
+            </div>
+          </section>
+          {% endif %}
 
-    <div class="col-lg-5">
-      <div id="order-preview" class="sticky-top" style="top: 5rem;">
-        {% include "gifting/partials/order_preview.html" %}
+          {% if config.allows_addons %}
+          <section class="builder-section" id="section-addons" aria-labelledby="title-addons">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">+</span>
+              <div>
+                <h2 class="builder-section__title" id="title-addons">{% trans "Add-ons" %}</h2>
+                <p class="builder-section__hint">{% trans "Optional extras to complete the gift." %}</p>
+              </div>
+            </div>
+            <div class="addon-grid">
+              {% for addon in eligible_addons %}
+              <label class="addon-card">
+                <input type="checkbox" name="addon_product_ids" value="{{ addon.pk }}" class="visually-hidden"
+                       {% if addon.pk in selected_addon_ids %}checked{% endif %}>
+                <span class="addon-card__check" aria-hidden="true"></span>
+                <span class="addon-card__body">
+                  <span class="addon-card__name">{{ addon.name|display_label }}</span>
+                  <span class="addon-card__price">{{ addon.base_price }} QAR</span>
+                </span>
+              </label>
+              {% empty %}
+              <p class="builder-empty">{% trans "No add-ons available." %}</p>
+              {% endfor %}
+            </div>
+          </section>
+          {% endif %}
+
+          <section class="builder-section" id="section-delivery" aria-labelledby="title-delivery">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">◎</span>
+              <div>
+                <h2 class="builder-section__title" id="title-delivery">{% trans "Delivery Preferences" %}</h2>
+                <p class="builder-section__hint">{% trans "When and how we deliver." %}</p>
+              </div>
+            </div>
+            <div class="builder-fields">
+              <div class="builder-field">
+                <label class="form-label" for="builder-delivery-date">{% trans "Delivery date" %}</label>
+                <input id="builder-delivery-date" type="date" name="delivery_date" class="form-control"
+                       value="{% if snapshot.delivery_date %}{{ snapshot.delivery_date|date:'Y-m-d' }}{% endif %}">
+              </div>
+              <div class="builder-field">
+                <label class="form-label" for="builder-delivery-slot">{% trans "Delivery slot" %}</label>
+                <select id="builder-delivery-slot" name="delivery_slot_id" class="form-select">
+                  <option value="">{% trans "Select a slot" %}</option>
+                  {% for slot in delivery_slots %}
+                  <option value="{{ slot.pk }}" {% if snapshot.delivery_slot_id == slot.pk %}selected{% endif %}>{{ slot.name|display_label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="builder-field builder-field--full">
+                <label class="form-label" for="builder-delivery-instructions">{% trans "Delivery instructions" %}</label>
+                <textarea id="builder-delivery-instructions" name="delivery_instructions" class="form-control" rows="2" placeholder="{% trans 'Gate code, floor, landmark…' %}">{{ snapshot.delivery_instructions }}</textarea>
+              </div>
+              <div class="builder-field">
+                <label class="form-label" for="builder-recipient-phone">{% trans "Recipient phone" %}</label>
+                <input id="builder-recipient-phone" type="tel" name="recipient_phone" class="form-control" value="{{ snapshot.recipient_phone }}" inputmode="tel" autocomplete="tel">
+              </div>
+            </div>
+          </section>
+
+          {% if config.allows_anonymous or config.allows_gift_receipt %}
+          <section class="builder-section" id="section-options" aria-labelledby="title-options">
+            <div class="builder-section__head">
+              <span class="builder-section__index" aria-hidden="true">★</span>
+              <div>
+                <h2 class="builder-section__title" id="title-options">{% trans "Gift Options" %}</h2>
+              </div>
+            </div>
+            <div class="builder-toggles">
+              {% if config.allows_anonymous %}
+              <label class="builder-toggle">
+                <input class="form-check-input" type="checkbox" name="is_anonymous" id="is_anonymous"
+                       {% if snapshot.is_anonymous %}checked{% endif %}>
+                <span>
+                  <span class="builder-toggle__label">{% trans "Send anonymously" %}</span>
+                </span>
+              </label>
+              <label class="builder-toggle">
+                <input class="form-check-input" type="checkbox" name="reveal_sender_after_delivery" id="reveal_sender"
+                       {% if snapshot.reveal_sender_after_delivery %}checked{% endif %}>
+                <span>
+                  <span class="builder-toggle__label">{% trans "Reveal sender after delivery" %}</span>
+                </span>
+              </label>
+              {% endif %}
+              {% if config.allows_gift_receipt %}
+              <label class="builder-toggle">
+                <input class="form-check-input" type="checkbox" name="is_gift_receipt" id="is_gift_receipt"
+                       {% if snapshot.is_gift_receipt %}checked{% endif %}>
+                <span>
+                  <span class="builder-toggle__label">{% trans "Gift receipt (hide prices on packing slip)" %}</span>
+                </span>
+              </label>
+              {% endif %}
+            </div>
+          </section>
+          {% endif %}
+
+          <div class="gift-builder__actions d-none d-lg-flex">
+            <div class="gift-builder__qty">
+              <label class="form-label mb-0" for="builder-qty">{% trans "Qty" %}</label>
+              <input id="builder-qty" type="number" name="quantity" value="1" min="1" class="form-control gift-builder__qty-input">
+            </div>
+            <button type="button" class="btn btn-outline-floward"
+                    hx-post="{% url 'gifting:builder-preview' line_item_id=line_item_ref.pk %}?product_slug={{ product.slug }}"
+                    hx-target="#order-preview" hx-swap="innerHTML" hx-include="#gift-builder-form">
+              {% trans "Update Preview" %}
+            </button>
+            <button type="submit" id="add-to-cart-btn" class="btn btn-floward gift-builder__cta{% if in_cart %} is-in-cart{% endif %}"
+                    data-added-label="{% trans 'View Cart' %}"
+                    hx-post="{% url 'cart:add' %}"
+                    hx-target="#cart-drawer-body" hx-swap="innerHTML">
+              <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
+              <span class="btn-check-icon" aria-hidden="true">✔</span>
+            </button>
+          </div>
+          <div id="add-to-cart-feedback" class="gift-builder__feedback small" aria-live="polite"></div>
+        </form>
       </div>
+
+      <aside class="gift-builder__aside" aria-label="{% trans 'Order Preview' %}">
+        <div id="order-preview" class="gift-builder__preview sticky-top">
+          {% include "gifting/partials/order_preview.html" %}
+        </div>
+      </aside>
     </div>
+  </div>
+
+  <div class="gift-builder__mobile-bar d-lg-none" role="region" aria-label="{% trans 'Add to cart' %}">
+    <div class="gift-builder__qty">
+      <label class="visually-hidden" for="builder-qty-mobile">{% trans "Qty" %}</label>
+      <input id="builder-qty-mobile" type="number" value="1" min="1" class="form-control gift-builder__qty-input" aria-label="{% trans 'Qty' %}" data-qty-mirror>
+    </div>
+    <button type="button" id="add-to-cart-btn-mobile" class="btn btn-floward gift-builder__cta{% if in_cart %} is-in-cart{% endif %}"
+            data-added-label="{% trans 'View Cart' %}"
+            hx-post="{% url 'cart:add' %}"
+            hx-target="#cart-drawer-body" hx-swap="innerHTML"
+            hx-include="#gift-builder-form">
+      <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
+    </button>
   </div>
 </div>
 {% endblock %}

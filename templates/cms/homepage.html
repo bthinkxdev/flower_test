@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}{{ seo_title|default:"Luxury Flowers & Gifts | Story of Flowers" }}{% endblock %}
+{% block title %}{% if seo_title %}{{ seo_title }}{% else %}{% trans "Luxury Flowers & Gifts | Story of Flowers" %}{% endif %}{% endblock %}
 
 {% block content %}
 <div class="homepage-sections">

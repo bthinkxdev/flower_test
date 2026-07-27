@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.contrib import admin
+from modeltranslation.admin import TabbedTranslationAdmin, TranslationTabularInline
 
 from catalog.models import (
     Brand,
@@ -20,11 +21,11 @@ from catalog.models import (
 
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(TabbedTranslationAdmin):
     """Admin for category tree."""
 
     list_display = ("name", "slug", "parent", "display_order", "is_active", "updated_at")
-    list_filter = ("is_active",)
+    list_filter = ("is_active", "ar_translation_source")
     search_fields = ("name", "slug")
     list_select_related = ("parent",)
     prepopulated_fields = {"slug": ("name",)}
@@ -32,21 +33,21 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Occasion)
-class OccasionAdmin(admin.ModelAdmin):
+class OccasionAdmin(TabbedTranslationAdmin):
     """Admin for gift occasions."""
 
     list_display = ("name", "slug", "is_seasonal", "active_from", "active_to", "updated_at")
-    list_filter = ("is_seasonal",)
+    list_filter = ("is_seasonal", "ar_translation_source")
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Recipient)
-class RecipientAdmin(admin.ModelAdmin):
+class RecipientAdmin(TabbedTranslationAdmin):
     """Admin for shop-by-recipient personas."""
 
     list_display = ("name", "slug", "display_order", "is_active", "updated_at")
-    list_filter = ("is_active",)
+    list_filter = ("is_active", "ar_translation_source")
     list_editable = ("display_order", "is_active")
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
@@ -54,27 +55,27 @@ class RecipientAdmin(admin.ModelAdmin):
 
 
 @admin.register(Brand)
-class BrandAdmin(admin.ModelAdmin):
+class BrandAdmin(TabbedTranslationAdmin):
     """Admin for product brands."""
 
     list_display = ("name", "slug", "is_featured", "updated_at")
-    list_filter = ("is_featured",)
+    list_filter = ("is_featured", "ar_translation_source")
     search_fields = ("name", "slug")
     prepopulated_fields = {"slug": ("name",)}
 
 
-class ProductImageInline(admin.TabularInline):
+class ProductImageInline(TranslationTabularInline):
     model = ProductImage
     extra = 1
 
 
-class ProductVariantInline(admin.TabularInline):
+class ProductVariantInline(TranslationTabularInline):
     model = ProductVariant
     extra = 0
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(TabbedTranslationAdmin):
     """Admin for products — list_select_related prevents N+1 on list view."""
 
     list_display = (
@@ -94,6 +95,7 @@ class ProductAdmin(admin.ModelAdmin):
         "is_new_arrival",
         "is_same_day_eligible",
         "supports_gift_customization",
+        "ar_translation_source",
         "category",
         "brand",
     )
@@ -106,21 +108,21 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProductVariant)
-class ProductVariantAdmin(admin.ModelAdmin):
+class ProductVariantAdmin(TabbedTranslationAdmin):
     """Admin for product variants."""
 
     list_display = ("product", "variant_type", "name", "price_delta", "stock_quantity")
-    list_filter = ("variant_type",)
+    list_filter = ("variant_type", "ar_translation_source")
     search_fields = ("product__name", "product__sku", "name")
     list_select_related = ("product",)
 
 
 @admin.register(ProductImage)
-class ProductImageAdmin(admin.ModelAdmin):
+class ProductImageAdmin(TabbedTranslationAdmin):
     """Admin for product images."""
 
     list_display = ("product", "display_order", "is_primary", "updated_at")
-    list_filter = ("is_primary",)
+    list_filter = ("is_primary", "ar_translation_source")
     search_fields = ("product__name", "alt_text")
     list_select_related = ("product",)
 

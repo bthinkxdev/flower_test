@@ -10,6 +10,15 @@ register = template.Library()
 
 
 @register.filter
+def display_label(value) -> str:
+    """Humanize CMS/option labels (e.g. Luxury_box → Luxury box)."""
+    if value is None:
+        return ""
+    text = str(value).replace("_", " ").strip()
+    return " ".join(text.split())
+
+
+@register.filter
 def in_display_currency(amount, currency) -> str:
     """Convert a base-currency amount into the active display currency."""
     if amount is None or amount == "":

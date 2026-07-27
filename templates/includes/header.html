@@ -35,7 +35,7 @@
           {% endfor %}
         </select>
         {% else %}
-        Qatar
+        {% trans "Qatar" %}
         {% endif %}
       </div>
       <div class="d-flex align-items-center gap-2 preference-switchers">
@@ -105,8 +105,8 @@
       </div>
 
       <a class="navbar-brand navbar-col navbar-col--brand" href="{% url 'cms:homepage' %}">
-        <img src="{% static 'img/logo.png' %}" alt="Story of Flowers" class="navbar-logo">
-        <span class="navbar-name d-none d-lg-inline">Story of Flowers</span>
+        <img src="{% static 'img/logo.png' %}" alt="{% trans 'Story of Flowers' %}" class="navbar-logo">
+        <span class="navbar-name d-none d-lg-inline">{% trans "Story of Flowers" %}</span>
       </a>
 
       <div class="navbar-col navbar-col--end">
