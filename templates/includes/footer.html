@@ -2,7 +2,7 @@
 <footer class="site-footer">
   <div class="container">
     <div class="row g-4">
-      <div class="col-md-4 col-lg-2">
+      <div class="col-md-4 col-lg-3">
         <div class="footer-brand mb-2">
           <a href="{% url 'cms:homepage' %}" class="footer-brand-link">
             <img src="{% static 'img/logo.png' %}" alt="Story of Flowers" class="footer-logo">
@@ -16,11 +16,11 @@
         <a href="{% url 'catalog:plp' %}?bestseller=1">{% trans "Best Sellers" %}</a>
         <a href="{% url 'catalog:plp' %}?same_day=1">{% trans "Same Day" %}</a>
       </div>
-      <div class="col-6 col-md-2">
+      <!-- <div class="col-6 col-md-2">
         <h6>{% trans "Company" %}</h6>
         <a href="{% url 'accounts:corporate-register' %}">{% trans "Corporate Gifts" %}</a>
         <a href="{% url 'corporate:dashboard' %}">{% trans "Corporate Portal" %}</a>
-      </div>
+      </div> -->
       <div class="col-6 col-md-2">
         <h6>{% trans "Get to Know Us" %}</h6>
         <a href="{% url 'core:about-us' %}">{% trans "About Us" %}</a>
@@ -32,7 +32,7 @@
         <a href="{% url 'core:contact-us' %}">{% trans "Contact Us" %}</a>
         <a href="{% url 'core:faq' %}">{% trans "FAQ" %}</a>
       </div>
-      <div class="col-md-4 col-lg-2">
+      <div class="col-md-4 col-lg-3">
         <h6>{% trans "Contact" %}</h6>
         <p class="small text-muted mb-1">{% trans "Doha, Qatar" %}</p>
         <p class="small text-muted mb-0">{% trans "Customer support available 24/7" %}</p>
