@@ -40,3 +40,5 @@
   {% endif %}
 </nav>
 {% endif %}
+
+<p hx-swap-oob="true" id="plp-product-count" class="section-subtitle mt-1">{% if plp.total_count %}{{ plp.total_count }} {% trans "products" %}{% else %}0 {% trans "products" %}{% endif %}</p>

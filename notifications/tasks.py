@@ -42,6 +42,8 @@ def dispatch_order_status_notification(
     user = profile.user
     title = f"Order {order.order_number} update"
     body = f"Your order status changed from {old_status} to {new_status}."
+    body += "\nIf you have any questions about your order, please don't hesitate to contact us."
+    body += "\n\nBest regards,\nThe Story of Flowers Team"
 
     create_notification(user=user, title=title, body=body)
 

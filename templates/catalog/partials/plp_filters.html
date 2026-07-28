@@ -14,7 +14,11 @@
     <select name="category" class="form-select form-select-sm">
       <option value="">{% trans "All" %}</option>
       {% for cat in categories %}
-      <option value="{{ cat.pk }}" {% if filters.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+        {% if active_category and active_category.parent_id == cat.pk %}
+          <option value="{{ active_category.pk }}" selected>{{ cat.name }}</option>
+        {% else %}
+          <option value="{{ cat.pk }}" {% if filters.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+        {% endif %}
       {% endfor %}
     </select>
   </div>

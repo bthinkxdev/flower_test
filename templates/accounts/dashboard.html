@@ -32,7 +32,7 @@
           <li class="list-group-item px-0">
             <div class="d-flex justify-content-between align-items-center">
               <span class="small">{{ order.order_number }}</span>
-              <span class="small text-muted">{{ order.order_status }}</span>
+              <span class="small text-muted">{{ order.order_status|capfirst }}</span>
               <div class="d-flex gap-2">
                 <button
                   class="btn btn-sm btn-outline-secondary"

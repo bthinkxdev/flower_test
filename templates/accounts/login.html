@@ -47,7 +47,10 @@
             </span>
           </button>
           <button type="button" class="btn btn-outline-floward" id="resend-otp-btn">
-            <span class="btn-text">{% trans "Resend OTP" %}</span>
+            <span class="btn-text">
+              <span id="resend-text">{% trans "Resend OTP" %}</span>
+              <span id="resend-timer" class="d-none"></span>
+            </span>
             <span class="btn-loader d-none">
               <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             </span>
@@ -89,6 +92,33 @@
   const resendBtn = document.getElementById("resend-otp-btn");
   const otpHidden = document.getElementById("id_otp_code");
   const otpDigits = Array.from(document.querySelectorAll(".otp-digit"));
+
+  let resendInterval = null;
+  const RESEND_TIMEOUT = 60;
+
+  function startResendTimer() {
+    const resendText = document.getElementById("resend-text");
+    const resendTimer = document.getElementById("resend-timer");
+    let timeLeft = RESEND_TIMEOUT;
+    
+    resendBtn.disabled = true;
+    resendText.classList.add("d-none");
+    resendTimer.classList.remove("d-none");
+    resendTimer.textContent = `{% trans "Resend in" %} ${timeLeft}s`;
+
+    if (resendInterval) clearInterval(resendInterval);
+    resendInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(resendInterval);
+        resendBtn.disabled = false;
+        resendTimer.classList.add("d-none");
+        resendText.classList.remove("d-none");
+      } else {
+        resendTimer.textContent = `{% trans "Resend in" %} ${timeLeft}s`;
+      }
+    }, 1000);
+  }
 
   function showError(msg) {
     errorBox.textContent = msg;
@@ -156,6 +186,7 @@
       otpDigits.forEach(d => d.value = "");
       updateOtpValue();
       otpDigits[0].focus();
+      startResendTimer();
       if (window.showToast) window.showToast("{% trans 'OTP has been sent to your email.' %}");
     } catch (err) {
       showError(err.message);
@@ -169,10 +200,11 @@
     setLoading(resendBtn, true);
     try {
       await requestOtp(emailInput.value.trim());
+      setLoading(resendBtn, false);
+      startResendTimer();
       if (window.showToast) window.showToast("{% trans 'OTP has been resent to your email.' %}");
     } catch (err) {
       showError(err.message);
-    } finally {
       setLoading(resendBtn, false);
     }
   });
