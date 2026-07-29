@@ -1,5 +1,5 @@
 """
-Reconcile Tap Payments charges left PENDING by a missed or delayed webhook.
+Reconcile PayTabs transactions left PENDING by a missed or delayed IPN callback.
 
 """
 
@@ -11,7 +11,7 @@ from datetime import timedelta
 from django.core.management.base import BaseCommand, CommandParser
 from django.utils import timezone
 
-from payments.adapters.tap import TapGatewayAdapter
+from payments.adapters.paytabs import PayTabsGatewayAdapter
 from payments.exceptions import PaymentGatewayError
 from payments.models import PaymentStatus, PaymentTransaction
 from payments.services import confirm_payment_failed, confirm_payment_success
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Reconcile Tap PaymentTransactions stuck PENDING via Tap's retrieve-charge API."
+    help = "Reconcile PayTabs PaymentTransactions stuck PENDING via PayTabs' Query Transaction API."
 
     def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument(
@@ -39,12 +39,12 @@ class Command(BaseCommand):
     def handle(self, *args, older_than_minutes: int, limit: int, **options) -> None:
         cutoff = timezone.now() - timedelta(minutes=older_than_minutes)
         stale_pending = PaymentTransaction.objects.filter(
-            gateway_key=TapGatewayAdapter.key,
+            gateway_key=PayTabsGatewayAdapter.key,
             status=PaymentStatus.PENDING,
             created_at__lte=cutoff,
         ).order_by("created_at")[:limit]
 
-        adapter = TapGatewayAdapter()
+        adapter = PayTabsGatewayAdapter()
         resolved = 0
         still_pending = 0
         errors = 0
@@ -54,7 +54,7 @@ class Command(BaseCommand):
                 capture = adapter.capture(intent_id=payment_tx.external_intent_id)
             except PaymentGatewayError:
                 logger.exception(
-                    "reconcile_tap_charges.gateway_error",
+                    "reconcile_paytabs_charges.gateway_error",
                     extra={"payment_transaction_id": payment_tx.pk},
                 )
                 errors += 1
@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 payment_tx.save(update_fields=["external_transaction_id", "updated_at"])
                 confirm_payment_success(payment_transaction=payment_tx)
                 resolved += 1
-            elif raw_status in {"INITIATED", "IN_PROGRESS"}:
+            elif raw_status in {"H", "P"}:
                 still_pending += 1
             else:
                 confirm_payment_failed(payment_transaction=payment_tx)

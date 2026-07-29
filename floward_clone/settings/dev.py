@@ -6,7 +6,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 try:
     import debug_toolbar  # noqa: F401

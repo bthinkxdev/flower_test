@@ -21,7 +21,9 @@ def payment_webhook_view(request: HttpRequest, gateway_key: str) -> HttpResponse
     CSRF-exempt webhook receiver — signature verified per adapter.
     
     """
-    signature = request.headers.get("X-Payment-Signature", "")
+    # PayTabs posts its HMAC-SHA256 IPN signature in a "Signature" header;
+    # fall back to the older generic header for any other adapters.
+    signature = request.headers.get("Signature") or request.headers.get("X-Payment-Signature", "")
 
     try:
         payment_tx = handle_payment_webhook(
@@ -35,7 +37,7 @@ def payment_webhook_view(request: HttpRequest, gateway_key: str) -> HttpResponse
     except PaymentGatewayError:
         logger.exception("payment.webhook.gateway_error", extra={"gateway_key": gateway_key})
         # 502 (not 500) signals "our fault talking to the gateway" clearly
-        # in logs/alerts, and importantly it's a status Tap will retry on.
+        # in logs/alerts, and importantly it's a status PayTabs will retry on.
         return JsonResponse({"status": "error"}, status=502)
     except KeyError:
         # get_payment_adapter() raises this for an unknown gateway_key.
