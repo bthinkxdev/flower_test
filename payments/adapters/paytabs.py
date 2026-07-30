@@ -75,11 +75,16 @@ class PayTabsGatewayAdapter(PaymentGatewayAdapter):
         return key
 
     @property
-    def _profile_id(self) -> str:
+    def _profile_id(self) -> int:
         profile_id = getattr(settings, "PAYTABS_PROFILE_ID", "")
         if not profile_id:
             raise PaymentGatewayError("PAYTABS_PROFILE_ID is not configured.")
-        return profile_id
+        try:
+            return int(profile_id)
+        except (TypeError, ValueError) as exc:
+            raise PaymentGatewayError(
+                f"PAYTABS_PROFILE_ID must be numeric, got {profile_id!r}."
+            ) from exc
 
     @property
     def _base_url(self) -> str:

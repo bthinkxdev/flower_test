@@ -19,7 +19,11 @@ SECRET_KEY = env("SECRET_KEY", default="django-insecure-dev-only-change-in-produ
 
 DEBUG = env.bool("DEBUG", default=False)
 
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1","storyofflowers.bthinkx.com","www.storyofflowers.com","storyofflowers.com"])
+
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1","storyofflowers.bthinkx.com","www.storyofflowers.com","storyofflowers.com"])
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 LOCAL_APPS = [
     "core",

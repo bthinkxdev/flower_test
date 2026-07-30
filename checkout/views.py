@@ -294,8 +294,11 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
             general_error=str(exc),
         )
     except (PaymentGatewayError, PaymentGatewayRejected) as exc:
-    
-        logger.warning("checkout.payment.gateway_error", extra={"order_id": order.pk})
+        logger.warning(
+            "checkout.payment.gateway_error order_id=%s detail=%s",
+            order.pk,
+            str(exc),
+        )
         return _render_checkout_order_form_errors(
             request,
             session=session,
