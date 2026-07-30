@@ -19,7 +19,11 @@ SECRET_KEY = env("SECRET_KEY", default="django-insecure-dev-only-change-in-produ
 
 DEBUG = env.bool("DEBUG", default=False)
 
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1","storyofflowers.bthinkx.com","www.storyofflowers.com","storyofflowers.com"])
+
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1","storyofflowers.bthinkx.com","www.storyofflowers.com","storyofflowers.com"])
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 LOCAL_APPS = [
     "core",
@@ -203,6 +207,13 @@ GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default="")
 ACCOUNTS_OTP_EXPIRY_SECONDS = env.int("ACCOUNTS_OTP_EXPIRY_SECONDS", default=300)
 ACCOUNTS_OTP_MAX_ATTEMPTS = env.int("ACCOUNTS_OTP_MAX_ATTEMPTS", default=5)
 ACCOUNTS_GUEST_TOKEN_MAX_AGE = env.int("ACCOUNTS_GUEST_TOKEN_MAX_AGE", default=86400)
+
+PAYTABS_PROFILE_ID = env("PAYTABS_PROFILE_ID", default="")
+PAYTABS_SERVER_KEY = env("PAYTABS_SERVER_KEY", default="")
+PAYTABS_BASE_URL = env("PAYTABS_BASE_URL", default="https://secure.paytabs.com")
+PAYTABS_CALLBACK_URL = env("PAYTABS_CALLBACK_URL", default="")
+PAYTABS_DEFAULT_RETURN_URL = env("PAYTABS_DEFAULT_RETURN_URL", default="")
+PAYTABS_HIDE_SHIPPING = env.bool("PAYTABS_HIDE_SHIPPING", default=True)
 
 LANGUAGE_CODE = env("LANGUAGE_CODE", default="en")
 

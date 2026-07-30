@@ -19,5 +19,6 @@ urlpatterns = [
     path("addresses/form/reset/", views.checkout_address_form_reset_view, name="address-form-reset"),
     path("addresses/<int:address_id>/delete/", views.checkout_delete_address_view, name="delete-address"),
     path("order/<int:order_id>/confirmation/",views.checkout_confirmation_view,name="confirmation"),
+    path("order/<int:order_id>/payment-return/", views.checkout_payment_return_view, name="payment-return"),
     path("preview-delivery/", views.checkout_preview_delivery_view, name="preview-delivery"),
 ]

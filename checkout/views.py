@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
@@ -21,6 +23,8 @@ from django.utils.translation import gettext as _
 from delivery.selectors import get_available_slots
 from payments.registry import PAYMENT_GATEWAYS
 from payments.services import process_payment
+from payments.exceptions import PaymentGatewayError, PaymentGatewayRejected
+from payments.models import PaymentStatus
 from datetime import date
 from accounts.forms import AddressForm
 from accounts.services import create_address, update_address
@@ -28,6 +32,8 @@ from django.shortcuts import get_object_or_404
 from decimal import Decimal
 from accounts.models import Address
 from django.urls import reverse
+
+logger = logging.getLogger(__name__)
 from core.page_rerender import is_htmx_request
 from orders.selectors import get_order_for_customer
 import json
@@ -250,7 +256,26 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
         if payment_form.cleaned_data.get("voucher_code"):
             payment_data["voucher_code"] = payment_form.cleaned_data["voucher_code"]
 
-        process_payment(
+    
+        payment_data["merchant_return_url"] = request.build_absolute_uri(
+            reverse("checkout:payment-return", kwargs={"order_id": order.pk})
+        )
+        if profile is None:
+            payment_data["merchant_return_url"] += f"?gt={build_guest_order_token(order_id=order.pk)}"
+
+        if request.user.is_authenticated:
+            payment_data["customer_first_name"] = request.user.first_name or "Guest"
+            payment_data["customer_last_name"] = request.user.last_name or "Customer"
+            payment_data["customer_email"] = request.user.email
+        else:
+            guest_details = session.guest_details or {}
+            full_name = guest_details.get("full_name", "Guest Customer").split(" ", 1)
+            payment_data["customer_first_name"] = full_name[0]
+            payment_data["customer_last_name"] = full_name[1] if len(full_name) > 1 else ""
+            payment_data["customer_email"] = guest_details.get("email", "")
+            payment_data["customer_phone_number"] = guest_details.get("phone", "")
+
+        payment_tx = process_payment(
             order=order,
             gateway_key=payment_form.cleaned_data["gateway_key"],
             payment_data=payment_data,
@@ -268,11 +293,34 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
             address=address,
             general_error=str(exc),
         )
+    except (PaymentGatewayError, PaymentGatewayRejected) as exc:
+        logger.warning(
+            "checkout.payment.gateway_error order_id=%s detail=%s",
+            order.pk,
+            str(exc),
+        )
+        return _render_checkout_order_form_errors(
+            request,
+            session=session,
+            cart=cart,
+            profile=profile,
+            payment_form=payment_form,
+            delivery_form=delivery_form,
+            checkout_address_form=checkout_address_form,
+            guest_details_form=guest_details_form,
+            address=address,
+            general_error=_("We couldn't reach the payment provider. Please try again."),
+        )
 
-    redirect_url = reverse("checkout:confirmation", kwargs={"order_id": order.pk})
-    if profile is None:
-        token = build_guest_order_token(order_id=order.pk)
-        redirect_url = f"{redirect_url}?gt={token}"
+    
+    gateway_redirect_url = (payment_tx.metadata or {}).get("redirect_url")
+    if gateway_redirect_url:
+        redirect_url = gateway_redirect_url
+    else:
+        redirect_url = reverse("checkout:confirmation", kwargs={"order_id": order.pk})
+        if profile is None:
+            token = build_guest_order_token(order_id=order.pk)
+            redirect_url = f"{redirect_url}?gt={token}"
 
     if is_htmx_request(request):
         response = HttpResponse(status=204)
@@ -280,6 +328,31 @@ def checkout_place_order_view(request: HttpRequest) -> HttpResponse:
         return response
     return redirect(redirect_url)
 
+
+
+@require_GET
+def checkout_payment_return_view(request: HttpRequest, order_id: int) -> HttpResponse:
+    
+    if request.user.is_authenticated:
+        profile = request.user.customer_profile
+        order = get_order_for_customer(order_id=order_id, customer_profile=profile)
+    else:
+        token = request.GET.get("gt", "")
+        if not token or not verify_guest_order_token(token=token, order_id=order_id):
+            raise Http404("Order not found.")
+        order = get_order_for_customer(order_id=order_id, customer_profile=None)
+
+    payment_tx = order.payment_transactions.order_by("-created_at").first()
+    gt_suffix = f"?gt={request.GET['gt']}" if request.GET.get("gt") else ""
+
+    if payment_tx is not None and payment_tx.status == PaymentStatus.SUCCESS:
+        return redirect(f"{reverse('checkout:confirmation', kwargs={'order_id': order.pk})}{gt_suffix}")
+
+    if payment_tx is not None and payment_tx.status == PaymentStatus.FAILED:
+        return redirect(f"{reverse('checkout:checkout')}?payment_failed=1")
+
+    
+    return render(request, "checkout/payment_pending.html", {"order": order}, status=202)
 
 
 @require_GET

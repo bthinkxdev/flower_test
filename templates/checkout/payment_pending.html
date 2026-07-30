@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirming Payment" %} | Story of Flowers{% endblock %}
+
+{% block content %}
+<div class="container page-container checkout-page py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      {% include "checkout/payment_pending_card.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

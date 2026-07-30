@@ -65,7 +65,8 @@ def process_payment(
         metadata=metadata,
     )
     payment_tx.external_intent_id = intent.intent_id
-    payment_tx.save(update_fields=["external_intent_id", "updated_at"])
+    payment_tx.metadata.update(intent.metadata)
+    payment_tx.save(update_fields=["external_intent_id", "metadata", "updated_at"])
 
     if adapter.is_async:
         return payment_tx
@@ -105,14 +106,24 @@ def handle_payment_webhook(
     event = adapter.verify_webhook(payload=payload, signature=signature)
 
     intent_id = event.get("intent_id", "")
-    payment_tx = PaymentTransaction.objects.filter(
-        external_intent_id=intent_id,
-        gateway_key=gateway_key,
-    ).first()
+    payment_tx = (
+        PaymentTransaction.objects.select_for_update()
+        .filter(external_intent_id=intent_id, gateway_key=gateway_key)
+        .first()
+    )
     if payment_tx is None:
         return None
 
-    if event.get("status") == "success":
+    if payment_tx.status != PaymentStatus.PENDING:
+        return payment_tx
+
+    status = event.get("status")
+
+    if status == "pending":
+    
+        return payment_tx
+
+    if status == "success":
         payment_tx.external_transaction_id = event.get("transaction_id", "")
         payment_tx.save(update_fields=["external_transaction_id", "updated_at"])
         return confirm_payment_success(payment_transaction=payment_tx)
