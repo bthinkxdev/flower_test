@@ -34,8 +34,8 @@
       <div class="gift-snapshot-badge small mt-2 ps-3 border-start border-2 border-floward">
         {% if snap.personal_message %}<div>{% trans "Message" %}: <em>{{ snap.personal_message }}</em></div>{% endif %}
         {% if snap.greeting_card %}<div>{% trans "Greeting card" %}: {{ snap.greeting_card.name }}</div>{% endif %}
-        {% if snap.gift_wrap %}<div>{% trans "Gift wrap" %}: {{ snap.gift_wrap.get_name_display }}</div>{% endif %}
-        {% if snap.ribbon %}<div>{% trans "Ribbon" %}: {{ snap.ribbon.get_name_display }}</div>{% endif %}
+        {% if snap.gift_wrap %}<div>{% trans "Gift wrap" %}: {{ snap.gift_wrap.name }}</div>{% endif %}
+        {% if snap.ribbon %}<div>{% trans "Ribbon" %}: {{ snap.ribbon.name }}</div>{% endif %}
         {% for addon_row in snap.snapshot_addons.all %}
         <div>{% trans "Add-on" %}: {{ addon_row.addon_product.name }}</div>
         {% endfor %}

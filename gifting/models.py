@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from catalog.models import Occasion, Product
-from core.models import TimeStampedModel
+from core.models import ArabicTranslationMixin, TimeStampedModel
 from gifting.constants import PERSONAL_MESSAGE_MAX_LENGTH
 
 
@@ -113,7 +113,7 @@ class GiftCustomizationConfig(TimeStampedModel):
         return f"Gift config for {self.content_type_id}:{self.object_id}"
 
 
-class GreetingCardDesign(TimeStampedModel):
+class GreetingCardDesign(ArabicTranslationMixin, TimeStampedModel):
     """Shared greeting-card design library — coupled to occasions, not products."""
 
     name = models.CharField(max_length=120, verbose_name="Name")
@@ -159,7 +159,7 @@ class GiftWrapName(models.TextChoices):
     ECO_FRIENDLY = "eco_friendly", "Eco Friendly"
 
 
-class GiftWrapOption(BaseCustomizationOption):
+class GiftWrapOption(ArabicTranslationMixin, BaseCustomizationOption):
     """Selectable gift-wrap style with a price delta."""
 
     name = models.CharField(
@@ -188,7 +188,7 @@ class RibbonName(models.TextChoices):
     THEME = "theme", "Theme"
 
 
-class RibbonOption(BaseCustomizationOption):
+class RibbonOption(ArabicTranslationMixin, BaseCustomizationOption):
     """Selectable ribbon colour with a price delta."""
 
     name = models.CharField(
@@ -205,7 +205,7 @@ class RibbonOption(BaseCustomizationOption):
         return self.name
 
 
-class GiftPhotoUploadOption(BaseCustomizationOption):
+class GiftPhotoUploadOption(ArabicTranslationMixin, BaseCustomizationOption):
     """
     Example plug-and-play option type — photo upload surcharge.
 

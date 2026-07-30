@@ -27,8 +27,8 @@
                   <i class="ti ti-gift"></i> Gift
                   {% if snap.personal_message %}— "{{ snap.personal_message|truncatechars:40 }}"{% endif %}
                   {% if snap.greeting_card %}· {{ snap.greeting_card.name }}{% endif %}
-                  {% if snap.gift_wrap %}· {{ snap.gift_wrap.get_name_display }}{% endif %}
-                  {% if snap.ribbon %}· {{ snap.ribbon.get_name_display }} ribbon{% endif %}
+                  {% if snap.gift_wrap %}· {{ snap.gift_wrap.name }}{% endif %}
+                  {% if snap.ribbon %}· {{ snap.ribbon.name }} ribbon{% endif %}
                   {% if snap.is_anonymous %}· anonymous{% endif %}
                   {% if snap.is_gift_receipt %}· no prices on slip{% endif %}
                 </div>

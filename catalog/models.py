@@ -6,10 +6,10 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from core.models import TimeStampedModel
+from core.models import ArabicTranslationMixin, TimeStampedModel
 
 
-class Category(TimeStampedModel):
+class Category(ArabicTranslationMixin, TimeStampedModel):
     """Hierarchical product category tree."""
 
     name = models.CharField(
@@ -65,7 +65,7 @@ class Category(TimeStampedModel):
         return self.name
 
 
-class Occasion(TimeStampedModel):
+class Occasion(ArabicTranslationMixin, TimeStampedModel):
     """Gift occasion used for merchandising and PLP filters."""
 
     name = models.CharField(max_length=120, verbose_name="Name")
@@ -110,7 +110,7 @@ class Occasion(TimeStampedModel):
         return self.name
 
 
-class Brand(TimeStampedModel):
+class Brand(ArabicTranslationMixin, TimeStampedModel):
     """Product brand for filtering and brand pages."""
 
     name = models.CharField(max_length=120, verbose_name="Name")
@@ -143,7 +143,7 @@ class Brand(TimeStampedModel):
         return self.name
 
 
-class Recipient(TimeStampedModel):
+class Recipient(ArabicTranslationMixin, TimeStampedModel):
     """Recipient persona for shop-by-recipient merchandising (e.g. Mother, Father)."""
 
     name = models.CharField(max_length=120, verbose_name="Name")
@@ -179,7 +179,7 @@ class Recipient(TimeStampedModel):
         return self.name
 
 
-class Product(TimeStampedModel):
+class Product(ArabicTranslationMixin, TimeStampedModel):
     """Core sellable product — highest read volume entity in the platform."""
 
     name = models.CharField(max_length=255, verbose_name="Name")
@@ -313,7 +313,7 @@ class VariantType(models.TextChoices):
     PACKAGING = "packaging", "Packaging"
 
 
-class ProductVariant(TimeStampedModel):
+class ProductVariant(ArabicTranslationMixin, TimeStampedModel):
     """Purchasable variant altering price and/or stock."""
 
     product = models.ForeignKey(
@@ -353,7 +353,7 @@ class ProductVariant(TimeStampedModel):
         return f"{self.product.sku}-{self.sku_suffix}"
 
 
-class ProductImage(TimeStampedModel):
+class ProductImage(ArabicTranslationMixin, TimeStampedModel):
     """Gallery image for a product."""
 
     product = models.ForeignKey(

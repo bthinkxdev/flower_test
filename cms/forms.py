@@ -17,7 +17,7 @@ class HomepageSectionAdminForm(forms.ModelForm):
 
     class Meta:
         model = HomepageSection
-        fields = ("section_type", "title", "display_order", "is_active")
+        fields = ("section_type", "title", "display_order", "is_active", "ar_translation_source")
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

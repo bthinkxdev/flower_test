@@ -12,9 +12,13 @@ from cms.selectors import HOMEPAGE_SECTIONS_CACHE_KEY, HOMEPAGE_SECTIONS_CACHE_T
 
 def build_homepage_sections_snapshot() -> list[dict[str, Any]]:
     """
-    Build a serializable snapshot of active homepage sections from the database.
+    Build a serializable bilingual snapshot of active homepage sections.
 
     Query guarantee: exactly 1 SELECT on cms_homepagesection ordered by display_order.
+
+    Stores language-specific fields so readers can localize without a DB hit:
+    title_en/title_ar and config_en/config_ar.
+
     Returns:
         List of section dicts safe for Redis JSON serialization.
     """
@@ -22,9 +26,11 @@ def build_homepage_sections_snapshot() -> list[dict[str, Any]]:
         {
             "id": section.pk,
             "section_type": section.section_type,
-            "title": section.title,
+            "title_en": section.title_en or "",
+            "title_ar": section.title_ar or "",
             "display_order": section.display_order,
-            "config": section.config or {},
+            "config_en": section.config_en or {},
+            "config_ar": section.config_ar or {},
         }
         for section in HomepageSection.objects.filter(is_active=True).order_by(
             "display_order", "id"

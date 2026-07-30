@@ -15,3 +15,4 @@ class CoreConfig(AppConfig):
     def ready(self) -> None:
         """Import signal modules when Django starts."""
         import core.signals  # noqa: F401
+        import core.translation.signals  # noqa: F401

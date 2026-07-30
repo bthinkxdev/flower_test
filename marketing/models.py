@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from django.db import models
 
-from core.models import TimeStampedModel
+from core.models import ArabicTranslationMixin, TimeStampedModel
 
 
 class CouponDiscountType(models.TextChoices):
@@ -110,7 +110,7 @@ class GiftCard(TimeStampedModel):
 GiftVoucher = GiftCard
 
 
-class FlashSale(TimeStampedModel):
+class FlashSale(ArabicTranslationMixin, TimeStampedModel):
     """Time-boxed percentage discount on selected products."""
 
     name = models.CharField(max_length=120)

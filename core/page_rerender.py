@@ -26,22 +26,11 @@ def is_htmx_request(request: HttpRequest) -> bool:
     return request.headers.get("HX-Request") == "true"
 
 
-def _strip_language_prefix(path: str) -> str:
-    """Map localized URL paths back to canonical routes used by resolve()."""
-    for code, _label in settings.LANGUAGES:
-        if code == settings.LANGUAGE_CODE:
-            continue
-        prefix = f"/{code}"
-        if path == prefix:
-            return "/"
-        if path.startswith(f"{prefix}/"):
-            return path[len(prefix) :]
-    return path
-
-
 def _resolve_target(target_path: str):
     """Resolve a storefront path independent of the active translation language."""
-    path_only = _strip_language_prefix(urlparse(target_path).path or "/")
+    from core.i18n_urls import strip_language_prefix
+
+    path_only = strip_language_prefix(urlparse(target_path).path or "/")
     with translation.override(settings.LANGUAGE_CODE):
         try:
             return resolve(path_only), path_only

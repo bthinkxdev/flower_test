@@ -22,7 +22,14 @@
           });
           var stockText = document.getElementById('pdp-stock-text');
           if (stockText) {
-            stockText.textContent = inStock ? 'In stock(' + data.stock_quantity + ') — order now' : 'Out of stock';
+            var inStockLabel = stockText.getAttribute('data-label-in-stock') || 'In stock';
+            var orderNowLabel = stockText.getAttribute('data-label-order-now') || '— order now';
+            var outLabel = stockText.getAttribute('data-label-out-of-stock') || 'Out of stock';
+            if (!inStock) {
+              stockText.textContent = outLabel;
+            } else {
+              stockText.textContent = inStockLabel + '(' + data.stock_quantity + ') ' + orderNowLabel;
+            }
             stockText.classList.toggle('text-success', inStock);
             stockText.classList.toggle('text-danger', !inStock);
           }
@@ -38,7 +45,11 @@
         .then(function (r) { return r.json(); })
         .then(function (data) {
           var el = document.getElementById('delivery-estimate-text');
-          if (el) el.textContent = 'Delivery: ' + data.label + ' to ' + data.city;
+          if (el) {
+            var prefix = el.getAttribute('data-label-delivery') || 'Delivery:';
+            var toWord = el.getAttribute('data-label-to') || 'to';
+            el.textContent = prefix + ' ' + data.label + ' ' + toWord + ' ' + data.city;
+          }
         });
     });
   }

@@ -22,7 +22,6 @@ from gifting.models import (
     RibbonOption,
 )
 from gifting.selectors import (
-    get_available_greeting_cards,
     get_eligible_addons,
     get_eligible_gift_wrap_options,
     get_eligible_greeting_cards,

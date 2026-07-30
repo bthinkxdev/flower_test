@@ -1,6 +1,6 @@
 {% load i18n %}
-<div class="message-preview-panel small">
-  <div class="d-flex justify-content-between text-muted mb-1">
+<div class="message-preview-panel">
+  <div class="message-preview-meta">
     <span>{% trans "Preview" %}</span>
     <span id="message-char-count">{{ message|length }} / {{ message_max_length }}</span>
   </div>

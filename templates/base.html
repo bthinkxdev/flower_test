@@ -16,7 +16,7 @@
 
   <meta name="csrf-token" content="{{ csrf_token }}">
 
-  <title>{% block title %}{{ seo_title|default:"Story of Flowers" }}{% endblock %}</title>
+  <title>{% block title %}{% if seo_title %}{{ seo_title }}{% else %}{% trans "Story of Flowers" %}{% endif %}{% endblock %}</title>
 
   {% include "includes/seo_head.html" %}
 

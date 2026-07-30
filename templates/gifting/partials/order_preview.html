@@ -1,8 +1,9 @@
-{% load i18n %}
+{% load i18n storefront_tags %}
 <input type="hidden" name="snapshot_version" id="snapshot-version-field" value="{{ snapshot_version }}" hx-swap-oob="true">
 <div class="order-preview">
   <div class="order-preview__header">
-    <h2 class="h6 mb-0">{% trans "Order Preview" %}</h2>
+    <h2 class="order-preview__title">{% trans "Order Preview" %}</h2>
+    <p class="order-preview__subtitle">{% trans "Live summary of your customization" %}</p>
   </div>
   <div class="order-preview__body">
     {% if field_errors %}
@@ -23,70 +24,96 @@
     {% endif %}
 
     {% if snapshot %}
-    <dl class="order-preview-list small mb-0">
-      <dt>{% trans "Product" %}</dt>
-      <dd>{{ product.name }}</dd>
+    <dl class="order-preview-list">
+      <div class="order-preview-row">
+        <dt>{% trans "Product" %}</dt>
+        <dd>{{ product.name }}</dd>
+      </div>
 
       {% if snapshot.personal_message %}
-      <dt>{% trans "Message" %}</dt>
-      <dd class="message-preview-quote">{{ snapshot.personal_message }}</dd>
+      <div class="order-preview-row order-preview-row--message">
+        <dt>{% trans "Message" %}</dt>
+        <dd>{{ snapshot.personal_message }}</dd>
+      </div>
       {% endif %}
 
       {% if snapshot.greeting_card %}
-      <dt>{% trans "Greeting card" %}</dt>
-      <dd>{{ snapshot.greeting_card.name }}</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Greeting card" %}</dt>
+        <dd>{{ snapshot.greeting_card.name|display_label }}</dd>
+      </div>
       {% endif %}
 
       {% if snapshot.gift_wrap %}
-      <dt>{% trans "Gift wrap" %}</dt>
-      <dd>{{ snapshot.gift_wrap.name }} (+{{ snapshot.gift_wrap.price_delta }} QAR)</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Gift wrap" %}</dt>
+        <dd>{{ snapshot.gift_wrap.name|display_label }} <span class="order-preview-delta">(+{{ snapshot.gift_wrap.price_delta }} QAR)</span></dd>
+      </div>
       {% endif %}
 
       {% if snapshot.ribbon %}
-      <dt>{% trans "Ribbon" %}</dt>
-      <dd>{{ snapshot.ribbon.name }} (+{{ snapshot.ribbon.price_delta }} QAR)</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Ribbon" %}</dt>
+        <dd>{{ snapshot.ribbon.name|display_label }} <span class="order-preview-delta">(+{{ snapshot.ribbon.price_delta }} QAR)</span></dd>
+      </div>
       {% endif %}
 
       {% if snapshot.photo_upload %}
-      <dt>{% trans "Photo upload" %}</dt>
-      <dd>{{ snapshot.photo_upload.name }} (+{{ snapshot.photo_upload.price_delta }} QAR)</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Photo upload" %}</dt>
+        <dd>{{ snapshot.photo_upload.name|display_label }} <span class="order-preview-delta">(+{{ snapshot.photo_upload.price_delta }} QAR)</span></dd>
+      </div>
       {% endif %}
 
       {% if snapshot.uploaded_photo_file %}
-      <dt>{% trans "Uploaded file" %}</dt>
-      <dd class="d-flex justify-content-end">
-        <img src="{{ snapshot.uploaded_photo_file.url }}" alt="{% trans 'Uploaded photo' %}" class="img-thumbnail" style="max-width: 80px; max-height: 80px; object-fit: cover; border-radius: 4px;">
-      </dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Uploaded file" %}</dt>
+        <dd>
+          <img src="{{ snapshot.uploaded_photo_file.url }}" alt="{% trans 'Uploaded photo' %}" class="img-thumbnail" style="max-width: 80px; max-height: 80px; object-fit: cover; border-radius: 4px;">
+        </dd>
+      </div>
       {% endif %}
 
       {% for addon_row in snapshot.snapshot_addons.all %}
-      <dt>{% trans "Add-on" %}</dt>
-      <dd>{{ addon_row.addon_product.name }} (+{{ addon_row.price_at_time_of_purchase }} QAR)</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Add-on" %}</dt>
+        <dd>{{ addon_row.addon_product.name|display_label }} <span class="order-preview-delta">(+{{ addon_row.price_at_time_of_purchase }} QAR)</span></dd>
+      </div>
       {% endfor %}
 
       {% if snapshot.delivery_date %}
-      <dt>{% trans "Delivery date" %}</dt>
-      <dd>{{ snapshot.delivery_date }}</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Delivery date" %}</dt>
+        <dd>{{ snapshot.delivery_date }}</dd>
+      </div>
       {% endif %}
 
       {% if snapshot.delivery_slot %}
-      <dt>{% trans "Delivery slot" %}</dt>
-      <dd>{{ snapshot.delivery_slot.name }}</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Delivery slot" %}</dt>
+        <dd>{{ snapshot.delivery_slot.name|display_label }}</dd>
+      </div>
       {% endif %}
 
       {% if snapshot.delivery_instructions %}
-      <dt>{% trans "Instructions" %}</dt>
-      <dd>{{ snapshot.delivery_instructions }}</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Instructions" %}</dt>
+        <dd>{{ snapshot.delivery_instructions }}</dd>
+      </div>
       {% endif %}
 
       {% if snapshot.is_anonymous %}
-      <dt>{% trans "Anonymous" %}</dt>
-      <dd>{% trans "Yes" %}</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Anonymous" %}</dt>
+        <dd>{% trans "Yes" %}</dd>
+      </div>
       {% endif %}
 
       {% if snapshot.is_gift_receipt %}
-      <dt>{% trans "Gift receipt" %}</dt>
-      <dd>{% trans "Prices hidden on packing slip" %}</dd>
+      <div class="order-preview-row">
+        <dt>{% trans "Gift receipt" %}</dt>
+        <dd>{% trans "Prices hidden on packing slip" %}</dd>
+      </div>
       {% endif %}
     </dl>
 
@@ -97,7 +124,9 @@
     </div>
     {% endif %}
     {% else %}
-    <p class="text-muted small mb-0">{% trans "Customize your gift to see a live preview here." %}</p>
+    <div class="order-preview__empty">
+      <p class="mb-0">{% trans "Customize your gift to see a live preview here." %}</p>
+    </div>
     {% endif %}
   </div>
 </div>
@@ -117,7 +146,7 @@
 <div id="photo-thumbnail-container" class="mt-2" hx-swap-oob="true">
 {% if snapshot.uploaded_photo_file %}
   <span class="small text-success d-block mb-2 fw-medium">
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-check-circle-fill me-1 mb-1" viewBox="0 0 16 16">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-check-circle-fill me-1 mb-1" viewBox="0 0 16 16" aria-hidden="true">
       <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
     </svg>
     {% trans "Photo successfully uploaded" %}
@@ -126,7 +155,7 @@
     <img src="{{ snapshot.uploaded_photo_file.url }}" alt="{% trans 'Uploaded photo' %}" class="img-thumbnail shadow-sm"
       style="max-width: 120px; max-height: 120px; object-fit: cover; border-radius: 8px;">
     <button type="button" class="btn btn-sm btn-danger position-absolute top-0 start-100 translate-middle rounded-circle p-0 d-flex align-items-center justify-content-center shadow" style="width: 28px; height: 28px; border: 2px solid white;" title="{% trans 'Remove photo' %}" onclick="document.getElementById('clear-photo-input').checked = true; document.getElementById('photo-upload-error-container').innerHTML=''; document.getElementById('photo-thumbnail-container').style.display = 'none'; document.getElementById('photo-upload-input-container').style.display = 'block'; document.querySelector('input[name=\'uploaded_photo_file\']').value = ''; document.getElementById('gift-builder-form').dispatchEvent(new Event('change', {bubbles: true}));">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
       </svg>

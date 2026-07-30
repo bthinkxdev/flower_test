@@ -1,0 +1,30 @@
+{% load i18n storefront_tags %}
+{% for line in summary.lines %}
+<div class="checkout-summary__line">
+  <span class="text-truncate">
+    {{ line.product.name }}{% if line.variant %} — {{ line.variant.name }}{% endif %} × {{ line.quantity }}
+  </span>
+  <span>{% money_label line.line_subtotal display_currency %}</span>
+</div>
+{% endfor %}
+<div class="checkout-summary__line">
+  <span>{% trans "Subtotal" %}</span>
+  <span>{% money_label summary.subtotal display_currency %}</span>
+</div>
+{% if summary.coupon_discount > 0 %}
+<div class="checkout-summary__line text-success">
+  <span>{% trans "Coupon Discount" %}</span>
+  <span>-{% money_label summary.coupon_discount display_currency %}</span>
+</div>
+{% endif %}
+<div class="checkout-summary__line">
+  <span>{% trans "Delivery Charge" %}</span>
+  <span id="checkout-delivery-charge-value">{% money_label summary.delivery_charge display_currency %}</span>
+</div>
+<div class="checkout-summary__total">
+  <span>{% trans "Total" %}</span>
+  <span class="text-floward" id="checkout-grand-total-value">{% money_label summary.grand_total display_currency %}</span>
+</div>
+{% if show_desktop_cta %}
+<button type="submit" form="checkout-form" class="btn btn-floward w-100 py-2 checkout-summary__cta d-none d-lg-block">{% trans "Place Order & Pay" %}</button>
+{% endif %}

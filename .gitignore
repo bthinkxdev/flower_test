@@ -58,3 +58,5 @@ htmlcov/
 Thumbs.db
 
 staticfiles/
+scripts/.locale_ar_cache.json
+scripts/_msgids.txt

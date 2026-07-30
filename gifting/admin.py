@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
+from modeltranslation.admin import TabbedTranslationAdmin
 
 from gifting.models import (
     GiftAddonEligibility,
@@ -36,24 +37,27 @@ class GiftCustomizationConfigAdmin(admin.ModelAdmin):
 
 
 @admin.register(GreetingCardDesign)
-class GreetingCardDesignAdmin(admin.ModelAdmin):
+class GreetingCardDesignAdmin(TabbedTranslationAdmin):
     list_display = ("name", "occasion", "is_active")
-    list_filter = ("is_active", "occasion")
+    list_filter = ("is_active", "occasion", "ar_translation_source")
 
 
 @admin.register(GiftWrapOption)
-class GiftWrapOptionAdmin(admin.ModelAdmin):
+class GiftWrapOptionAdmin(TabbedTranslationAdmin):
     list_display = ("name", "price_delta", "is_active")
+    list_filter = ("is_active", "ar_translation_source")
 
 
 @admin.register(RibbonOption)
-class RibbonOptionAdmin(admin.ModelAdmin):
+class RibbonOptionAdmin(TabbedTranslationAdmin):
     list_display = ("name", "price_delta", "is_active")
+    list_filter = ("is_active", "ar_translation_source")
 
 
 @admin.register(GiftPhotoUploadOption)
-class GiftPhotoUploadOptionAdmin(admin.ModelAdmin):
+class GiftPhotoUploadOptionAdmin(TabbedTranslationAdmin):
     list_display = ("name", "price_delta", "is_active")
+    list_filter = ("is_active", "ar_translation_source")
 
 
 @admin.register(GiftAddonEligibility)

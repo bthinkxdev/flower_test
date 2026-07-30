@@ -1,72 +1,10 @@
 {% load i18n %}
-{% load storefront_tags %}
-
-{% for addr in addresses %}
-<div class="d-flex justify-content-between align-items-center mb-2">
-  <div class="form-check">
-    <input class="form-check-input" type="radio" name="address_id" value="{{ addr.pk }}" id="addr-{{ addr.pk }}"
-           hx-post="{% url 'checkout:update-session' %}"
-           hx-trigger="change"
-           hx-include="#checkout-form"
-           hx-target="this"
-           hx-swap="none"
-           {% if selected_address_id|stringformat:"s" == addr.pk|stringformat:"s" or addr.is_default and not selected_address_id %}checked{% endif %}>
-    <label class="form-check-label small" for="addr-{{ addr.pk }}">{{ addr.label }} — {{ addr.line1 }}, {{ addr.city.name }}{% if addr.is_default %} <span class="badge bg-light text-secondary border">{% trans "Default" %}</span>{% endif %}</label>
-  </div>
-  <div class="d-flex gap-2">
-    <button class="btn btn-sm btn-link p-0 text-secondary small" type="button"
-            hx-get="{% url 'checkout:address-form' address_id=addr.pk %}"
-            hx-target="#add-address-container"
-            hx-swap="innerHTML"
-            data-bs-toggle="collapse" 
-            data-bs-target="#addAddressCollapse">
-      {% trans "Edit" %}
-    </button>
-    <button class="btn btn-sm btn-link p-0 text-danger small" type="button"
-            hx-post="{% url 'checkout:delete-address' address_id=addr.pk %}"
-            hx-target="#address-list-container"
-            hx-confirm="{% trans 'Are you sure you want to delete this address?' %}">
-      {% trans "Delete" %}
-    </button>
-  </div>
-</div>
-{% empty %}
-<p class="text-muted small mb-0">{% trans "Add an address in your account." %}</p>
-{% endfor %}
+{% include "checkout/partials/address_list_items.html" %}
 
 <div id="order-summary-wrapper" hx-swap-oob="true">
-  {% for line in summary.lines %}
-  <div class="d-flex justify-content-between small py-2 border-bottom">
-    <span class="text-truncate me-2">{{ line.product.name }} × {{ line.quantity }}</span>
-    <span class="flex-shrink-0">{% money_label line.line_subtotal display_currency %}</span>
-  </div>
-  {% endfor %}
-  <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
-    <span>{% trans "Subtotal" %}</span>
-    <span>{% money_label summary.subtotal display_currency %}</span>
-  </div>
-  {% if summary.coupon_discount > 0 %}
-  <div class="d-flex justify-content-between small py-2 border-bottom text-success">
-    <span>{% trans "Coupon Discount" %}</span>
-    <span>-{% money_label summary.coupon_discount display_currency %}</span>
-  </div>
-  {% endif %}
-  <div class="d-flex justify-content-between small py-2 border-bottom text-muted">
-    <span>{% trans "Delivery Charge" %}</span>
-    <span>{% money_label summary.delivery_charge display_currency %}</span>
-  </div>
-  <div class="d-flex justify-content-between fw-semibold mt-3 pt-2 border-top">
-    <span>{% trans "Total" %}</span>
-    <span class="text-floward">{% money_label summary.grand_total display_currency %}</span>
-  </div>
+  {% include "checkout/partials/order_summary_lines.html" with show_desktop_cta=True %}
 </div>
 
 <div id="delivery-slots-wrapper" hx-swap-oob="true">
-  <label class="form-label small">{% trans "Time slot" %}</label>
-  <select name="delivery_slot_id" class="form-select">
-    <option value="">{% trans "Select slot" %}</option>
-    {% for slot in delivery_slots %}
-    <option value="{{ slot.pk }}" {% if checkout_session.delivery_slot_id == slot.pk %}selected{% endif %}>{{ slot.name }}</option>
-    {% endfor %}
-  </select>
+  {% include "checkout/partials/delivery_slots_field.html" %}
 </div>
