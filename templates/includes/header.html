@@ -16,61 +16,12 @@
       </span>
     </div>
   </div>
-  <div class="top-bar py-2">
-    <div class="container d-flex justify-content-between align-items-center">
-      <div class="delivery-to">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>{% trans "Delivery to" %}</span>
-        {% if countries %}
-        <select name="country"
-                class="preference-switcher delivery-to__select"
-                aria-label="{% trans 'Delivery country' %}"
-                hx-post="{% url 'core:set-country' %}"
-                hx-trigger="change"
-                hx-target="#floward-app-shell"
-                hx-swap="outerHTML"
-                hx-indicator="#htmx-progress">
-          {% for country in countries %}
-          <option value="{{ country.code }}" {% if active_country and active_country.code == country.code %}selected{% endif %}>{{ country.name }}</option>
-          {% endfor %}
-        </select>
-        {% else %}
-        {% trans "Qatar" %}
-        {% endif %}
-      </div>
-      <div class="d-flex align-items-center gap-2 preference-switchers">
-        <select name="language"
-                class="preference-switcher"
-                aria-label="{% trans 'Language' %}"
-                hx-post="{% url 'core:set-language' %}"
-                hx-trigger="change"
-                hx-target="#floward-app-shell"
-                hx-swap="outerHTML"
-                hx-indicator="#htmx-progress">
-          <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
-          <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>العربية</option>
-        </select>
-        <span class="pref-divider" aria-hidden="true"></span>
-        <select name="currency"
-                class="preference-switcher"
-                aria-label="{% trans 'Currency' %}"
-                hx-post="{% url 'core:set-currency' %}"
-                hx-trigger="change"
-                hx-target="#floward-app-shell"
-                hx-swap="outerHTML"
-                hx-indicator="#htmx-progress">
-          <option value="QAR" {% if session_currency == 'QAR' or not session_currency %}selected{% endif %}>QAR</option>
-          <option value="USD" {% if session_currency == 'USD' %}selected{% endif %}>USD</option>
-        </select>
-      </div>
-    </div>
-  </div>
-  <nav class="navbar navbar-expand-lg container py-2">
+  <nav class="navbar container primary-header-nav" aria-label="{% trans 'Primary' %}">
     <div class="navbar-row">
 
       <div class="navbar-col navbar-col--start">
         <button class="navbar-toggler border-0 shadow-none p-2 d-lg-none"
-                type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNav"
                 aria-controls="mainNav" aria-expanded="false" aria-label="{% trans 'Menu' %}">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -83,25 +34,6 @@
                 aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-3.6-3.6"/></svg>
         </button>
-
-        <div class="collapse navbar-collapse" id="mainNav">
-          <ul class="navbar-nav">
-            {% for cat in category_tree %}
-            <li class="nav-item dropdown">
-              {% if cat.children.all %}
-              <a class="nav-link dropdown-toggle" href="{% url 'catalog:plp-category' category_slug=cat.slug %}" data-bs-toggle="dropdown">{{ cat.name }}</a>
-              <ul class="dropdown-menu">
-                {% for child in cat.children.all %}
-                <li><a class="dropdown-item" href="{% url 'catalog:plp-category' category_slug=child.slug %}">{{ child.name }}</a></li>
-                {% endfor %}
-              </ul>
-              {% else %}
-              <a class="nav-link" href="{% url 'catalog:plp-category' category_slug=cat.slug %}">{{ cat.name }}</a>
-              {% endif %}
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
       </div>
 
       <a class="navbar-brand navbar-col navbar-col--brand" href="{% url 'cms:homepage' %}">
@@ -117,7 +49,7 @@
                 class="form-control"
                 placeholder="{% trans 'Search flowers, gifts...' %}"
                 hx-get="{% url 'catalog:search-suggest' %}"
-                hx-trigger="keyup changed delay:300ms, search"
+                hx-trigger="input changed delay:300ms, search"
                 hx-target="#search-suggestions"
                 hx-indicator="#search-suggestions-indicator"
                 hx-swap="innerHTML"
@@ -167,8 +99,121 @@
         </div>
       </div>
 
+      <div class="navbar-col navbar-col--prefs navbar-prefs" aria-label="{% trans 'Store preferences' %}">
+        <div class="delivery-to">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="delivery-to__label d-none d-xl-inline">{% trans "Delivery to" %}</span>
+          {% if countries %}
+          <select name="country"
+                  class="preference-switcher delivery-to__select"
+                  aria-label="{% trans 'Delivery country' %}"
+                  hx-post="{% url 'core:set-country' %}"
+                  hx-trigger="change"
+                  hx-target="#floward-app-shell"
+                  hx-swap="outerHTML"
+                  hx-indicator="#htmx-progress">
+            {% for country in countries %}
+            <option value="{{ country.code }}" {% if active_country and active_country.code == country.code %}selected{% endif %}>{{ country.name }}</option>
+            {% endfor %}
+          </select>
+          {% else %}
+          <span>{% trans "Qatar" %}</span>
+          {% endif %}
+        </div>
+        <div class="preference-switchers">
+          <select name="language"
+                  class="preference-switcher"
+                  aria-label="{% trans 'Language' %}"
+                  hx-post="{% url 'core:set-language' %}"
+                  hx-trigger="change"
+                  hx-target="#floward-app-shell"
+                  hx-swap="outerHTML"
+                  hx-indicator="#htmx-progress">
+            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+            <option value="ar" {% if LANGUAGE_CODE == 'ar' %}selected{% endif %}>العربية</option>
+          </select>
+          <span class="pref-divider" aria-hidden="true"></span>
+          <select name="currency"
+                  class="preference-switcher"
+                  aria-label="{% trans 'Currency' %}"
+                  hx-post="{% url 'core:set-currency' %}"
+                  hx-trigger="change"
+                  hx-target="#floward-app-shell"
+                  hx-swap="outerHTML"
+                  hx-indicator="#htmx-progress">
+            <option value="QAR" {% if session_currency == 'QAR' or not session_currency %}selected{% endif %}>QAR</option>
+            <option value="USD" {% if session_currency == 'USD' %}selected{% endif %}>USD</option>
+          </select>
+        </div>
+      </div>
+
     </div>
   </nav>
+  <div class="offcanvas-lg offcanvas-start category-navigation-shell"
+       tabindex="-1"
+       id="mainNav"
+       aria-labelledby="mainNavLabel">
+    <div class="offcanvas-header d-lg-none">
+      <div>
+        <span class="category-navigation__eyebrow">{% trans "Browse" %}</span>
+        <h2 class="offcanvas-title h5 mb-0" id="mainNavLabel">{% trans "Shop collections" %}</h2>
+      </div>
+      <button type="button"
+              class="btn-close"
+              data-bs-dismiss="offcanvas"
+              data-bs-target="#mainNav"
+              aria-label="{% trans 'Close' %}"></button>
+    </div>
+    <div class="offcanvas-body category-navigation-body">
+      <nav class="category-navigation container" aria-label="{% trans 'Shop categories' %}">
+        <a class="category-navigation__all" href="{% url 'catalog:plp' %}" data-mobile-nav-link>
+          {% trans "Shop All" %}
+        </a>
+        <ul class="category-navigation__list">
+          {% for cat in category_tree %}
+          <li class="category-navigation__item">
+            <div class="category-navigation__root">
+              <a class="category-navigation__root-link"
+                 href="{% url 'catalog:plp-category' category_slug=cat.slug %}"
+                 data-mobile-nav-link>
+                {{ cat.name }}
+              </a>
+              {% if cat.children.all %}
+              <button type="button"
+                      class="category-navigation__toggle"
+                      aria-expanded="false"
+                      aria-controls="category-submenu-{{ cat.pk }}"
+                      data-category-toggle>
+                <span class="visually-hidden">{% blocktrans with name=cat.name %}Toggle {{ name }} collections{% endblocktrans %}</span>
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg>
+              </button>
+              {% endif %}
+            </div>
+            {% if cat.children.all %}
+            <div class="category-navigation__submenu"
+                 id="category-submenu-{{ cat.pk }}"
+                 data-category-submenu>
+              <a class="category-navigation__view-all"
+                 href="{% url 'catalog:plp-category' category_slug=cat.slug %}"
+                 data-mobile-nav-link>
+                {% blocktrans with name=cat.name %}View all {{ name }}{% endblocktrans %}
+              </a>
+              <ul class="category-navigation__children">
+                {% for child in cat.children.all %}
+                <li>
+                  <a href="{% url 'catalog:plp-category' category_slug=child.slug %}"
+                     data-mobile-nav-link>{{ child.name }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+  </div>
 </header>
 <div class="mobile-search d-lg-none" id="mobile-search-overlay" aria-hidden="true">
   <div class="mobile-search__backdrop" data-search-dismiss></div>
@@ -182,7 +227,7 @@
                class="mobile-search__input"
                placeholder="{% trans 'Search flowers, gifts...' %}"
                hx-get="{% url 'catalog:search-suggest' %}"
-               hx-trigger="keyup changed delay:250ms, search"
+               hx-trigger="input changed delay:250ms, search"
                hx-target="#mobile-search-results"
                hx-swap="innerHTML"
                autocomplete="off"

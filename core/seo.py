@@ -7,8 +7,16 @@ from typing import Any, Optional
 
 from django.conf import settings
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.urls import translate_url
 from django.utils.translation import get_language
+
+
+DEFAULT_SOCIAL_IMAGE = "img/logo.png"
+OG_LOCALES = {
+    "ar": "ar_QA",
+    "en": "en_US",
+}
 
 
 def resolve_meta_title(*, obj: Any, fallback: str) -> str:
@@ -24,11 +32,25 @@ def resolve_meta_description(*, obj: Any, fallback: str) -> str:
 
 
 def resolve_og_image_url(*, obj: Any, request: HttpRequest) -> str:
-    """Return absolute OG image URL from object or empty string."""
-    og_image = getattr(obj, "og_image", None)
+    """Return an absolute object, product-gallery, or brand image URL."""
+    og_image = getattr(obj, "og_image", None) if obj is not None else None
     if og_image and getattr(og_image, "url", None):
         return request.build_absolute_uri(og_image.url)
-    return ""
+
+    images = getattr(obj, "image_list", None) if obj is not None else None
+    if images is None and obj is not None:
+        images = getattr(obj, "images", None)
+        if images is not None and hasattr(images, "all"):
+            images = images.all()
+
+    if images:
+        image_list = list(images)
+        primary = next((item for item in image_list if getattr(item, "is_primary", False)), None)
+        product_image = getattr(primary or image_list[0], "image", None)
+        if product_image and getattr(product_image, "url", None):
+            return request.build_absolute_uri(product_image.url)
+
+    return request.build_absolute_uri(static(DEFAULT_SOCIAL_IMAGE))
 
 
 def build_hreflang_urls(*, request: HttpRequest) -> list[dict[str, str]]:
@@ -140,6 +162,7 @@ def seo_context(
     title: str,
     description: str,
     canonical_url: str | None = None,
+    og_type: str = "website",
 ) -> dict[str, Any]:
     """Assemble standard SEO template context for any page."""
     if obj is not None:
@@ -147,11 +170,15 @@ def seo_context(
         description = resolve_meta_description(obj=obj, fallback=description)
 
     canonical = canonical_url or request.build_absolute_uri(request.path)
+    language = get_language() or settings.LANGUAGE_CODE
     return {
         "seo_title": title,
         "seo_description": description,
         "seo_canonical_url": canonical,
-        "seo_og_image": resolve_og_image_url(obj=obj, request=request) if obj else "",
+        "seo_og_image": resolve_og_image_url(obj=obj, request=request),
+        "seo_og_image_alt": title,
+        "seo_og_type": og_type,
+        "seo_og_locale": OG_LOCALES.get(language, language.replace("-", "_")),
         "seo_hreflang_urls": build_hreflang_urls(request=request),
-        "seo_lang": get_language() or settings.LANGUAGE_CODE,
+        "seo_lang": language,
     }

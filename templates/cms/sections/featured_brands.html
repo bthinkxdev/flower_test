@@ -2,17 +2,9 @@
 <section class="container mb-4 brand-rail-section">
   {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Brands You'll Love" %}
 
-  <div class="brand-rail" aria-label="{% trans 'Featured brands' %}">
-    <button type="button"
-            class="brand-rail-arrow brand-rail-arrow--prev"
-            data-brand-scroll="prev"
-            aria-label="{% trans 'Scroll brands left' %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-
-    <ul class="brand-rail-track" role="list" data-brand-track>
+  <div class="brand-rail horizontal-rail" data-horizontal-rail aria-label="{% trans 'Featured brands' %}">
+    {% include "includes/horizontal_rail_controls.html" %}
+    <ul class="brand-rail-track" role="list" data-horizontal-rail-track>
       {% for brand in section_context.brands %}
       <li class="brand-card" role="listitem">
         <a href="{% url 'catalog:plp' %}?brand={{ brand.pk }}" class="brand-card-link" aria-label="{{ brand.name }}">
@@ -32,14 +24,5 @@
       </li>
       {% endfor %}
     </ul>
-
-    <button type="button"
-            class="brand-rail-arrow brand-rail-arrow--next"
-            data-brand-scroll="next"
-            aria-label="{% trans 'Scroll brands right' %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
   </div>
 </section>

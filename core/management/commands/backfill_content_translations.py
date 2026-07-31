@@ -77,7 +77,7 @@ class Command(BaseCommand):
                 with connection.cursor() as cursor:
                     cursor.execute(sql)
                     self.stdout.write(
-                        f"  copied {table}.{field} → {en_col} ({cursor.rowcount} rows)"
+                        f"  copied {table}.{field} -> {en_col} ({cursor.rowcount} rows)"
                     )
 
     def _translate_all(self) -> None:

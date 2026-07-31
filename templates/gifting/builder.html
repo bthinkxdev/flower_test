@@ -208,7 +208,7 @@
                 <span class="addon-card__check" aria-hidden="true"></span>
                 <span class="addon-card__body">
                   <span class="addon-card__name">{{ addon.name|display_label }}</span>
-                  <span class="addon-card__price">{{ addon.base_price }} QAR</span>
+                  <span class="addon-card__price">{% money_label addon.base_price display_currency %}</span>
                 </span>
               </label>
               {% empty %}

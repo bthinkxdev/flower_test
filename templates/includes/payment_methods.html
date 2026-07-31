@@ -1,0 +1,47 @@
+{% load i18n storefront_tags %}
+{% if mode == "interactive" %}
+<div class="checkout-payment" role="radiogroup" aria-labelledby="checkout-payment-title">
+  {% for key, adapter in payment_gateways.items %}
+  <label class="checkout-payment__option" for="gw-{{ key }}">
+    <input
+      class="form-check-input{% if payment_form.gateway_key.errors %} is-invalid{% endif %}"
+      type="radio"
+      name="gateway_key"
+      value="{{ key }}"
+      id="gw-{{ key }}"
+      {% if selected_gateway_key == key or forloop.first and not selected_gateway_key %}checked{% endif %}
+    >
+    <span class="checkout-payment__meta">
+      <span class="checkout-payment__name">{{ adapter.display_name }}</span>
+      {% if adapter.badge_keys %}
+      <span class="checkout-payment__badges" aria-hidden="true">
+        {% for badge_key in adapter.badge_keys %}
+          {% with badge_label=payment_badge_labels|dict_get:badge_key %}
+            {% include "includes/payment_badge.html" with badge_key=badge_key badge_label=badge_label %}
+          {% endwith %}
+        {% endfor %}
+      </span>
+      {% endif %}
+    </span>
+  </label>
+  {% endfor %}
+</div>
+{% else %}
+{% if storefront_payment_badges %}
+<section class="payment-methods payment-methods--display" aria-labelledby="payment-methods-title">
+  <div class="payment-methods__head">
+    <svg class="payment-methods__lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    <h2 class="payment-methods__title" id="payment-methods-title">{% trans "Ways to pay" %}</h2>
+  </div>
+  <ul class="payment-methods__list">
+    {% for badge in storefront_payment_badges %}
+    <li>
+      {% include "includes/payment_badge.html" with badge_key=badge.key badge_label=badge.label %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endif %}

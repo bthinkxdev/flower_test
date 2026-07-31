@@ -95,16 +95,25 @@ def get_homepage_product_rails() -> dict[str, list[Product]]:
     }
 
 
+def _shop_product_queryset() -> QuerySet[Product]:
+    """Active sellable catalog products (excludes gift add-on SKUs/categories)."""
+    return Product.objects.filter(is_active=True).exclude(
+        Q(category__slug="add-ons") | Q(sku__startswith="SOF-ADDON-")
+    )
+
+
 def _apply_plp_filters(queryset: QuerySet[Product], filters: dict[str, Any]) -> QuerySet[Product]:
     """Apply PLP filter dict to a base queryset."""
     if category_id := filters.get("category_id"):
-        queryset = queryset.filter(category_id=category_id)
+        queryset = queryset.filter(
+            Q(category_id=category_id) | Q(category__parent_id=category_id)
+        )
     if occasion_id := filters.get("occasion_id"):
         queryset = queryset.filter(primary_occasion_id=occasion_id)
     if brand_id := filters.get("brand_id"):
         queryset = queryset.filter(brand_id=brand_id)
     if recipient_id := filters.get("recipient_id"):
-        queryset = queryset.filter(recipients__id=recipient_id)
+        queryset = queryset.filter(recipients__id=recipient_id).distinct()
     if color := filters.get("color"):
         queryset = queryset.filter(color__iexact=color)
     if filters.get("same_day"):
@@ -151,7 +160,7 @@ def get_plp_products(
     """
     filters = filters or {}
     queryset = (
-        Product.objects.filter(is_active=True)
+        _shop_product_queryset()
         .select_related("category", "brand", "primary_occasion")
         .prefetch_related(_primary_image_prefetch())
         .only(*PLP_CARD_FIELDS)
@@ -361,6 +370,7 @@ def get_category_tree() -> list:
 
     tree = list(
         Category.objects.filter(is_active=True, parent__isnull=True)
+        .exclude(slug="add-ons")
         .prefetch_related(
             Prefetch(
                 "children",
@@ -414,7 +424,7 @@ def get_root_categories(*, category_ids: list[int] | None = None) -> list:
 
     qs = Category.objects.filter(is_active=True, parent__isnull=True).order_by(
         "display_order", "name"
-    )
+    ).exclude(slug="add-ons")
     if category_ids:
         qs = qs.filter(pk__in=category_ids)
     return list(qs)
@@ -521,13 +531,54 @@ def get_plp_filter_options() -> dict:
     """
     Return sidebar filter options for PLP.
 
-    Query guarantee: 4 queries (categories, occasions, brands, recipients).
+    Only includes categories/occasions/brands that currently have shop products,
+    so empty filter choices cannot dead-end the PLP.
     """
+    from catalog.models import Brand, Category, Occasion
+
+    shop_products = _shop_product_queryset()
+    category_ids = set(shop_products.values_list("category_id", flat=True).distinct())
+    occasion_ids = shop_products.values_list("primary_occasion_id", flat=True).distinct()
+    brand_ids = shop_products.values_list("brand_id", flat=True).distinct()
+
+    category_groups = list(
+        Category.objects.filter(
+            is_active=True,
+            parent__isnull=True,
+        )
+        .filter(Q(pk__in=category_ids) | Q(children__pk__in=category_ids))
+        .prefetch_related(
+            Prefetch(
+                "children",
+                queryset=Category.objects.filter(
+                    is_active=True, pk__in=category_ids
+                ).order_by("display_order", "name"),
+            )
+        )
+        .distinct()
+        .order_by("display_order", "name")
+    )
+    categories = [
+        category
+        for group in category_groups
+        for category in (group, *group.children.all())
+    ]
+    occasions = list(
+        Occasion.objects.filter(pk__in=occasion_ids).order_by("name")
+    )
+    brands = list(
+        Brand.objects.filter(pk__in=brand_ids).order_by("name")
+    )
+
     return {
-        "categories": get_root_categories(),
-        "occasions": get_occasions_for_display(),
-        "brands": get_featured_brands(),
+        "categories": categories,
+        "category_groups": category_groups,
+        "occasions": occasions,
+        "brands": brands,
         "recipients": get_recipients_for_display(),
+        "has_bestsellers": shop_products.filter(is_bestseller=True).exists(),
+        "has_new_arrivals": shop_products.filter(is_new_arrival=True).exists(),
+        "has_same_day": shop_products.filter(is_same_day_eligible=True).exists(),
     }
 
 

@@ -1,56 +1,1279 @@
-# Minimal Arabic locale for RTL storefront verification.
+#
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: floward-clone\n"
 "Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-msgid "Floward Qatar"
-msgstr "فلاورد قطر"
+msgid "%(name)s | Story of Flowers"
+msgstr "%(name)s | قصة الزهور"
 
-msgid "Luxury Flowers & Gifts"
-msgstr "زهور وهدايا فاخرة"
+msgid "%(name)s — premium flowers and gifts delivered in Qatar."
+msgstr "%(name)s — زهور وهدايا فاخرة تُوصل في قطر."
 
-msgid "Shop Now"
-msgstr "تسوق الآن"
+msgid "%(title)s | Story of Flowers"
+msgstr "%(title)s | قصة الزهور"
+
+msgid "+ Add New Address"
+msgstr "+ إضافة عنوان جديد"
+
+msgid "About Us"
+msgstr "من نحن"
+
+msgid "About Us | Story of Flowers"
+msgstr "من نحن | قصة الزهور"
+
+msgid "Account"
+msgstr "الحساب"
+
+msgid "Active recurring orders"
+msgstr "الطلبات المتكررة النشطة"
+
+msgid "Add Address"
+msgstr "إضافة عنوان"
+
+msgid "Add Reminder"
+msgstr "إضافة تذكير"
+
+msgid "Add an address in your account."
+msgstr "أضف عنوانًا في حسابك."
+
+msgid "Add product"
+msgstr "أضف المنتج"
 
 msgid "Add to Cart"
 msgstr "أضف إلى السلة"
 
-msgid "Same Day"
-msgstr "توصيل اليوم"
+msgid "Add to cart"
+msgstr "أضف إلى السلة"
 
-msgid "Subscribe"
-msgstr "اشترك"
+msgid "Add-on"
+msgstr "إضافة"
 
-msgid "Join Our Newsletter"
-msgstr "انضم إلى نشرتنا"
+msgid "Add-ons"
+msgstr "إضافات"
 
-msgid "Shop by Occasion"
-msgstr "تسوق حسب المناسبة"
+msgid "Added to cart!"
+msgstr "تمت الإضافة إلى السلة!"
 
-msgid "Shop by Category"
-msgstr "تسوق حسب الفئة"
+msgid "Address Line 1"
+msgstr "سطر العنوان 1"
 
-msgid "Featured Brands"
-msgstr "علامات مميزة"
+msgid "Address Line 2"
+msgstr "سطر العنوان 2"
 
-msgid "Customer Reviews"
-msgstr "آراء العملاء"
+msgid "Address line 1"
+msgstr "سطر العنوان 1"
 
-msgid "Follow Us"
-msgstr "تابعنا"
+msgid "Address line 2"
+msgstr "سطر العنوان 2"
 
-msgid "Get exclusive offers and gifting inspiration."
-msgstr "احصل على عروض حصرية وإلهام للهدايا."
+msgid "Address saved"
+msgstr "تم حفظ العنوان"
 
-msgid "My Account"
-msgstr "حسابي"
+msgid "All"
+msgstr "الكل"
 
-msgid "Search"
-msgstr "بحث"
+msgid "All Flowers"
+msgstr "جميع الزهور"
+
+msgid "All rights reserved."
+msgstr "جميع الحقوق محفوظة."
+
+msgid "Anonymous"
+msgstr "مجهول"
+
+msgid "Apply"
+msgstr "تطبيق"
+
+msgid "Are you sure you want to delete this address?"
+msgstr "هل أنت متأكد من حذف هذا العنوان؟"
+
+msgid "Best Seller"
+msgstr "الأكثر مبيعًا"
+
+msgid "Best Sellers"
+msgstr "الأكثر مبيعاً"
+
+msgid "Bestseller"
+msgstr "الأكثر مبيعاً"
+
+msgid "Blog"
+msgstr "المدونة"
+
+msgid "Blog | Story of Flowers"
+msgstr "المدونة | قصة الزهور"
+
+msgid "Brand"
+msgstr "العلامة"
+
+msgid "Brands You'll Love"
+msgstr "علامات ستعجبك"
+
+msgid "Breadcrumb"
+msgstr "مسار التنقل"
+
+msgid "Browse %(name)s flowers and gifts with same-day delivery in Qatar."
+msgstr "تصفح زهور وهدايا %(name)s مع التوصيل في نفس اليوم في قطر."
+
+msgid "Browse all categories"
+msgstr "تصفح جميع الفئات"
+
+msgid "Browse premium flowers and gifts with same-day delivery across Qatar."
+msgstr ""
+"تصفح الزهور والهدايا الفاخرة مع التوصيل في نفس اليوم في جميع أنحاء قطر."
+
+msgid "Calculated at checkout"
+msgstr "يُحسب عند الدفع"
+
+msgid "Cancel"
+msgstr "إلغاء"
 
 msgid "Cart"
 msgstr "السلة"
 
+msgid "Cash on Delivery"
+msgstr "الدفع عند الاستلام"
+
+msgid "Category"
+msgstr "الفئة"
+
+msgid ""
+"Check our frequently asked questions for common queries about ordering, "
+"delivery, and payments."
+msgstr ""
+"تحقق من الأسئلة الشائعة لدينا للاستفسارات الشائعة حول الطلب والتسليم "
+"والمدفوعات."
+
+msgid "Checking out as guest — enter your details below."
+msgstr "الدفع كضيف — أدخل بياناتك أدناه."
+
+msgid "Checkout"
+msgstr "إتمام الشراء"
+
+msgid "Choose Gifts Now"
+msgstr "اختر الهدايا الآن"
+
+msgid ""
+"Choose a message, card, wrap, and delivery details — your preview updates as"
+" you go."
+msgstr ""
+"اختر الرسالة والبطاقة والتغليف وتفاصيل التوصيل — تتحدّث المعاينة تلقائياً."
+
+msgid "Choose a product"
+msgstr "اختر منتجًا"
+
+msgid "City"
+msgstr "المدينة"
+
+msgid "Clear"
+msgstr "مسح"
+
+msgid "Clear Filters"
+msgstr "مسح عوامل التصفية"
+
+msgid "Clear filters"
+msgstr "مسح عوامل التصفية"
+
+msgid "Close"
+msgstr "إغلاق"
+
+msgid "Company"
+msgstr "الشركة"
+
+msgid "Company name"
+msgstr "اسم الشركة"
+
+msgid "Confirm delivery details and payment to complete your order."
+msgstr "أكد تفاصيل التوصيل والدفع لإتمام طلبك."
+
+msgid "Confirming Payment"
+msgstr "جارٍ تأكيد الدفع"
+
+msgid "Confirming your payment"
+msgstr "تأكيد الدفع الخاص بك"
+
+msgid "Contact"
+msgstr "تواصل"
+
+msgid "Contact Name"
+msgstr "اسم جهة الاتصال"
+
+msgid "Contact Us"
+msgstr "اتصل بنا"
+
+msgid "Contact Us | Story of Flowers"
+msgstr "اتصل بنا | قصة الزهور"
+
+msgid "Contact name"
+msgstr "اسم جهة الاتصال"
+
+msgid "Contact us"
+msgstr "اتصل بنا"
+
+msgid "Continue Shopping"
+msgstr "متابعة التسوق"
+
+msgid "Continue shopping"
+msgstr "متابعة التسوق"
+
+msgid "Corporate Account Registration"
+msgstr "تسجيل حساب الشركة"
+
+msgid "Corporate Gifts"
+msgstr "هدايا الشركات"
+
+msgid "Corporate Portal"
+msgstr "بوابة الشركات"
+
+msgid "Corporate Registration"
+msgstr "تسجيل الشركات"
+
+msgid "Could not send OTP."
+msgstr "لا يمكن إرسال OTP."
+
+msgid "Could not update quantity."
+msgstr "لا يمكن تحديث الكمية."
+
+msgid "Coupon"
+msgstr "قسيمة"
+
+msgid "Coupon Discount"
+msgstr "خصم القسيمة"
+
+msgid "Credit / Debit Card"
+msgstr "بطاقة ائتمان / خصم"
+
+msgid "Currency"
+msgstr "العملة"
+
+msgid "Current status"
+msgstr "الحالة الحالية"
+
+msgid "Customer Reviews"
+msgstr "آراء العملاء"
+
+msgid "Customer Service"
+msgstr "خدمة العملاء"
+
+msgid "Customer support available 24/7"
+msgstr "دعم العملاء متاح على مدار الساعة"
+
+msgid "Customization total"
+msgstr "إجمالي التخصيص"
+
+msgid "Customize Your Gift"
+msgstr "خصّص هديتك"
+
+msgid "Customize as Gift"
+msgstr "خصّص كهدية"
+
+msgid "Customize your gift to see a live preview here."
+msgstr "خصّص هديتك لرؤية معاينة مباشرة هنا."
+
+msgid "Data sharing"
+msgstr "مشاركة البيانات"
+
+msgid "Date"
+msgstr "التاريخ"
+
+msgid "Decrease quantity"
+msgstr "تقليل الكمية"
+
+msgid "Default"
+msgstr "افتراضي"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Delete item"
+msgstr "حذف العنصر"
+
+msgid "Delivery"
+msgstr "توصيل"
+
+msgid "Delivery Address"
+msgstr "عنوان التوصيل"
+
+msgid "Delivery Charge"
+msgstr "رسوم التوصيل"
+
+msgid "Delivery Estimate"
+msgstr "تقدير التوصيل"
+
+msgid "Delivery Preferences"
+msgstr "تفضيلات التسليم"
+
+msgid "Delivery address"
+msgstr "عنوان التسليم"
+
+msgid "Delivery charges"
+msgstr "رسوم التوصيل"
+
+msgid "Delivery country"
+msgstr "بلد التوصيل"
+
+msgid "Delivery date"
+msgstr "تاريخ التسليم او الوصول"
+
+msgid "Delivery instructions"
+msgstr "تعليمات التسليم"
+
+msgid "Delivery slot"
+msgstr "فتحة التسليم"
+
+msgid "Delivery to"
+msgstr "التوصيل إلى"
+
+msgid "Delivery:"
+msgstr "التوصيل:"
+
+msgid "Delivery: %(label)s to %(city)s"
+msgstr "التوصيل: %(label)s إلى %(city)s"
+
+msgid "Details"
+msgstr "تفاصيل"
+
+msgid "Dismiss"
+msgstr "إغلاق"
+
+msgid "Doha, Qatar"
+msgstr "الدوحة، قطر"
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Email address"
+msgstr "البريد الإلكتروني"
+
+msgid "Enter a coupon code."
+msgstr "أدخل رمز القسيمة."
+
+msgid "Enter coupon code"
+msgstr "أدخل رمز القسيمة"
+
+msgid "Enter the 6-digit code sent to"
+msgstr "أدخل الرمز المكون من 6 أرقام المرسل إليه"
+
+msgid "Explore Unique Gift Ideas"
+msgstr "اكتشف أفكار هدايا فريدة"
+
+msgid "Express Delivery"
+msgstr "توصيل سريع"
+
+msgid "FAQ"
+msgstr "الأسئلة الشائعة"
+
+msgid "FAQ | Story of Flowers"
+msgstr "الأسئلة الشائعة | قصة الزهور"
+
+msgid "Featured brands"
+msgstr "علامات مميزة"
+
+msgid "Fill in the form below and we'll respond within 1 business day."
+msgstr "املأ النموذج أدناه وسنقوم بالرد خلال يوم عمل واحد."
+
+msgid "Filters"
+msgstr "التصفية"
+
+msgid "First delivery date"
+msgstr "تاريخ التسليم الأول"
+
+msgid "First run date"
+msgstr "تاريخ التشغيل الأول"
+
+msgid "Follow Us"
+msgstr "تابعنا"
+
+msgid "Follow us on Instagram"
+msgstr "تابعنا على إنستغرام"
+
+msgid "Frequency"
+msgstr "التكرار"
+
+msgid "Frequently Asked Questions"
+msgstr "الأسئلة المتداولة"
+
+msgid ""
+"Frequently asked questions about ordering, delivery, and payments at Story "
+"of Flowers."
+msgstr "أسئلة شائعة حول الطلب والتوصيل والمدفوعات في قصة الزهور."
+
+msgid ""
+"From spontaneous surprises to milestone celebrations, our mission is simple:"
+" help you express what matters most, beautifully and reliably."
+msgstr ""
+"من المفاجآت العفوية إلى الاحتفالات الهامة، مهمتنا بسيطة: مساعدتك في التعبير "
+"عن ما يهمك بشكل جميل وموثوق."
+
+msgid "Full name"
+msgstr "الاسم الكامل"
+
+msgid "Gate code, floor, landmark…"
+msgstr "رمز البوابة، الطابق، معلم…"
+
+msgid "Get exclusive offers and gifting inspiration."
+msgstr "احصل على عروض حصرية وإلهام للهدايا."
+
+msgid "Get in touch"
+msgstr "تواصل معنا"
+
+msgid "Get in touch with Story of Flowers customer support."
+msgstr "تواصل مع دعم عملاء قصة الزهور."
+
+msgid "Get to Know Us"
+msgstr "تعرّف علينا"
+
+msgid "Gift Builder"
+msgstr "منشئ الهدايا"
+
+msgid "Gift Calendar"
+msgstr "تقويم الهدايا"
+
+msgid "Gift Options"
+msgstr "خيارات الهدية"
+
+msgid "Gift Voucher"
+msgstr "قسيمة هدية"
+
+msgid "Gift Wrap"
+msgstr "تغليف الهدية"
+
+msgid "Gift customization saved."
+msgstr "تم حفظ تخصيص الهدية."
+
+msgid "Gift customized"
+msgstr "هدية مخصصة"
+
+msgid "Gift receipt"
+msgstr "استلام الهدية"
+
+msgid "Gift receipt (hide prices on packing slip)"
+msgstr "إيصال هدية (إخفاء الأسعار من قسيمة التعبئة)"
+
+msgid "Gift receipt — prices hidden"
+msgstr "إيصال الهدية - الأسعار مخفية"
+
+msgid "Gift voucher code"
+msgstr "رمز قسيمة الهدية"
+
+msgid "Gift wrap"
+msgstr "تغليف الهدية"
+
+msgid "Gifts for Every Moment"
+msgstr "هدايا لكل لحظة"
+
+msgid "Greeting Card"
+msgstr "بطاقة تهنئة"
+
+msgid "Greeting card"
+msgstr "بطاقة تهنئة"
+
+msgid "Grid"
+msgstr "شبكة"
+
+msgid ""
+"Have a question about an order, a product, or anything else? Send us a "
+"message and we'll get back to you within 24 hours."
+msgstr ""
+"هل لديك سؤال حول طلب أو منتج أو أي شيء آخر؟ أرسل لنا رسالة وسنرد عليك خلال "
+"24 ساعة."
+
+msgid ""
+"Have questions about who we are? Reach out any time — our team is here to "
+"help."
+msgstr "هل لديك أسئلة حول من نحن؟ تواصل معنا في أي وقت — فريقنا هنا للمساعدة."
+
+msgid "Home"
+msgstr "الرئيسية"
+
+msgid "Homepage content is being prepared."
+msgstr "يتم تجهيز محتوى الصفحة الرئيسية."
+
+msgid "How we use your information"
+msgstr "كيف نستخدم معلوماتك"
+
+msgid "How your gift arrives."
+msgstr "كيف تصل هديتك."
+
+msgid "In Stock"
+msgstr "متوفر"
+
+msgid "In stock"
+msgstr "متوفر"
+
+msgid "In stock(%(count)s) — order now"
+msgstr "متوفر(%(count)s) — اطلب الآن"
+
+msgid "Increase quantity"
+msgstr "زيادة الكمية"
+
+msgid "Information we collect"
+msgstr "المعلومات التي نجمعها"
+
+msgid "Instructions"
+msgstr "التعليمات"
+
+msgid "Invalid or expired code."
+msgstr "رمز غير صالح أو منتهي الصلاحية."
+
+msgid "Invoices"
+msgstr "الفواتير"
+
+msgid "Items"
+msgstr "عناصر"
+
+msgid "Join Our Newsletter"
+msgstr "انضم إلى نشرتنا"
+
+msgid "Label"
+msgstr "ملصق"
+
+msgid "Language"
+msgstr "اللغة"
+
+msgid "Last updated"
+msgstr "آخر تحديث"
+
+msgid ""
+"Learn more about Story of Flowers and our mission to deliver flowers and "
+"gifts."
+msgstr "تعرّف أكثر على قصة الزهور ومهمتنا في توصيل الزهور والهدايا."
+
+msgid "List"
+msgstr "قائمة"
+
+msgid "Live summary of your customization"
+msgstr "ملخص مباشر لتخصيصك"
+
+msgid "Location"
+msgstr "موقع"
+
+msgid "Log in"
+msgstr "تسجيل الدخول"
+
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Low stock — only %(count)s left"
+msgstr "مخزون منخفض — تبقى %(count)s فقط"
+
+msgid "Luxury Flowers & Gifts | Story of Flowers"
+msgstr "زهور وهدايا فاخرة | قصة الزهور"
+
+msgid "Make this a recurring order"
+msgstr "اجعل هذا أمرًا متكررًا"
+
+msgid "Max"
+msgstr "الحد الأعلى"
+
+msgid "Menu"
+msgstr "القائمة"
+
+msgid "Message"
+msgstr "الرسالة"
+
+msgid "Min"
+msgstr "الحد الأدنى"
+
+msgid "Mobile navigation"
+msgstr "التنقل للجوال"
+
+msgid "My Account"
+msgstr "حسابي"
+
+msgid "My Subscriptions"
+msgstr "اشتراكاتي"
+
+msgid "My Wishlist"
+msgstr "قائمة أمنياتي"
+
+msgid "Name"
+msgstr "الاسم"
+
+msgid "Need quick answers?"
+msgstr "هل تحتاج إلى إجابات سريعة؟"
+
+msgid "Network error. Please try again."
+msgstr "خطأ في الشبكة. يرجى المحاولة مرة أخرى."
+
+msgid "New"
+msgstr "جديد"
+
+msgid "New Subscription"
+msgstr "اشتراك جديد"
+
+msgid "Newest"
+msgstr "الأحدث"
+
+msgid "Next"
+msgstr "التالي"
+
+msgid "Next run"
+msgstr "المدى التالي"
+
+msgid "No Address Hassle"
+msgstr "بدون متاعب العنوان"
+
+msgid "No FAQs available at the moment."
+msgstr "لا توجد أسئلة وأجوبة متاحة في الوقت الراهن."
+
+msgid "No add-ons available."
+msgstr "لا توجد إضافات متاحة."
+
+msgid "No blog posts published yet."
+msgstr "لم يتم نشر أية مشاركات مدونة حتى الآن."
+
+msgid "No greeting cards for this occasion."
+msgstr "لا توجد بطاقات تهنئة لهذه المناسبة."
+
+msgid "No items on this order."
+msgstr "لا توجد عناصر في هذا الطلب."
+
+msgid "No line items."
+msgstr "لا توجد عناصر."
+
+msgid "No more stock available."
+msgstr "لا يتوفر المزيد من المخزون."
+
+msgid "No orders yet."
+msgstr "لا توجد أوامر حتى الآن."
+
+msgid "No products available."
+msgstr "لا توجد منتجات متاحة."
+
+msgid "No products match your filters."
+msgstr "لا توجد منتجات تطابق عوامل التصفية."
+
+msgid "No reminders yet."
+msgstr "لا توجد تذكيرات حتى الآن."
+
+msgid "No results for \"%(term)s\""
+msgstr "لا توجد نتائج لـ \"%(term)s\""
+
+msgid "No reviews yet."
+msgstr "لا توجد تقييمات بعد."
+
+msgid "No saved addresses yet."
+msgstr "لا توجد عناوين محفوظة حتى الآن."
+
+msgid "Notes"
+msgstr "ملحوظات"
+
+msgid "Notify me (days before)"
+msgstr "أعلمني (قبل أيام)"
+
+msgid "OTP has been resent to your email."
+msgstr "تمت إعادة إرسال OTP إلى بريدك الإلكتروني."
+
+msgid "OTP has been sent to your email."
+msgstr "تم إرسال OTP إلى بريدك الإلكتروني."
+
+msgid "Occasion"
+msgstr "المناسبة"
+
+msgid "Office"
+msgstr "مكتب"
+
+msgid "Online flowers & gifts delivery in Qatar. Same-day delivery available."
+msgstr ""
+"توصيل الزهور والهدايا عبر الإنترنت في قطر. يتوفر التوصيل في نفس اليوم."
+
+msgid "Only %(stock)s in stock"
+msgstr "%(stock)s فقط في المخزون"
+
+msgid "Only customers who purchased this product can write a review."
+msgstr "يمكن فقط للعملاء الذين اشتروا هذا المنتج كتابة تقييم."
+
+msgid "Optional"
+msgstr "خياري"
+
+msgid "Optional extras to complete the gift."
+msgstr "إضافات اختيارية لإكمال الهدية."
+
+msgid "Order"
+msgstr "طلب"
+
+msgid "Order <strong>%(number)s</strong> has been confirmed."
+msgstr "تم تأكيد الطلب <strong>%(number)s</strong>."
+
+msgid "Order Confirmed"
+msgstr "تم تأكيد الطلب"
+
+msgid "Order Preview"
+msgstr "معاينة الطلب"
+
+msgid "Order Summary"
+msgstr "ملخص الطلب"
+
+msgid "Order already exists for idempotency key."
+msgstr "الطلب موجود بالفعل لمفتاح العجز."
+
+msgid "Order tracking"
+msgstr "تتبع الطلب"
+
+msgid "Our Blog"
+msgstr "مدونتنا"
+
+msgid "Out of stock"
+msgstr "غير متوفر"
+
+msgid "Page %(page)s of %(total)s"
+msgstr "الصفحة %(صفحة)s من %(الإجمالي)s"
+
+msgid "Pagination"
+msgstr "ترقيم الصفحات"
+
+msgid "Password"
+msgstr "كلمة المرور"
+
+msgid "Pause"
+msgstr "يوقف"
+
+msgid "Payment Method"
+msgstr "طريقة الدفع"
+
+msgid "Ways to pay"
+msgstr "طرق الدفع"
+
+msgid "Pending quotes"
+msgstr "الاقتباسات المعلقة"
+
+msgid "Personal Message"
+msgstr "رسالة شخصية"
+
+msgid "Phone"
+msgstr "الهاتف"
+
+msgid "Photo Upload"
+msgstr "رفع صورة"
+
+msgid "Photo successfully uploaded"
+msgstr "تم تحميل الصورة بنجاح"
+
+msgid "Photo upload"
+msgstr "رفع صورة"
+
+msgid "Pick a card design for your message."
+msgstr "اختر تصميم بطاقة لرسالتك."
+
+msgid "Place Order & Pay"
+msgstr "تأكيد الطلب والدفع"
+
+msgid "Please enter a valid delivery date."
+msgstr "الرجاء إدخال تاريخ تسليم صالح."
+
+msgid "Please enter a valid email address."
+msgstr "يرجى إدخال عنوان بريد إلكتروني صالح."
+
+msgid "Please enter the 6-digit code."
+msgstr "الرجاء إدخال الرمز المكون من 6 أرقام."
+
+msgid "Please enter your address line 1."
+msgstr "الرجاء إدخال سطر عنوانك 1."
+
+msgid "Please enter your email address."
+msgstr "الرجاء إدخال عنوان البريد الإلكتروني الخاص بك."
+
+msgid "Please enter your full name."
+msgstr "الرجاء إدخال اسمك الكامل."
+
+msgid "Please enter your phone number."
+msgstr "الرجاء إدخال رقم هاتفك."
+
+msgid "Please fix the following:"
+msgstr "يرجى تصحيح ما يلي:"
+
+msgid "Please select a city."
+msgstr "الرجاء اختيار المدينة."
+
+msgid "Please select a delivery address."
+msgstr "الرجاء تحديد عنوان التسليم."
+
+msgid "Please select a delivery date."
+msgstr "الرجاء تحديد تاريخ التسليم."
+
+msgid "Please select a delivery time slot."
+msgstr "الرجاء تحديد فترة زمنية للتسليم."
+
+msgid "Please select a payment method."
+msgstr "الرجاء تحديد طريقة الدفع."
+
+msgid "Please select a valid city."
+msgstr "الرجاء اختيار مدينة صالحة."
+
+msgid "Please select a valid delivery address."
+msgstr "الرجاء تحديد عنوان تسليم صالح."
+
+msgid "Please select a valid delivery time slot."
+msgstr "الرجاء تحديد فترة زمنية صالحة للتسليم."
+
+msgid "Premium Flowers & Gifts"
+msgstr "زهور وهدايا فاخرة"
+
+msgid "Preview"
+msgstr "معاينة"
+
+msgid "Previous"
+msgstr "السابق"
+
+msgid "Price"
+msgstr "السعر"
+
+msgid "Price: High to Low"
+msgstr "السعر: من الأعلى إلى الأقل"
+
+msgid "Price: Low to High"
+msgstr "السعر: من الأقل إلى الأعلى"
+
+msgid "Prices hidden on packing slip"
+msgstr "الأسعار مخفية من قسيمة التعبئة"
+
+msgid "Privacy Policy"
+msgstr "سياسة الخصوصية"
+
+msgid "Privacy Policy | Story of Flowers"
+msgstr "سياسة الخصوصية | قصة الزهور"
+
+msgid "Proceed to Checkout"
+msgstr "المتابعة إلى الدفع"
+
+msgid "Product"
+msgstr "منتج"
+
+msgid "Profile"
+msgstr "الملف الشخصي"
+
+msgid "Promo code"
+msgstr "الرمز الترويجي"
+
+msgid "Promotions"
+msgstr "العروض"
+
+msgid "Qatar"
+msgstr "قطر"
+
+msgid "Qatar Local Payment"
+msgstr "الدفع المحلي في قطر"
+
+msgid "Qty"
+msgstr "الكمية"
+
+msgid "Quantity"
+msgstr "الكمية"
+
+msgid "Rating"
+msgstr "التقييم"
+
+msgid "Reach out to our support team, available 24/7."
+msgstr "تواصل مع فريق الدعم لدينا، المتاح على مدار الساعة طوال أيام الأسبوع."
+
+msgid ""
+"Read Story of Flower's privacy policy to learn how we collect and use your "
+"data."
+msgstr "اقرأ سياسة خصوصية قصة الزهور لمعرفة كيف نجمع بياناتك ونستخدمها."
+
+msgid "Read the latest news, tips, and stories from Story of Flowers."
+msgstr "اقرأ أحدث الأخبار والنصائح والقصص من قصة الزهور."
+
+msgid "Recent orders"
+msgstr "الطلبات الأخيرة"
+
+msgid "Recipient"
+msgstr "متلقي"
+
+msgid "Recipient phone"
+msgstr "هاتف المستلم"
+
+msgid "Refresh now"
+msgstr "قم بالتحديث الآن"
+
+msgid "Register for corporate gifting"
+msgstr "سجل للحصول على هدايا الشركات"
+
+msgid "Registration Submitted"
+msgstr "تم إرسال التسجيل"
+
+msgid "Related Products"
+msgstr "منتجات ذات صلة"
+
+msgid "Remove"
+msgstr "إزالة"
+
+msgid "Remove photo"
+msgstr "إزالة الصورة"
+
+msgid "Request New Quote"
+msgstr "طلب عرض أسعار جديد"
+
+msgid "Request a Quote"
+msgstr "طلب عرض سعر"
+
+msgid "Resend OTP"
+msgstr "إعادة إرسال كلمة المرور لمرة واحدة"
+
+msgid "Resend in"
+msgstr "إعادة الإرسال في"
+
+msgid "Resume"
+msgstr "سيرة ذاتية"
+
+msgid "Reveal sender after delivery"
+msgstr "إظهار المرسل بعد التسليم"
+
+msgid "Reviews"
+msgstr "التقييمات"
+
+msgid "Ribbon"
+msgstr "شريطة"
+
+msgid "Same Day"
+msgstr "توصيل اليوم"
+
+msgid "Save Address"
+msgstr "حفظ العنوان"
+
+msgid "Save Changes"
+msgstr "حفظ التغييرات"
+
+msgid "Saved Addresses"
+msgstr "العناوين المحفوظة"
+
+msgid "Scroll brands left"
+msgstr "تمرير العلامات لليسار"
+
+msgid "Scroll brands right"
+msgstr "تمرير العلامات لليمين"
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Search flowers, gifts..."
+msgstr "ابحث عن زهور، هدايا..."
+
+msgid "Search products..."
+msgstr "بحث عن المنتجات..."
+
+msgid "Search results"
+msgstr "نتائج البحث"
+
+msgid "Searching..."
+msgstr "جاري البحث..."
+
+msgid "Select City"
+msgstr "اختر المدينة"
+
+msgid "Select Option"
+msgstr "اختر الخيار"
+
+msgid "Select a city"
+msgstr "اختر مدينة"
+
+msgid "Select a slot"
+msgstr "حدد فتحة"
+
+msgid "Select slot"
+msgstr "اختر فترة"
+
+msgid "Send Message"
+msgstr "إرسال الرسالة"
+
+msgid "Send OTP"
+msgstr "أرسل كلمة مرور لمرة واحدة"
+
+msgid "Send a message"
+msgstr "أرسل رسالة"
+
+msgid "Send anonymously"
+msgstr "أرسل بشكل مجهول"
+
+msgid "Send premium flowers and gifts with same-day delivery across Qatar."
+msgstr "أرسل زهوراً وهدايا فاخرة مع توصيل في نفس اليوم في جميع أنحاء قطر."
+
+msgid "Sent anonymously"
+msgstr "أرسلت مجهولة"
+
+msgid "Set Up a Subscription"
+msgstr "قم بإعداد الاشتراك"
+
+msgid "Set as default address"
+msgstr "تعيين كعنوان افتراضي"
+
+msgid "Shop"
+msgstr "التسوق"
+
+msgid "Shop All"
+msgstr "تسوق الكل"
+
+msgid "Shop All Flowers & Gifts"
+msgstr "تسوق جميع الزهور والهدايا"
+
+msgid "Shop Now"
+msgstr "تسوق الآن"
+
+msgid "Shop by Recipient"
+msgstr "تسوق حسب المستلم"
+
+msgid "Shop | Story of Flowers"
+msgstr "تسوق | قصة الزهور"
+
+msgid "Slide %(number)s"
+msgstr "قم بإزاحة %(الرقم)s"
+
+msgid "Something went wrong, please try again."
+msgstr "حدث خطأ ما، يرجى المحاولة مرة أخرى."
+
+msgid "Something went wrong."
+msgstr "حدث خطأ ما."
+
+msgid "Sort"
+msgstr "الترتيب"
+
+msgid "Standard"
+msgstr "قياسي"
+
+msgid "Start Subscription"
+msgstr "ابدأ الاشتراك"
+
+msgid "Start a Subscription"
+msgstr "ابدأ الاشتراك"
+
+msgid "Start shopping"
+msgstr "ابدأ بالتسوق"
+
+msgid "Still have questions?"
+msgstr "لا تزال لديك أسئلة؟"
+
+msgid "Story of Flowers"
+msgstr "قصة الزهور"
+
+msgid ""
+"Story of Flowers brings premium flowers and gifts to your doorstep with "
+"same-day delivery across Doha and beyond. We partner with the finest local "
+"florists and gift curators to make every occasion memorable."
+msgstr ""
+"تقدم Story of Flowers الزهور والهدايا الفاخرة إلى باب منزلك مع خدمة التوصيل "
+"في نفس اليوم في جميع أنحاء الدوحة وخارجها. نحن نتعاون مع أفضل بائعي الزهور "
+"المحليين وأمناء الهدايا لجعل كل مناسبة لا تُنسى."
+
+msgid "Subject"
+msgstr "الموضوع"
+
+msgid "Submit Quote Request"
+msgstr "إرسال طلب العرض"
+
+msgid "Submit Review"
+msgstr "إرسال التقييم"
+
+msgid "Submit for Approval"
+msgstr "تقديم للموافقة"
+
+msgid "Subscribe"
+msgstr "اشترك"
+
+msgid "Subscription updated."
+msgstr "تم تحديث الاشتراك."
+
+msgid "Subtotal"
+msgstr "المجموع الفرعي"
+
+msgid "Support hours"
+msgstr "ساعات الدعم"
+
+msgid "Thank you!"
+msgstr "شكرًا لك!"
+
+msgid "Thanks for reaching out! We will respond soon."
+msgstr "شكرًا لتواصلك معنا. سوف نقوم بالرد قريبا."
+
+msgid ""
+"Thanks — your corporate account for <strong>%(company)s</strong> is now "
+"pending admin approval. We'll notify you at your work email once it's "
+"reviewed."
+msgstr ""
+"شكرًا — حساب شركتك لـ <strong>%(company)s</strong> الآن في انتظار موافقة "
+"المشرف. سنقوم بإعلامك عبر البريد الإلكتروني الخاص بالعمل بمجرد مراجعته."
+
+msgid "That item is no longer in your cart."
+msgstr "هذا العنصر لم يعد في سلة التسوق الخاصة بك."
+
+msgid "The selected address is no longer available. Please choose another."
+msgstr "العنوان المحدد لم يعد متاحا. الرجاء اختيار آخر."
+
+msgid "Time slot"
+msgstr "الفترة الزمنية"
+
+msgid "Top Rated"
+msgstr "الأعلى تقييماً"
+
+msgid "Total"
+msgstr "المجموع"
+
+msgid "Track"
+msgstr "مسار"
+
+msgid "Track Order"
+msgstr "تتبع الطلب"
+
+msgid "Trade license number"
+msgstr "رقم الرخصة التجارية"
+
+msgid "Try a different keyword or browse our collections."
+msgstr "جرّب كلمة أخرى أو تصفح مجموعاتنا."
+
+msgid "Update Preview"
+msgstr "تحديث المعاينة"
+
+msgid "Upload your photo"
+msgstr "قم بتحميل صورتك"
+
+msgid "Uploaded file"
+msgstr "تم تحميل الملف"
+
+msgid "Uploaded photo"
+msgstr "تم تحميل الصورة"
+
+msgid "Uploading photo..."
+msgstr "جارٍ تحميل الصورة..."
+
+msgid "Verify & Sign in"
+msgstr "التحقق وتسجيل الدخول"
+
+msgid "View All"
+msgstr "عرض الكل"
+
+msgid "View Cart"
+msgstr "عرض السلة"
+
+msgid "View My Subscriptions"
+msgstr "عرض اشتراكاتي"
+
+msgid "View image"
+msgstr "عرض الصورة"
+
+msgid "Visit FAQ"
+msgstr "تفضل بزيارة الأسئلة الشائعة"
+
+msgid ""
+"We collect the information you provide when placing an order, creating an "
+"account, or contacting support — such as your name, delivery address, phone "
+"number, and payment details."
+msgstr ""
+"نقوم بجمع المعلومات التي تقدمها عند تقديم طلب، أو إنشاء حساب، أو الاتصال "
+"بالدعم - مثل اسمك وعنوان التسليم ورقم الهاتف وتفاصيل الدفع."
+
+msgid "We couldn't reach the payment provider. Please try again."
+msgstr "لم نتمكن من الوصول إلى مزود الدفع. يرجى المحاولة مرة أخرى."
+
+msgid ""
+"We do not sell your personal data. We only share information with delivery "
+"partners and payment processors as necessary to fulfil your order."
+msgstr ""
+"نحن لا نبيع بياناتك الشخصية. نحن نشارك المعلومات مع شركاء التوصيل ومعالجي "
+"الدفع فقط عند الضرورة لتلبية طلبك."
+
+msgid ""
+"We're waiting to hear back from your payment provider for order "
+"<strong>%(number)s</strong>. This usually only takes a few seconds — no need"
+" to refresh, we'll do it for you."
+msgstr ""
+"نحن في انتظار الرد من مزود خدمة الدفع الخاص بك بخصوص الطلب "
+"<strong>%(number)s</strong>. يستغرق هذا عادةً بضع ثوانٍ فقط — لا داعي "
+"للتحديث، سنفعل ذلك نيابةً عنك."
+
+msgid "When and how we deliver."
+msgstr "متى وكيف نُوصل."
+
 msgid "Wishlist"
 msgstr "المفضلة"
+
+msgid "Work email"
+msgstr "البريد الإلكتروني للعمل"
+
+msgid "Write a review"
+msgstr "اكتب تقييماً"
+
+msgid "Write your message…"
+msgstr "اكتب رسالتك…"
+
+msgid "Written on your card — keep it short and personal."
+msgstr "تُكتب على بطاقتك — اجعلها قصيرة وشخصية."
+
+msgid "Yes"
+msgstr "نعم"
+
+msgid "You have no active subscriptions."
+msgstr "ليس لديك أي اشتراكات نشطة."
+
+msgid ""
+"You may request access to, correction of, or deletion of your personal data "
+"at any time by contacting our support team."
+msgstr ""
+"يمكنك طلب الوصول إلى بياناتك الشخصية أو تصحيحها أو حذفها في أي وقت عن طريق "
+"الاتصال بفريق الدعم لدينا."
+
+msgid "You need a corporate account to access this portal."
+msgstr "أنت بحاجة إلى حساب شركة للوصول إلى هذه البوابة."
+
+msgid "Your Cart"
+msgstr "سلتك"
+
+msgid "Your Message"
+msgstr "رسالتك"
+
+msgid "Your cart is empty."
+msgstr "سلتك فارغة."
+
+msgid "Your cart items will appear here."
+msgstr "ستظهر عناصر سلتك هنا."
+
+msgid ""
+"Your information is used to process orders, arrange delivery, provide "
+"customer support, and improve our products and services."
+msgstr ""
+"يتم استخدام معلوماتك لمعالجة الطلبات وترتيب التسليم وتوفير دعم العملاء "
+"وتحسين منتجاتنا وخدماتنا."
+
+msgid "Your message will appear here..."
+msgstr "ستظهر رسالتك هنا..."
+
+msgid "Your review is pending moderation."
+msgstr "تقييمك قيد المراجعة."
+
+msgid "Your review was not approved."
+msgstr "لم تتم الموافقة على تقييمك."
+
+msgid "Your rights"
+msgstr "حقوقك"
+
+msgid "Your wishlist is empty."
+msgstr "قائمة أمنياتك فارغة."
+
+msgid "products"
+msgstr "منتجات"
+
+msgid "to"
+msgstr "إلى"
+
+msgid "to write a review after purchasing this product."
+msgstr "لكتابة تقييم بعد شراء هذا المنتج."
+
+msgid "— order now"
+msgstr "— اطلب الآن"
+
+msgid "View all"
+msgstr "عرض الكل"
+
+msgid "Scroll left"
+msgstr "تمرير إلى اليسار"
+
+msgid "Scroll right"
+msgstr "تمرير إلى اليمين"

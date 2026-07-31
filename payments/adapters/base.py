@@ -37,6 +37,9 @@ class PaymentGatewayAdapter(ABC):
     key: str = ""
     display_name: str = ""
     is_async: bool = False
+    # Storefront trust strip: network/wallet badge keys rendered once on PDP.
+    show_on_storefront: bool = False
+    badge_keys: tuple[str, ...] = ()
 
     @abstractmethod
     def create_payment_intent(

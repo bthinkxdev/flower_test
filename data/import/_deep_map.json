@@ -1,0 +1,354 @@
+{
+  "in_correct_folder": 0,
+  "only_other_folder": 1048,
+  "no_match": 164,
+  "in_folder_exact_stem": 0,
+  "anniversary_case_split": {
+    "Anniversary Special": 21,
+    "Anniversary special": 37
+  },
+  "folder_samples": [
+    {
+      "folder": "FLOWERS WITH GIFTS",
+      "count": 0,
+      "samples": []
+    },
+    {
+      "folder": "PREMIUM  FLOWER ARRANGEMENTS",
+      "count": 0,
+      "samples": []
+    },
+    {
+      "folder": "FLOWER WITH WATCH",
+      "count": 0,
+      "samples": []
+    },
+    {
+      "folder": "ROSE WITH TOYS",
+      "count": 0,
+      "samples": []
+    },
+    {
+      "folder": "GARANGAO SPECIAL",
+      "count": 0,
+      "samples": []
+    },
+    {
+      "folder": "RAMADAN SPECIAL",
+      "count": 0,
+      "samples": []
+    },
+    {
+      "folder": "ROSE BUNDLES",
+      "count": 0,
+      "samples": []
+    }
+  ],
+  "premium": {
+    "products": 71,
+    "images": 0,
+    "exact_in_folder": 0,
+    "substring_in_folder": 0,
+    "none_samples": [
+      "arrangement of surpice NO-639",
+      "Fresh white tulip",
+      "Lilly with vase arrangement",
+      "Hydrangea lilly and white special flower arrangement",
+      "White special flower tall arrangement",
+      "Pink and white hand bouquet arrangement",
+      "Cala lilly and hydrangea with vase arrangement",
+      "Lilly and rose mix vase arrangement",
+      "Special floral pinkish and green arrangement",
+      "pink lilly and rose mix with black box arrangement",
+      "floral unique premium vase pink and purple mix arrangement",
+      "floral unique pink and mixed special flower arrangement"
+    ]
+  },
+  "gifts": {
+    "products": 90,
+    "images": 0,
+    "exact_in_folder": 0,
+    "substring_in_folder": 0,
+    "none_samples": [
+      "20 ROSES WITH PRECIOUS GIFT WATCH (1)",
+      "20 ROSES WITH PRECIOUS GIFT WATCH (2)",
+      "20 ROSES WITH PRECIOUS GIFT WATCH (3)",
+      "20 ROSES WITH PRECIOUS GIFT WATCH (4)",
+      "20 ROSES WITH PRECIOUS GIFT WATCH (5)",
+      "BABY BIKE WITH FLOWER BOUQUET NO-258",
+      "BABY BOY CYCLE WITH CHOCOLATE AND BLUE BOUQUET NO-258",
+      "BABY BOY CYCLE WITH ROSE BOUQUET NO-256",
+      "BABY CYCLE WITH CHOLATE AND BOUQUET NO-257",
+      "BABY GARDEN SWEET RIDE NO-259",
+      "BABY GIRL BIKE WITH PINK ROSE BOUQUET NO-261",
+      "baby green cycle & CHOCOLATE box with flower bouquet NO-251"
+    ]
+  },
+  "only_other_samples": [
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet with tulip white small",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet  with tulip white small.jpg",
+      "got": "bouquet  with tulip white small.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet pink lilly with beige wrapp-04",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet pink lilly with beige wrapp-04.jpg",
+      "got": "bouquet pink lilly with beige wrapp-04.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet pink lilly-01",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet pink lilly-01.jpg",
+      "got": "bouquet pink lilly-01.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet purple tulip -02",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet purple tulip -02.jpg",
+      "got": "bouquet purple tulip -02.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet red rose double wrapp-03",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet red rose double wrapp-03.jpg",
+      "got": "bouquet red rose double wrapp-03.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet white lilly -04",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet white lilly -04.jpg",
+      "got": "bouquet white lilly -04.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet white tulip-05",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet white tulip-05.jpg",
+      "got": "bouquet white tulip-05.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with all tulip mix-30",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with all tulip mix-30.jpg",
+      "got": "Bouquet with all tulip mix-30.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with cute lilly-11",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet with cute lilly-11.jpg",
+      "got": "bouquet with cute lilly-11.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with cute mix flowers",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with cute mix flowers.jpg",
+      "got": "Bouquet with cute mix flowers.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with cye tulip -24",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with cye tulip -24.jpg",
+      "got": "Bouquet with cye tulip -24.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet with heart pink-14",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet with heart pink-14.jpg",
+      "got": "bouquet with heart pink-14.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with lilly green and mix-39",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with lilly green and mix-39.jpg",
+      "got": "Bouquet with lilly green and mix-39.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with lilly grey wrapp-35",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with lilly grey wrapp-35.jpg",
+      "got": "Bouquet with lilly grey wrapp-35.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with long lilly -35",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with long lilly -35.jpg",
+      "got": "Bouquet with long lilly -35.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "bouquet with mix color",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet with mix color.jpg",
+      "got": "bouquet with mix color.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with mix flower-10",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet with mix flower-10.jpg",
+      "got": "bouquet with mix flower-10.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with mix joy flower-8",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\bouquet with mix joy flower-8.jpg",
+      "got": "bouquet with mix joy flower-8.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with pink all lilly-32",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with pink all lilly-32.jpg",
+      "got": "Bouquet with pink all lilly-32.jpg"
+    },
+    {
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with pink and pink baby rose-37",
+      "expected": "FLOWER BOUQUETS",
+      "got_folder": "FLOWER BOUQUETS\\Bouquet with pink and pink baby rose-37.jpg",
+      "got": "Bouquet with pink and pink baby rose-37.jpg"
+    }
+  ],
+  "watch_products_image_search": [
+    {
+      "name": "10 ROSES WITH PRECIOUS GIFT WATCH NO-3010",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 10 ROSES WITH PRECIOUS GIFT WATCH  NO-3010.png"
+      ]
+    },
+    {
+      "name": "10 ROSES WITH PRECIOUS GIFT WATCH NO-3011",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 10 ROSES WITH PRECIOUS GIFT WATCH  NO-3011.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3000",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3000.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3002",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3002.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3004",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3004.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3007",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3007.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3008",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3008.png"
+      ]
+    },
+    {
+      "name": "20 WHITE ROSES WITH PRECIOUS GIFT WATCH FOR MEN NO-3001",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 WHITE ROSES WITH PRECIOUS GIFT WATCH FOR MEN  NO-3001.png"
+      ]
+    },
+    {
+      "name": "30 MIX ROSES WITH PRECIOUS GIFT WATCH NO-3007",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 MIX ROSES WITH PRECIOUS GIFT WATCH  NO-3007.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3003",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3003.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3005",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3005.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3006",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3006.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3009",
+      "matches": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3009.png"
+      ]
+    }
+  ],
+  "rose_toys_products": [
+    "BABY BIKE & CHOCOLATE WITH FLOWER BOUQUET NO-251",
+    "BABY BIKE WITH FLOWER AND CHOCOLATE NO-202",
+    "BABY BIKE WITH FLOWER BOUQUET NO-258",
+    "BABY BOY CYCLE WITH FLOWER BOUQUET NO-206",
+    "BABY CYCLE WITH FRESH FLOWER BOUQUET SWEET RIDE NO-259",
+    "Baby Girl Cycle with Chocolate & Flower Bouquet No-256",
+    "Cycle Boy or Girl Ride with Orange Flower Theme No-204",
+    "Girl Cycle with Flower Bouquet No-206",
+    "Little Baby Cycle with Flower Bouquet and Chocolate No-258",
+    "Little Baby Girl Bike with Flower Bouquet No-201",
+    "Littlebaby Bike Ride with Flower Bouquet and Chocolate No-252"
+  ],
+  "garangao_products": [
+    "GARANGAO SPECIAL CHOCO BOUQUET 01",
+    "GARANGAO SPECIAL FLOWE WITH CHOCO BOUQUET 02",
+    "GARANGAO SPECIAL FLOWE WITH CHOCO BOUQUET 03",
+    "GARANGAO SPECIAL FLOWE WITH CHOCO BOUQUET 04"
+  ],
+  "image_name_samples_premium": [],
+  "image_name_samples_gifts": [],
+  "excel_name_samples_premium": [
+    "white and golden flower premium arrangement",
+    "blue arrangement flowers",
+    "purple arrangement premium arrangement",
+    "pink premium flower arrangement",
+    "white premium flower arrangement",
+    "white and blue flower premium arrangement with money box",
+    "flower mixed premium box arrangement",
+    "white and red with black base premium flower arrangement",
+    "rose pink mixed premium arrangement",
+    "white and green anthurium special premium arrangement"
+  ],
+  "excel_name_samples_gifts": [
+    "10 Lilly Bunch with Rahash No-311",
+    "10 Pink Lilly Bunch with Rahash Free No-312",
+    "10 Pink White Lilly with Free Rahash No-313",
+    "10 ROSES WITH PRECIOUS GIFT WATCH NO-3010",
+    "10 ROSES WITH PRECIOUS GIFT WATCH NO-3011",
+    "20 Blue Rose with free Rahash No-300",
+    "20 Fuchia with Free Rahash no-301",
+    "20 Mix Rose with free Rahash No-306",
+    "20 Mix Rose with Free Rahash No-309",
+    "20 Orange Rose with free Rahash No-303"
+  ]
+}

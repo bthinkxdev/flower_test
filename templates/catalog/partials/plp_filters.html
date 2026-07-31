@@ -1,4 +1,5 @@
 {% load i18n %}
+{% with prefix=form_id_prefix|default:"plp" %}
 <form class="plp-filters card p-3"
       method="get"
       action="{{ request.path }}"
@@ -7,56 +8,81 @@
       hx-swap="innerHTML"
       hx-push-url="true"
       hx-indicator="#product-grid"
-      hx-trigger="submit, change from:select[name=sort]">
+      hx-trigger="submit, change delay:50ms from:select, change delay:50ms from:input[type=checkbox]">
   <h2 class="h6">{% trans "Filters" %}</h2>
   <div class="mb-3">
-    <label class="form-label small">{% trans "Category" %}</label>
-    <select name="category" class="form-select form-select-sm">
+    <label class="form-label small" for="{{ prefix }}-category">{% trans "Category" %}</label>
+    <select id="{{ prefix }}-category" name="category" class="form-select form-select-sm" aria-label="{% trans 'Category' %}">
       <option value="">{% trans "All" %}</option>
-      {% for cat in categories %}
-        {% if active_category and active_category.parent_id == cat.pk %}
-          <option value="{{ active_category.pk }}" selected>{{ cat.name }}</option>
-        {% else %}
-          <option value="{{ cat.pk }}" {% if filters.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
-        {% endif %}
+      {% for group in category_groups %}
+      <option value="{{ group.pk }}" {% if filters.category_id == group.pk %}selected{% endif %}>
+        {% blocktrans with name=group.name %}All {{ name }}{% endblocktrans %}
+      </option>
+      <optgroup label="{{ group.name }}">
+        {% for cat in group.children.all %}
+        <option value="{{ cat.pk }}" {% if filters.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </optgroup>
       {% endfor %}
     </select>
   </div>
   <div class="mb-3">
-    <label class="form-label small">{% trans "Occasion" %}</label>
-    <select name="occasion" class="form-select form-select-sm">
+    <label class="form-label small" for="{{ prefix }}-occasion">{% trans "Occasion" %}</label>
+    <select id="{{ prefix }}-occasion" name="occasion" class="form-select form-select-sm" aria-label="{% trans 'Occasion' %}">
       <option value="">{% trans "All" %}</option>
       {% for occ in occasions %}
       <option value="{{ occ.pk }}" {% if filters.occasion_id == occ.pk %}selected{% endif %}>{{ occ.name }}</option>
       {% endfor %}
     </select>
   </div>
+  {% if brands %}
   <div class="mb-3">
-    <label class="form-label small">{% trans "Brand" %}</label>
-    <select name="brand" class="form-select form-select-sm">
+    <label class="form-label small" for="{{ prefix }}-brand">{% trans "Brand" %}</label>
+    <select id="{{ prefix }}-brand" name="brand" class="form-select form-select-sm" aria-label="{% trans 'Brand' %}">
       <option value="">{% trans "All" %}</option>
       {% for brand in brands %}
       <option value="{{ brand.pk }}" {% if filters.brand_id == brand.pk %}selected{% endif %}>{{ brand.name }}</option>
       {% endfor %}
     </select>
   </div>
+  {% endif %}
   <div class="mb-3">
-    <label class="form-label small">{% trans "Price" %}</label>
+    <label class="form-label small" for="{{ prefix }}-min-price">{% trans "Price" %}</label>
     <div class="input-group input-group-sm">
-      <input type="number" name="min_price" class="form-control" placeholder="{% trans 'Min' %}" value="{{ request.GET.min_price }}">
-      <input type="number" name="max_price" class="form-control" placeholder="{% trans 'Max' %}" value="{{ request.GET.max_price }}">
+      <input id="{{ prefix }}-min-price" type="number" name="min_price" class="form-control" min="0" step="1" inputmode="decimal" placeholder="{% trans 'Min' %}" value="{% if filters.min_price %}{{ filters.min_price }}{% endif %}">
+      <input id="{{ prefix }}-max-price" type="number" name="max_price" class="form-control" min="0" step="1" inputmode="decimal" placeholder="{% trans 'Max' %}" value="{% if filters.max_price %}{{ filters.max_price }}{% endif %}" aria-label="{% trans 'Max' %}">
     </div>
   </div>
-  <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="same_day" value="1" id="f-sd" {% if filters.same_day %}checked{% endif %}><label class="form-check-label small" for="f-sd">{% trans "Same Day" %}</label></div>
-  <div class="form-check mb-1"><input class="form-check-input" type="checkbox" name="bestseller" value="1" id="f-bs" {% if filters.bestseller %}checked{% endif %}><label class="form-check-label small" for="f-bs">{% trans "Bestseller" %}</label></div>
-  <div class="form-check mb-3"><input class="form-check-input" type="checkbox" name="in_stock" value="1" id="f-stock" {% if filters.in_stock %}checked{% endif %}><label class="form-check-label small" for="f-stock">{% trans "In Stock" %}</label></div>
+  {% if has_same_day %}
+  <div class="form-check mb-1">
+    <input class="form-check-input" type="checkbox" name="same_day" value="1" id="{{ prefix }}-sd" {% if filters.same_day %}checked{% endif %}>
+    <label class="form-check-label small" for="{{ prefix }}-sd">{% trans "Same Day" %}</label>
+  </div>
+  {% endif %}
+  {% if has_bestsellers %}
+  <div class="form-check mb-1">
+    <input class="form-check-input" type="checkbox" name="bestseller" value="1" id="{{ prefix }}-bs" {% if filters.bestseller %}checked{% endif %}>
+    <label class="form-check-label small" for="{{ prefix }}-bs">{% trans "Bestseller" %}</label>
+  </div>
+  {% endif %}
+  {% if has_new_arrivals %}
+  <div class="form-check mb-1">
+    <input class="form-check-input" type="checkbox" name="new_arrival" value="1" id="{{ prefix }}-na" {% if filters.new_arrival %}checked{% endif %}>
+    <label class="form-check-label small" for="{{ prefix }}-na">{% trans "New Arrival" %}</label>
+  </div>
+  {% endif %}
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" name="in_stock" value="1" id="{{ prefix }}-stock" {% if filters.in_stock %}checked{% endif %}>
+    <label class="form-check-label small" for="{{ prefix }}-stock">{% trans "In Stock" %}</label>
+  </div>
   <div class="mb-3">
-    <label class="form-label small">{% trans "Sort" %}</label>
-    <select name="sort" class="form-select form-select-sm">
+    <label class="form-label small" for="{{ prefix }}-sort">{% trans "Sort" %}</label>
+    <select id="{{ prefix }}-sort" name="sort" class="form-select form-select-sm" aria-label="{% trans 'Sort' %}">
       <option value="newest" {% if sort == 'newest' %}selected{% endif %}>{% trans "Newest" %}</option>
       <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>{% trans "Price: Low to High" %}</option>
       <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>{% trans "Price: High to Low" %}</option>
       <option value="rating" {% if sort == 'rating' %}selected{% endif %}>{% trans "Top Rated" %}</option>
+      <option value="name" {% if sort == 'name' %}selected{% endif %}>{% trans "Name A–Z" %}</option>
     </select>
   </div>
   <button type="submit" class="btn btn-floward btn-sm w-100">{% trans "Apply" %}</button>
@@ -70,3 +96,4 @@
     {% trans "Clear Filters" %}
   </a>
 </form>
+{% endwith %}

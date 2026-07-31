@@ -1,0 +1,13 @@
+﻿{
+  "products": 1212,
+  "images_indexed": 1086,
+  "exact": 911,
+  "fuzzy": 138,
+  "multi": 85,
+  "none": 163,
+  "match_rate_pct": 86.6,
+  "unused_images": 103,
+  "cross_folder_matches": 1036
+}
+MISSING {'FLOWER WITH WATCH': 13, 'GARANGAO SPECIAL': 4, 'ROSE WITH CYCLE AND TOYS': 11}
+NONE_BY_CAT {'Flower Bouquet': 6, 'Anniversary Special': 4, 'Anniversary special': 2, 'Birthday special': 13, 'Budget flowers (below - 100 qr)': 2, 'EID AL ADA SPECIAL': 1, 'EID SPECIAL SPECIAL': 4, 'FATHERS DAY SPECIAL': 1, 'Flower Bouquets Under 200 QR': 1, 'FLOWER BOUQUET WITH CHOCOLATE': 1, 'FLOWER VASE ARRANGEMENT': 4, 'FLOWER WITH PERFUMES': 3, 'FLOWER WITH GIFTS': 41, 'GARANGAO SPECIAL': 4, 'GET WELL SOON': 1, 'GRADUATION SPECIAL ARRANGEMENT': 4, 'MOTHERS DAY SPECIAL ARRANGEMENT': 2, 'NEW BORN BABY FLOWER ARRANGEMENT': 1, 'PREMIUM FLOWER ARRANGEMENT': 34, 'Ramadan Special Flower Arrangement': 4, 'ROSE WITH CYCLE AND TOYS': 11, 'Table Floral Centerpiece Arrangement': 12, 'TEACHERS DAY SPECIAL': 1, 'VALENTINES DAY SPECIAL': 6}

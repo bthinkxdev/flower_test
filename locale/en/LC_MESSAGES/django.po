@@ -1,55 +1,1289 @@
-# Minimal English locale for storefront {% trans %} tags.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: floward-clone\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-msgid "Floward Qatar"
-msgstr "Floward Qatar"
+msgid "%(name)s | Story of Flowers"
+msgstr "%(name)s | Story of Flowers"
 
-msgid "Luxury Flowers & Gifts"
-msgstr "Luxury Flowers & Gifts"
+msgid "%(name)s — premium flowers and gifts delivered in Qatar."
+msgstr "%(name)s — premium flowers and gifts delivered in Qatar."
 
-msgid "Shop Now"
-msgstr "Shop Now"
+msgid "%(title)s | Story of Flowers"
+msgstr "%(title)s | Story of Flowers"
+
+msgid "+ Add New Address"
+msgstr "+ Add New Address"
+
+msgid "About Us"
+msgstr "About Us"
+
+msgid "About Us | Story of Flowers"
+msgstr "About Us | Story of Flowers"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Active recurring orders"
+msgstr "Active recurring orders"
+
+msgid "Add Address"
+msgstr "Add Address"
+
+msgid "Add Reminder"
+msgstr "Add Reminder"
+
+msgid "Add an address in your account."
+msgstr "Add an address in your account."
+
+msgid "Add product"
+msgstr "Add product"
 
 msgid "Add to Cart"
 msgstr "Add to Cart"
 
-msgid "Same Day"
-msgstr "Same Day"
+msgid "Add to cart"
+msgstr "Add to cart"
 
-msgid "Subscribe"
-msgstr "Subscribe"
+msgid "Add-on"
+msgstr "Add-on"
 
-msgid "Join Our Newsletter"
-msgstr "Join Our Newsletter"
+msgid "Add-ons"
+msgstr "Add-ons"
 
-msgid "Shop by Occasion"
-msgstr "Shop by Occasion"
+msgid "Added to cart!"
+msgstr "Added to cart!"
 
-msgid "Shop by Category"
-msgstr "Shop by Category"
+msgid "Address Line 1"
+msgstr "Address Line 1"
 
-msgid "Featured Brands"
-msgstr "Featured Brands"
+msgid "Address Line 2"
+msgstr "Address Line 2"
 
-msgid "Customer Reviews"
-msgstr "Customer Reviews"
+msgid "Address line 1"
+msgstr "Address line 1"
 
-msgid "Follow Us"
-msgstr "Follow Us"
+msgid "Address line 2"
+msgstr "Address line 2"
 
-msgid "Get exclusive offers and gifting inspiration."
-msgstr "Get exclusive offers and gifting inspiration."
+msgid "Address saved"
+msgstr "Address saved"
 
-msgid "My Account"
-msgstr "My Account"
+msgid "All"
+msgstr "All"
 
-msgid "Search"
-msgstr "Search"
+msgid "All Flowers"
+msgstr "All Flowers"
+
+msgid "All rights reserved."
+msgstr "All rights reserved."
+
+msgid "Anonymous"
+msgstr "Anonymous"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Are you sure you want to delete this address?"
+msgstr "Are you sure you want to delete this address?"
+
+msgid "Best Seller"
+msgstr "Best Seller"
+
+msgid "Best Sellers"
+msgstr "Best Sellers"
+
+msgid "Bestseller"
+msgstr "Bestseller"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Blog | Story of Flowers"
+msgstr "Blog | Story of Flowers"
+
+msgid "Brand"
+msgstr "Brand"
+
+msgid "Brands You'll Love"
+msgstr "Brands You'll Love"
+
+msgid "Breadcrumb"
+msgstr "Breadcrumb"
+
+msgid "Browse %(name)s flowers and gifts with same-day delivery in Qatar."
+msgstr "Browse %(name)s flowers and gifts with same-day delivery in Qatar."
+
+msgid "Browse all categories"
+msgstr "Browse all categories"
+
+msgid "Browse premium flowers and gifts with same-day delivery across Qatar."
+msgstr "Browse premium flowers and gifts with same-day delivery across Qatar."
+
+msgid "Calculated at checkout"
+msgstr "Calculated at checkout"
+
+msgid "Cancel"
+msgstr "Cancel"
 
 msgid "Cart"
 msgstr "Cart"
 
+msgid "Cash on Delivery"
+msgstr "Cash on Delivery"
+
+msgid "Category"
+msgstr "Category"
+
+msgid ""
+"Check our frequently asked questions for common queries about ordering, "
+"delivery, and payments."
+msgstr ""
+"Check our frequently asked questions for common queries about ordering, "
+"delivery, and payments."
+
+msgid "Checking out as guest — enter your details below."
+msgstr "Checking out as guest — enter your details below."
+
+msgid "Checkout"
+msgstr "Checkout"
+
+msgid "Choose Gifts Now"
+msgstr "Choose Gifts Now"
+
+msgid ""
+"Choose a message, card, wrap, and delivery details — your preview updates as"
+" you go."
+msgstr ""
+"Choose a message, card, wrap, and delivery details — your preview updates as"
+" you go."
+
+msgid "Choose a product"
+msgstr "Choose a product"
+
+msgid "City"
+msgstr "City"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Clear Filters"
+msgstr "Clear Filters"
+
+msgid "Clear filters"
+msgstr "Clear filters"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Company"
+msgstr "Company"
+
+msgid "Company name"
+msgstr "Company name"
+
+msgid "Confirm delivery details and payment to complete your order."
+msgstr "Confirm delivery details and payment to complete your order."
+
+msgid "Confirming Payment"
+msgstr "Confirming Payment"
+
+msgid "Confirming your payment"
+msgstr "Confirming your payment"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Contact Name"
+msgstr "Contact Name"
+
+msgid "Contact Us"
+msgstr "Contact Us"
+
+msgid "Contact Us | Story of Flowers"
+msgstr "Contact Us | Story of Flowers"
+
+msgid "Contact name"
+msgstr "Contact name"
+
+msgid "Contact us"
+msgstr "Contact us"
+
+msgid "Continue Shopping"
+msgstr "Continue Shopping"
+
+msgid "Continue shopping"
+msgstr "Continue shopping"
+
+msgid "Corporate Account Registration"
+msgstr "Corporate Account Registration"
+
+msgid "Corporate Gifts"
+msgstr "Corporate Gifts"
+
+msgid "Corporate Portal"
+msgstr "Corporate Portal"
+
+msgid "Corporate Registration"
+msgstr "Corporate Registration"
+
+msgid "Could not send OTP."
+msgstr "Could not send OTP."
+
+msgid "Could not update quantity."
+msgstr "Could not update quantity."
+
+msgid "Coupon"
+msgstr "Coupon"
+
+msgid "Coupon Discount"
+msgstr "Coupon Discount"
+
+msgid "Credit / Debit Card"
+msgstr "Credit / Debit Card"
+
+msgid "Currency"
+msgstr "Currency"
+
+msgid "Current status"
+msgstr "Current status"
+
+msgid "Customer Reviews"
+msgstr "Customer Reviews"
+
+msgid "Customer Service"
+msgstr "Customer Service"
+
+msgid "Customer support available 24/7"
+msgstr "Customer support available 24/7"
+
+msgid "Customization total"
+msgstr "Customization total"
+
+msgid "Customize Your Gift"
+msgstr "Customize Your Gift"
+
+msgid "Customize as Gift"
+msgstr "Customize as Gift"
+
+msgid "Customize your gift to see a live preview here."
+msgstr "Customize your gift to see a live preview here."
+
+msgid "Data sharing"
+msgstr "Data sharing"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Decrease quantity"
+msgstr "Decrease quantity"
+
+msgid "Default"
+msgstr "Default"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Delete item"
+msgstr "Delete item"
+
+msgid "Delivery"
+msgstr "Delivery"
+
+msgid "Delivery Address"
+msgstr "Delivery Address"
+
+msgid "Delivery Charge"
+msgstr "Delivery Charge"
+
+msgid "Delivery Estimate"
+msgstr "Delivery Estimate"
+
+msgid "Delivery Preferences"
+msgstr "Delivery Preferences"
+
+msgid "Delivery address"
+msgstr "Delivery address"
+
+msgid "Delivery charges"
+msgstr "Delivery charges"
+
+msgid "Delivery country"
+msgstr "Delivery country"
+
+msgid "Delivery date"
+msgstr "Delivery date"
+
+msgid "Delivery instructions"
+msgstr "Delivery instructions"
+
+msgid "Delivery slot"
+msgstr "Delivery slot"
+
+msgid "Delivery to"
+msgstr "Delivery to"
+
+msgid "Delivery:"
+msgstr "Delivery:"
+
+msgid "Delivery: %(label)s to %(city)s"
+msgstr "Delivery: %(label)s to %(city)s"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Dismiss"
+msgstr "Dismiss"
+
+msgid "Doha, Qatar"
+msgstr "Doha, Qatar"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Email address"
+msgstr "Email address"
+
+msgid "Enter a coupon code."
+msgstr "Enter a coupon code."
+
+msgid "Enter coupon code"
+msgstr "Enter coupon code"
+
+msgid "Enter the 6-digit code sent to"
+msgstr "Enter the 6-digit code sent to"
+
+msgid "Explore Unique Gift Ideas"
+msgstr "Explore Unique Gift Ideas"
+
+msgid "Express Delivery"
+msgstr "Express Delivery"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "FAQ | Story of Flowers"
+msgstr "FAQ | Story of Flowers"
+
+msgid "Featured brands"
+msgstr "Featured brands"
+
+msgid "Fill in the form below and we'll respond within 1 business day."
+msgstr "Fill in the form below and we'll respond within 1 business day."
+
+msgid "Filters"
+msgstr "Filters"
+
+msgid "First delivery date"
+msgstr "First delivery date"
+
+msgid "First run date"
+msgstr "First run date"
+
+msgid "Follow Us"
+msgstr "Follow Us"
+
+msgid "Follow us on Instagram"
+msgstr "Follow us on Instagram"
+
+msgid "Frequency"
+msgstr "Frequency"
+
+msgid "Frequently Asked Questions"
+msgstr "Frequently Asked Questions"
+
+msgid ""
+"Frequently asked questions about ordering, delivery, and payments at Story "
+"of Flowers."
+msgstr ""
+"Frequently asked questions about ordering, delivery, and payments at Story "
+"of Flowers."
+
+msgid ""
+"From spontaneous surprises to milestone celebrations, our mission is simple:"
+" help you express what matters most, beautifully and reliably."
+msgstr ""
+"From spontaneous surprises to milestone celebrations, our mission is simple:"
+" help you express what matters most, beautifully and reliably."
+
+msgid "Full name"
+msgstr "Full name"
+
+msgid "Gate code, floor, landmark…"
+msgstr "Gate code, floor, landmark…"
+
+msgid "Get exclusive offers and gifting inspiration."
+msgstr "Get exclusive offers and gifting inspiration."
+
+msgid "Get in touch"
+msgstr "Get in touch"
+
+msgid "Get in touch with Story of Flowers customer support."
+msgstr "Get in touch with Story of Flowers customer support."
+
+msgid "Get to Know Us"
+msgstr "Get to Know Us"
+
+msgid "Gift Builder"
+msgstr "Gift Builder"
+
+msgid "Gift Calendar"
+msgstr "Gift Calendar"
+
+msgid "Gift Options"
+msgstr "Gift Options"
+
+msgid "Gift Voucher"
+msgstr "Gift Voucher"
+
+msgid "Gift Wrap"
+msgstr "Gift Wrap"
+
+msgid "Gift customization saved."
+msgstr "Gift customization saved."
+
+msgid "Gift customized"
+msgstr "Gift customized"
+
+msgid "Gift receipt"
+msgstr "Gift receipt"
+
+msgid "Gift receipt (hide prices on packing slip)"
+msgstr "Gift receipt (hide prices on packing slip)"
+
+msgid "Gift receipt — prices hidden"
+msgstr "Gift receipt — prices hidden"
+
+msgid "Gift voucher code"
+msgstr "Gift voucher code"
+
+msgid "Gift wrap"
+msgstr "Gift wrap"
+
+msgid "Gifts for Every Moment"
+msgstr "Gifts for Every Moment"
+
+msgid "Greeting Card"
+msgstr "Greeting Card"
+
+msgid "Greeting card"
+msgstr "Greeting card"
+
+msgid "Grid"
+msgstr "Grid"
+
+msgid ""
+"Have a question about an order, a product, or anything else? Send us a "
+"message and we'll get back to you within 24 hours."
+msgstr ""
+"Have a question about an order, a product, or anything else? Send us a "
+"message and we'll get back to you within 24 hours."
+
+msgid ""
+"Have questions about who we are? Reach out any time — our team is here to "
+"help."
+msgstr ""
+"Have questions about who we are? Reach out any time — our team is here to "
+"help."
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Homepage content is being prepared."
+msgstr "Homepage content is being prepared."
+
+msgid "How we use your information"
+msgstr "How we use your information"
+
+msgid "How your gift arrives."
+msgstr "How your gift arrives."
+
+msgid "In Stock"
+msgstr "In Stock"
+
+msgid "In stock"
+msgstr "In stock"
+
+msgid "In stock(%(count)s) — order now"
+msgstr "In stock(%(count)s) — order now"
+
+msgid "Increase quantity"
+msgstr "Increase quantity"
+
+msgid "Information we collect"
+msgstr "Information we collect"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Invalid or expired code."
+msgstr "Invalid or expired code."
+
+msgid "Invoices"
+msgstr "Invoices"
+
+msgid "Items"
+msgstr "Items"
+
+msgid "Join Our Newsletter"
+msgstr "Join Our Newsletter"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid ""
+"Learn more about Story of Flowers and our mission to deliver flowers and "
+"gifts."
+msgstr ""
+"Learn more about Story of Flowers and our mission to deliver flowers and "
+"gifts."
+
+msgid "List"
+msgstr "List"
+
+msgid "Live summary of your customization"
+msgstr "Live summary of your customization"
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Log in"
+msgstr "Log in"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Low stock — only %(count)s left"
+msgstr "Low stock — only %(count)s left"
+
+msgid "Luxury Flowers & Gifts | Story of Flowers"
+msgstr "Luxury Flowers & Gifts | Story of Flowers"
+
+msgid "Make this a recurring order"
+msgstr "Make this a recurring order"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Message"
+msgstr "Message"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "Mobile navigation"
+msgstr "Mobile navigation"
+
+msgid "My Account"
+msgstr "My Account"
+
+msgid "My Subscriptions"
+msgstr "My Subscriptions"
+
+msgid "My Wishlist"
+msgstr "My Wishlist"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Need quick answers?"
+msgstr "Need quick answers?"
+
+msgid "Network error. Please try again."
+msgstr "Network error. Please try again."
+
+msgid "New"
+msgstr "New"
+
+msgid "New Subscription"
+msgstr "New Subscription"
+
+msgid "Newest"
+msgstr "Newest"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "Next run"
+msgstr "Next run"
+
+msgid "No Address Hassle"
+msgstr "No Address Hassle"
+
+msgid "No FAQs available at the moment."
+msgstr "No FAQs available at the moment."
+
+msgid "No add-ons available."
+msgstr "No add-ons available."
+
+msgid "No blog posts published yet."
+msgstr "No blog posts published yet."
+
+msgid "No greeting cards for this occasion."
+msgstr "No greeting cards for this occasion."
+
+msgid "No items on this order."
+msgstr "No items on this order."
+
+msgid "No line items."
+msgstr "No line items."
+
+msgid "No more stock available."
+msgstr "No more stock available."
+
+msgid "No orders yet."
+msgstr "No orders yet."
+
+msgid "No products available."
+msgstr "No products available."
+
+msgid "No products match your filters."
+msgstr "No products match your filters."
+
+msgid "No reminders yet."
+msgstr "No reminders yet."
+
+msgid "No results for \"%(term)s\""
+msgstr "No results for \"%(term)s\""
+
+msgid "No reviews yet."
+msgstr "No reviews yet."
+
+msgid "No saved addresses yet."
+msgstr "No saved addresses yet."
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "Notify me (days before)"
+msgstr "Notify me (days before)"
+
+msgid "OTP has been resent to your email."
+msgstr "OTP has been resent to your email."
+
+msgid "OTP has been sent to your email."
+msgstr "OTP has been sent to your email."
+
+msgid "Occasion"
+msgstr "Occasion"
+
+msgid "Office"
+msgstr "Office"
+
+msgid "Online flowers & gifts delivery in Qatar. Same-day delivery available."
+msgstr ""
+"Online flowers & gifts delivery in Qatar. Same-day delivery available."
+
+msgid "Only %(stock)s in stock"
+msgstr "Only %(stock)s in stock"
+
+msgid "Only customers who purchased this product can write a review."
+msgstr "Only customers who purchased this product can write a review."
+
+msgid "Optional"
+msgstr "Optional"
+
+msgid "Optional extras to complete the gift."
+msgstr "Optional extras to complete the gift."
+
+msgid "Order"
+msgstr "Order"
+
+msgid "Order <strong>%(number)s</strong> has been confirmed."
+msgstr "Order <strong>%(number)s</strong> has been confirmed."
+
+msgid "Order Confirmed"
+msgstr "Order Confirmed"
+
+msgid "Order Preview"
+msgstr "Order Preview"
+
+msgid "Order Summary"
+msgstr "Order Summary"
+
+msgid "Order already exists for idempotency key."
+msgstr "Order already exists for idempotency key."
+
+msgid "Order tracking"
+msgstr "Order tracking"
+
+msgid "Our Blog"
+msgstr "Our Blog"
+
+msgid "Out of stock"
+msgstr "Out of stock"
+
+msgid "Page %(page)s of %(total)s"
+msgstr "Page %(page)s of %(total)s"
+
+msgid "Pagination"
+msgstr "Pagination"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Pause"
+msgstr "Pause"
+
+msgid "Payment Method"
+msgstr "Payment Method"
+
+msgid "Ways to pay"
+msgstr "Ways to pay"
+
+msgid "Pending quotes"
+msgstr "Pending quotes"
+
+msgid "Personal Message"
+msgstr "Personal Message"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Photo Upload"
+msgstr "Photo Upload"
+
+msgid "Photo successfully uploaded"
+msgstr "Photo successfully uploaded"
+
+msgid "Photo upload"
+msgstr "Photo upload"
+
+msgid "Pick a card design for your message."
+msgstr "Pick a card design for your message."
+
+msgid "Place Order & Pay"
+msgstr "Place Order & Pay"
+
+msgid "Please enter a valid delivery date."
+msgstr "Please enter a valid delivery date."
+
+msgid "Please enter a valid email address."
+msgstr "Please enter a valid email address."
+
+msgid "Please enter the 6-digit code."
+msgstr "Please enter the 6-digit code."
+
+msgid "Please enter your address line 1."
+msgstr "Please enter your address line 1."
+
+msgid "Please enter your email address."
+msgstr "Please enter your email address."
+
+msgid "Please enter your full name."
+msgstr "Please enter your full name."
+
+msgid "Please enter your phone number."
+msgstr "Please enter your phone number."
+
+msgid "Please fix the following:"
+msgstr "Please fix the following:"
+
+msgid "Please select a city."
+msgstr "Please select a city."
+
+msgid "Please select a delivery address."
+msgstr "Please select a delivery address."
+
+msgid "Please select a delivery date."
+msgstr "Please select a delivery date."
+
+msgid "Please select a delivery time slot."
+msgstr "Please select a delivery time slot."
+
+msgid "Please select a payment method."
+msgstr "Please select a payment method."
+
+msgid "Please select a valid city."
+msgstr "Please select a valid city."
+
+msgid "Please select a valid delivery address."
+msgstr "Please select a valid delivery address."
+
+msgid "Please select a valid delivery time slot."
+msgstr "Please select a valid delivery time slot."
+
+msgid "Premium Flowers & Gifts"
+msgstr "Premium Flowers & Gifts"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Price"
+msgstr "Price"
+
+msgid "Price: High to Low"
+msgstr "Price: High to Low"
+
+msgid "Price: Low to High"
+msgstr "Price: Low to High"
+
+msgid "Prices hidden on packing slip"
+msgstr "Prices hidden on packing slip"
+
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+msgid "Privacy Policy | Story of Flowers"
+msgstr "Privacy Policy | Story of Flowers"
+
+msgid "Proceed to Checkout"
+msgstr "Proceed to Checkout"
+
+msgid "Product"
+msgstr "Product"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Promo code"
+msgstr "Promo code"
+
+msgid "Promotions"
+msgstr "Promotions"
+
+msgid "Qatar"
+msgstr "Qatar"
+
+msgid "Qatar Local Payment"
+msgstr "Qatar Local Payment"
+
+msgid "Qty"
+msgstr "Qty"
+
+msgid "Quantity"
+msgstr "Quantity"
+
+msgid "Rating"
+msgstr "Rating"
+
+msgid "Reach out to our support team, available 24/7."
+msgstr "Reach out to our support team, available 24/7."
+
+msgid ""
+"Read Story of Flower's privacy policy to learn how we collect and use your "
+"data."
+msgstr ""
+"Read Story of Flower's privacy policy to learn how we collect and use your "
+"data."
+
+msgid "Read the latest news, tips, and stories from Story of Flowers."
+msgstr "Read the latest news, tips, and stories from Story of Flowers."
+
+msgid "Recent orders"
+msgstr "Recent orders"
+
+msgid "Recipient"
+msgstr "Recipient"
+
+msgid "Recipient phone"
+msgstr "Recipient phone"
+
+msgid "Refresh now"
+msgstr "Refresh now"
+
+msgid "Register for corporate gifting"
+msgstr "Register for corporate gifting"
+
+msgid "Registration Submitted"
+msgstr "Registration Submitted"
+
+msgid "Related Products"
+msgstr "Related Products"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Remove photo"
+msgstr "Remove photo"
+
+msgid "Request New Quote"
+msgstr "Request New Quote"
+
+msgid "Request a Quote"
+msgstr "Request a Quote"
+
+msgid "Resend OTP"
+msgstr "Resend OTP"
+
+msgid "Resend in"
+msgstr "Resend in"
+
+msgid "Resume"
+msgstr "Resume"
+
+msgid "Reveal sender after delivery"
+msgstr "Reveal sender after delivery"
+
+msgid "Reviews"
+msgstr "Reviews"
+
+msgid "Ribbon"
+msgstr "Ribbon"
+
+msgid "Same Day"
+msgstr "Same Day"
+
+msgid "Save Address"
+msgstr "Save Address"
+
+msgid "Save Changes"
+msgstr "Save Changes"
+
+msgid "Saved Addresses"
+msgstr "Saved Addresses"
+
+msgid "Scroll brands left"
+msgstr "Scroll brands left"
+
+msgid "Scroll brands right"
+msgstr "Scroll brands right"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search flowers, gifts..."
+msgstr "Search flowers, gifts..."
+
+msgid "Search products..."
+msgstr "Search products..."
+
+msgid "Search results"
+msgstr "Search results"
+
+msgid "Searching..."
+msgstr "Searching..."
+
+msgid "Select City"
+msgstr "Select City"
+
+msgid "Select Option"
+msgstr "Select Option"
+
+msgid "Select a city"
+msgstr "Select a city"
+
+msgid "Select a slot"
+msgstr "Select a slot"
+
+msgid "Select slot"
+msgstr "Select slot"
+
+msgid "Send Message"
+msgstr "Send Message"
+
+msgid "Send OTP"
+msgstr "Send OTP"
+
+msgid "Send a message"
+msgstr "Send a message"
+
+msgid "Send anonymously"
+msgstr "Send anonymously"
+
+msgid "Send premium flowers and gifts with same-day delivery across Qatar."
+msgstr "Send premium flowers and gifts with same-day delivery across Qatar."
+
+msgid "Sent anonymously"
+msgstr "Sent anonymously"
+
+msgid "Set Up a Subscription"
+msgstr "Set Up a Subscription"
+
+msgid "Set as default address"
+msgstr "Set as default address"
+
+msgid "Shop"
+msgstr "Shop"
+
+msgid "Shop All"
+msgstr "Shop All"
+
+msgid "Shop All Flowers & Gifts"
+msgstr "Shop All Flowers & Gifts"
+
+msgid "Shop Now"
+msgstr "Shop Now"
+
+msgid "Shop by Recipient"
+msgstr "Shop by Recipient"
+
+msgid "Shop | Story of Flowers"
+msgstr "Shop | Story of Flowers"
+
+msgid "Slide %(number)s"
+msgstr "Slide %(number)s"
+
+msgid "Something went wrong, please try again."
+msgstr "Something went wrong, please try again."
+
+msgid "Something went wrong."
+msgstr "Something went wrong."
+
+msgid "Sort"
+msgstr "Sort"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Start Subscription"
+msgstr "Start Subscription"
+
+msgid "Start a Subscription"
+msgstr "Start a Subscription"
+
+msgid "Start shopping"
+msgstr "Start shopping"
+
+msgid "Still have questions?"
+msgstr "Still have questions?"
+
+msgid "Story of Flowers"
+msgstr "Story of Flowers"
+
+msgid ""
+"Story of Flowers brings premium flowers and gifts to your doorstep with "
+"same-day delivery across Doha and beyond. We partner with the finest local "
+"florists and gift curators to make every occasion memorable."
+msgstr ""
+"Story of Flowers brings premium flowers and gifts to your doorstep with "
+"same-day delivery across Doha and beyond. We partner with the finest local "
+"florists and gift curators to make every occasion memorable."
+
+msgid "Subject"
+msgstr "Subject"
+
+msgid "Submit Quote Request"
+msgstr "Submit Quote Request"
+
+msgid "Submit Review"
+msgstr "Submit Review"
+
+msgid "Submit for Approval"
+msgstr "Submit for Approval"
+
+msgid "Subscribe"
+msgstr "Subscribe"
+
+msgid "Subscription updated."
+msgstr "Subscription updated."
+
+msgid "Subtotal"
+msgstr "Subtotal"
+
+msgid "Support hours"
+msgstr "Support hours"
+
+msgid "Thank you!"
+msgstr "Thank you!"
+
+msgid "Thanks for reaching out! We will respond soon."
+msgstr "Thanks for reaching out! We will respond soon."
+
+msgid ""
+"Thanks — your corporate account for <strong>%(company)s</strong> is now "
+"pending admin approval. We'll notify you at your work email once it's "
+"reviewed."
+msgstr ""
+"Thanks — your corporate account for <strong>%(company)s</strong> is now "
+"pending admin approval. We'll notify you at your work email once it's "
+"reviewed."
+
+msgid "That item is no longer in your cart."
+msgstr "That item is no longer in your cart."
+
+msgid "The selected address is no longer available. Please choose another."
+msgstr "The selected address is no longer available. Please choose another."
+
+msgid "Time slot"
+msgstr "Time slot"
+
+msgid "Top Rated"
+msgstr "Top Rated"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Track"
+msgstr "Track"
+
+msgid "Track Order"
+msgstr "Track Order"
+
+msgid "Trade license number"
+msgstr "Trade license number"
+
+msgid "Try a different keyword or browse our collections."
+msgstr "Try a different keyword or browse our collections."
+
+msgid "Update Preview"
+msgstr "Update Preview"
+
+msgid "Upload your photo"
+msgstr "Upload your photo"
+
+msgid "Uploaded file"
+msgstr "Uploaded file"
+
+msgid "Uploaded photo"
+msgstr "Uploaded photo"
+
+msgid "Uploading photo..."
+msgstr "Uploading photo..."
+
+msgid "Verify & Sign in"
+msgstr "Verify & Sign in"
+
+msgid "View All"
+msgstr "View All"
+
+msgid "View Cart"
+msgstr "View Cart"
+
+msgid "View My Subscriptions"
+msgstr "View My Subscriptions"
+
+msgid "View image"
+msgstr "View image"
+
+msgid "Visit FAQ"
+msgstr "Visit FAQ"
+
+msgid ""
+"We collect the information you provide when placing an order, creating an "
+"account, or contacting support — such as your name, delivery address, phone "
+"number, and payment details."
+msgstr ""
+"We collect the information you provide when placing an order, creating an "
+"account, or contacting support — such as your name, delivery address, phone "
+"number, and payment details."
+
+msgid "We couldn't reach the payment provider. Please try again."
+msgstr "We couldn't reach the payment provider. Please try again."
+
+msgid ""
+"We do not sell your personal data. We only share information with delivery "
+"partners and payment processors as necessary to fulfil your order."
+msgstr ""
+"We do not sell your personal data. We only share information with delivery "
+"partners and payment processors as necessary to fulfil your order."
+
+msgid ""
+"We're waiting to hear back from your payment provider for order "
+"<strong>%(number)s</strong>. This usually only takes a few seconds — no need"
+" to refresh, we'll do it for you."
+msgstr ""
+"We're waiting to hear back from your payment provider for order "
+"<strong>%(number)s</strong>. This usually only takes a few seconds — no need"
+" to refresh, we'll do it for you."
+
+msgid "When and how we deliver."
+msgstr "When and how we deliver."
+
 msgid "Wishlist"
 msgstr "Wishlist"
+
+msgid "Work email"
+msgstr "Work email"
+
+msgid "Write a review"
+msgstr "Write a review"
+
+msgid "Write your message…"
+msgstr "Write your message…"
+
+msgid "Written on your card — keep it short and personal."
+msgstr "Written on your card — keep it short and personal."
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "You have no active subscriptions."
+msgstr "You have no active subscriptions."
+
+msgid ""
+"You may request access to, correction of, or deletion of your personal data "
+"at any time by contacting our support team."
+msgstr ""
+"You may request access to, correction of, or deletion of your personal data "
+"at any time by contacting our support team."
+
+msgid "You need a corporate account to access this portal."
+msgstr "You need a corporate account to access this portal."
+
+msgid "Your Cart"
+msgstr "Your Cart"
+
+msgid "Your Message"
+msgstr "Your Message"
+
+msgid "Your cart is empty."
+msgstr "Your cart is empty."
+
+msgid "Your cart items will appear here."
+msgstr "Your cart items will appear here."
+
+msgid ""
+"Your information is used to process orders, arrange delivery, provide "
+"customer support, and improve our products and services."
+msgstr ""
+"Your information is used to process orders, arrange delivery, provide "
+"customer support, and improve our products and services."
+
+msgid "Your message will appear here..."
+msgstr "Your message will appear here..."
+
+msgid "Your review is pending moderation."
+msgstr "Your review is pending moderation."
+
+msgid "Your review was not approved."
+msgstr "Your review was not approved."
+
+msgid "Your rights"
+msgstr "Your rights"
+
+msgid "Your wishlist is empty."
+msgstr "Your wishlist is empty."
+
+msgid "products"
+msgstr "products"
+
+msgid "to"
+msgstr "to"
+
+msgid "to write a review after purchasing this product."
+msgstr "to write a review after purchasing this product."
+
+msgid "— order now"
+msgstr "— order now"
+
+msgid "View all"
+msgstr "View all"
+
+msgid "Scroll left"
+msgstr "Scroll left"
+
+msgid "Scroll right"
+msgstr "Scroll right"

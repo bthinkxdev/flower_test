@@ -37,6 +37,11 @@
     progressEl.setAttribute('aria-hidden', 'true');
   }
 
+  function uiText(key, fallback) {
+    var value = document.body && document.body.getAttribute(key);
+    return value || fallback;
+  }
+
   function showToast(message, kind) {
     var root = document.getElementById('htmx-toast-root');
     if (!root) {
@@ -47,7 +52,7 @@
     root.innerHTML =
       '<div class="' + toastClass + '" role="alert">' +
       '<span class="htmx-toast__message"></span>' +
-      '<button type="button" class="htmx-toast__close btn-ghost" aria-label="Dismiss">&times;</button>' +
+      '<button type="button" class="htmx-toast__close btn-ghost" aria-label="' + uiText('data-i18n-dismiss', 'Dismiss') + '">&times;</button>' +
       '</div>';
     root.querySelector('.htmx-toast__message').textContent = message;
     var closeBtn = root.querySelector('.htmx-toast__close');
@@ -73,8 +78,8 @@
     root.hidden = false;
     root.innerHTML =
       '<div class="htmx-toast" role="alert">' +
-      '<span class="htmx-toast__message">' + (message || 'Something went wrong, please try again.') + '</span>' +
-      '<button type="button" class="htmx-toast__close btn-ghost" aria-label="Dismiss">&times;</button>' +
+      '<span class="htmx-toast__message">' + (message || uiText('data-i18n-generic-error', 'Something went wrong, please try again.')) + '</span>' +
+      '<button type="button" class="htmx-toast__close btn-ghost" aria-label="' + uiText('data-i18n-dismiss', 'Dismiss') + '">&times;</button>' +
       '</div>';
     var closeBtn = root.querySelector('.htmx-toast__close');
     if (closeBtn) {
@@ -126,7 +131,7 @@
   window.showToast = showHtmxToast;
 
   document.body.addEventListener('addressSaved', function (event) {
-    var message = (event.detail && event.detail.message) || 'Address saved';
+    var message = (event.detail && event.detail.message) || uiText('data-i18n-address-saved', 'Address saved');
     showToast(message, 'success');
 
     var collapseEl = document.getElementById('addAddressCollapse');
@@ -136,7 +141,7 @@
   });
 
   document.body.addEventListener('stockLimitReached', function (event) {
-    var message = (event.detail && event.detail.message) || 'No more stock available.';
+    var message = (event.detail && event.detail.message) || uiText('data-i18n-stock-limit', 'No more stock available.');
     showToast(message);
   });
 
@@ -380,6 +385,16 @@
     } else if (rtlLink) {
       rtlLink.remove();
     }
+
+    var bootstrapLink = document.getElementById('bootstrap-stylesheet');
+    if (bootstrapLink) {
+      var nextHref = detail.dir === 'rtl'
+        ? document.body.getAttribute('data-bootstrap-rtl')
+        : document.body.getAttribute('data-bootstrap-ltr');
+      if (nextHref && bootstrapLink.getAttribute('href') !== nextHref) {
+        bootstrapLink.setAttribute('href', nextHref);
+      }
+    }
   }
 
   document.body.addEventListener('preferencesUpdated', function (event) {
@@ -411,127 +426,170 @@
 
 
   (function initMobileSearch() {
-    var overlay = document.getElementById('mobile-search-overlay');
-    var openBtn = document.getElementById('mobile-search-open');
-    var input = document.getElementById('mobile-search-input');
-    var clearBtn = document.getElementById('mobile-search-clear');
-    var results = document.getElementById('mobile-search-results');
-    if (!overlay || !openBtn || !input) {
-      return;
+    function getElements() {
+      return {
+        overlay: document.getElementById('mobile-search-overlay'),
+        openBtn: document.getElementById('mobile-search-open'),
+        input: document.getElementById('mobile-search-input'),
+        clearBtn: document.getElementById('mobile-search-clear'),
+        results: document.getElementById('mobile-search-results')
+      };
+    }
+
+    function syncClearButton(elements) {
+      if (elements.clearBtn && elements.input) {
+        elements.clearBtn.hidden = !elements.input.value.trim();
+      }
     }
 
     function openSearch() {
-      overlay.classList.add('is-open');
-      overlay.setAttribute('aria-hidden', 'false');
+      var elements = getElements();
+      if (!elements.overlay || !elements.openBtn || !elements.input) return;
+      elements.overlay.classList.add('is-open');
+      elements.overlay.setAttribute('aria-hidden', 'false');
       document.body.classList.add('mobile-search-open');
-      openBtn.setAttribute('aria-expanded', 'true');
+      elements.openBtn.setAttribute('aria-expanded', 'true');
+      document.dispatchEvent(new CustomEvent('floward:mobile-search-open'));
       window.setTimeout(function () {
-        input.focus({ preventScroll: true });
+        var currentInput = document.getElementById('mobile-search-input');
+        if (currentInput) currentInput.focus({ preventScroll: true });
       }, 120);
     }
 
     function closeSearch() {
-      overlay.classList.remove('is-open');
-      overlay.setAttribute('aria-hidden', 'true');
+      var elements = getElements();
+      if (!elements.overlay) return;
+      elements.overlay.classList.remove('is-open');
+      elements.overlay.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('mobile-search-open');
-      openBtn.setAttribute('aria-expanded', 'false');
-      input.blur();
+      if (elements.openBtn) elements.openBtn.setAttribute('aria-expanded', 'false');
+      if (elements.input) elements.input.blur();
+      document.dispatchEvent(new CustomEvent('floward:mobile-search-close'));
     }
 
-    function syncClearButton() {
-      if (!clearBtn) {
+    document.addEventListener('click', function (event) {
+      var openTrigger = event.target.closest('#mobile-search-open');
+      if (openTrigger) {
+        openSearch();
         return;
       }
-      clearBtn.hidden = !input.value.trim();
-    }
 
-    openBtn.addEventListener('click', openSearch);
+      var dismissTrigger = event.target.closest('[data-search-dismiss]');
+      if (dismissTrigger && dismissTrigger.closest('#mobile-search-overlay')) {
+        closeSearch();
+        return;
+      }
 
-    overlay.querySelectorAll('[data-search-dismiss]').forEach(function (el) {
-      el.addEventListener('click', closeSearch);
+      var clearTrigger = event.target.closest('#mobile-search-clear');
+      if (!clearTrigger) return;
+      var elements = getElements();
+      if (!elements.input) return;
+      elements.input.value = '';
+      if (elements.results) elements.results.innerHTML = '';
+      syncClearButton(elements);
+      elements.input.focus({ preventScroll: true });
+    });
+
+    document.addEventListener('input', function (event) {
+      if (!event.target.matches('#mobile-search-input')) return;
+      var elements = getElements();
+      syncClearButton(elements);
+      if (!elements.input.value.trim() && elements.results) {
+        elements.results.innerHTML = '';
+      }
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && overlay.classList.contains('is-open')) {
+      var overlay = document.getElementById('mobile-search-overlay');
+      if (event.key === 'Escape' && overlay && overlay.classList.contains('is-open')) {
         closeSearch();
       }
     });
 
-    input.addEventListener('input', function () {
-      syncClearButton();
-      if (!input.value.trim() && results) {
-        results.innerHTML = '';
-      }
-    });
-
-    if (clearBtn) {
-      clearBtn.addEventListener('click', function () {
-        input.value = '';
-        if (results) {
-          results.innerHTML = '';
-        }
-        syncClearButton();
-        input.focus({ preventScroll: true });
-      });
-    }
-
     document.body.addEventListener('htmx:afterSwap', function (event) {
       if (event.detail.target && event.detail.target.id === 'mobile-search-results') {
-        syncClearButton();
+        syncClearButton(getElements());
       }
     });
   })();
 
-  document.querySelectorAll('.product-rail-scroll, .chip-scroll').forEach(function (rail) {
-    var isDown = false;
-    var startX;
-    var scrollLeft;
-    rail.addEventListener('mousedown', function (e) {
-      isDown = true;
-      startX = e.pageX - rail.offsetLeft;
-      scrollLeft = rail.scrollLeft;
-      rail.style.cursor = 'grabbing';
+  function initHorizontalRails(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll('[data-horizontal-rail]').forEach(function (rail) {
+      if (rail.dataset.horizontalRailBound === 'true') return;
+
+      var track = rail.querySelector('[data-horizontal-rail-track]');
+      var leftButton = rail.querySelector('[data-horizontal-rail-scroll="-1"]');
+      var rightButton = rail.querySelector('[data-horizontal-rail-scroll="1"]');
+      if (!track || !leftButton || !rightButton) return;
+
+      rail.dataset.horizontalRailBound = 'true';
+
+      function updateButtons() {
+        var trackRect = track.getBoundingClientRect();
+        var hasContentToLeft = false;
+        var hasContentToRight = false;
+
+        Array.prototype.some.call(track.children, function (item) {
+          var itemRect = item.getBoundingClientRect();
+          hasContentToLeft = hasContentToLeft || itemRect.left < trackRect.left - 2;
+          hasContentToRight = hasContentToRight || itemRect.right > trackRect.right + 2;
+          return hasContentToLeft && hasContentToRight;
+        });
+
+        leftButton.disabled = !hasContentToLeft;
+        rightButton.disabled = !hasContentToRight;
+      }
+
+      function scrollRail(direction) {
+        var firstItem = track.firstElementChild;
+        var gap = parseFloat(window.getComputedStyle(track).columnGap) || 0;
+        var itemStep = firstItem ? firstItem.getBoundingClientRect().width + gap : 0;
+        var distance = Math.max(itemStep * 2, track.clientWidth * 0.72);
+        track.scrollBy({ left: direction * distance, behavior: 'smooth' });
+      }
+
+      leftButton.addEventListener('click', function () { scrollRail(-1); });
+      rightButton.addEventListener('click', function () { scrollRail(1); });
+      track.addEventListener('scroll', updateButtons, { passive: true });
+
+      var isDown = false;
+      var startX = 0;
+      var startScrollLeft = 0;
+      track.addEventListener('mousedown', function (event) {
+        isDown = true;
+        startX = event.pageX;
+        startScrollLeft = track.scrollLeft;
+        track.style.cursor = 'grabbing';
+      });
+      track.addEventListener('mouseleave', function () {
+        isDown = false;
+        track.style.cursor = '';
+      });
+      track.addEventListener('mouseup', function () {
+        isDown = false;
+        track.style.cursor = '';
+      });
+      track.addEventListener('mousemove', function (event) {
+        if (!isDown) return;
+        event.preventDefault();
+        track.scrollLeft = startScrollLeft - (event.pageX - startX) * 1.5;
+      });
+
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(updateButtons).observe(track);
+      } else {
+        window.addEventListener('resize', updateButtons);
+      }
+      updateButtons();
     });
-    rail.addEventListener('mouseleave', function () { isDown = false; rail.style.cursor = ''; });
-    rail.addEventListener('mouseup', function () { isDown = false; rail.style.cursor = ''; });
-    rail.addEventListener('mousemove', function (e) {
-      if (!isDown) return;
-      e.preventDefault();
-      var x = e.pageX - rail.offsetLeft;
-      rail.scrollLeft = scrollLeft - (x - startX) * 1.5;
-    });
+  }
+
+  initHorizontalRails(document);
+  document.body.addEventListener('htmx:afterSwap', function (event) {
+    initHorizontalRails(event.detail.target);
   });
 })();
-
-// Featured brands rail: arrow scrolling + auto-hide disabled state
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.brand-rail').forEach((rail) => {
-    const track = rail.querySelector('[data-brand-track]');
-    const prevBtn = rail.querySelector('[data-brand-scroll="prev"]');
-    const nextBtn = rail.querySelector('[data-brand-scroll="next"]');
-    if (!track || !prevBtn || !nextBtn) return;
-
-    const scrollByCard = (dir) => {
-      const card = track.querySelector('.brand-card');
-      const gap = 20;
-      const distance = card ? card.offsetWidth + gap : 220;
-      track.scrollBy({ left: dir * distance * 2, behavior: 'smooth' });
-    };
-
-    prevBtn.addEventListener('click', () => scrollByCard(-1));
-    nextBtn.addEventListener('click', () => scrollByCard(1));
-
-    const updateArrowState = () => {
-      const maxScroll = track.scrollWidth - track.clientWidth - 1;
-      prevBtn.disabled = track.scrollLeft <= 0;
-      nextBtn.disabled = track.scrollLeft >= maxScroll || maxScroll <= 0;
-    };
-
-    track.addEventListener('scroll', updateArrowState, { passive: true });
-    window.addEventListener('resize', updateArrowState);
-    updateArrowState();
-  });
-});
 
 // subscription
 
@@ -581,26 +639,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 })();
-
-// Reset filter selects/inputs visually when "Clear Filters" is clicked
-document.body.addEventListener('click', function (evt) {
-  var btn = evt.target.closest('.plp-clear-filters');
-  if (!btn) return;
-  var form = btn.closest('form');
-  if (!form) return;
-
-  form.querySelectorAll('select').forEach(function (sel) {
-    sel.selectedIndex = 0;
-    var wrapper = sel.closest('.floward-select');
-    if (wrapper) {
-      var label = wrapper.querySelector('.floward-select__label');
-      var opt = sel.options[0];
-      if (label) label.textContent = opt ? opt.textContent : '';
-      wrapper.querySelectorAll('.floward-select__option').forEach(function (o, i) {
-        o.classList.toggle('is-selected', i === 0);
-      });
-    }
-  });
-  form.querySelectorAll('input[type="text"], input[type="number"]').forEach(function (inp) { inp.value = ''; });
-  form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
-});

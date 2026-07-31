@@ -1,13 +1,33 @@
-{% load i18n %}
+{% load i18n static %}
 {% if products %}
 <ul class="list-unstyled search-suggestions-list mb-0" role="presentation">
   {% for product in products %}
   <li role="presentation">
     <a href="{% url 'catalog:pdp' slug=product.slug %}"
-       class="search-suggestion-link d-block px-3 py-2 rounded text-dark small text-decoration-none"
+       class="search-suggestion-link"
        role="option"
        id="search-suggestion-{{ forloop.counter }}">
-      {{ product.name }}
+      <span class="search-suggestion-link__image">
+        {% with image=product.primary_images.0 %}
+          {% if image and image.image %}
+          <img src="{{ image.image.url }}"
+               alt=""
+               width="48"
+               height="48"
+               loading="lazy"
+               decoding="async"
+               onerror="this.onerror=null;this.src='{% static 'img/product-placeholder.svg' %}';">
+          {% else %}
+          <img src="{% static 'img/product-placeholder.svg' %}"
+               alt=""
+               width="48"
+               height="48"
+               loading="lazy"
+               decoding="async">
+          {% endif %}
+        {% endwith %}
+      </span>
+      <span class="search-suggestion-link__name">{{ product.name }}</span>
     </a>
   </li>
   {% endfor %}

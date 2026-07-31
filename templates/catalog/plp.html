@@ -22,7 +22,7 @@
   </div>
   <div class="row">
     <aside class="col-lg-3 mb-4 plp-filters-desktop">
-      {% include "catalog/partials/plp_filters.html" %}
+      {% include "catalog/partials/plp_filters.html" with form_id_prefix="plp-desktop" %}
     </aside>
     <div class="col-lg-9">
       <div id="product-grid" class="view-{{ view_mode }} product-grid-shell">
@@ -38,7 +38,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
   </div>
   <div class="offcanvas-body">
-    {% include "catalog/partials/plp_filters.html" %}
+    {% include "catalog/partials/plp_filters.html" with form_id_prefix="plp-mobile" %}
   </div>
 </div>
 {% endblock %}

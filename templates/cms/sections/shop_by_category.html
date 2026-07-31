@@ -1,22 +1,25 @@
 {% load i18n %}
 <section class="container mb-4">
   {% include "cms/sections/_section_title.html" with section_context=section_context fallback_key="Explore Unique Gift Ideas" show_cta=False %}
-  <div class="chip-scroll" role="list">
-    {% for category in section_context.categories %}
-    <a href="{% url 'catalog:plp-category' category_slug=category.slug %}" class="category-chip text-decoration-none" role="listitem">
-      <span class="category-chip__icon">
-        {% if category.og_image %}
-        <img src="{{ category.og_image.url }}" alt="{{ category.name }}" class="category-chip__img" width="72" height="72" loading="lazy">
-        {% else %}
-        <span class="category-chip__initial">{{ category.name|slice:":1" }}</span>
-        {% endif %}
-      </span>
-      <span class="category-chip__label">{{ category.name }}</span>
-    </a>
-    {% endfor %}
-    <a href="{% url 'catalog:plp' %}" class="category-chip text-decoration-none" role="listitem">
-      <span class="category-chip__icon">🎁</span>
-      <span class="category-chip__label">{% trans "View All" %}</span>
-    </a>
+  <div class="horizontal-rail" data-horizontal-rail>
+    {% include "includes/horizontal_rail_controls.html" %}
+    <div class="chip-scroll" role="list" data-horizontal-rail-track>
+      {% for category in section_context.categories %}
+      <a href="{% url 'catalog:plp-category' category_slug=category.slug %}" class="category-chip text-decoration-none" role="listitem">
+        <span class="category-chip__icon">
+          {% if category.og_image %}
+          <img src="{{ category.og_image.url }}" alt="{{ category.name }}" class="category-chip__img" width="72" height="72" loading="lazy">
+          {% else %}
+          <span class="category-chip__initial">{{ category.name|slice:":1" }}</span>
+          {% endif %}
+        </span>
+        <span class="category-chip__label">{{ category.name }}</span>
+      </a>
+      {% endfor %}
+      <a href="{% url 'catalog:plp' %}" class="category-chip text-decoration-none" role="listitem">
+        <span class="category-chip__icon">🎁</span>
+        <span class="category-chip__label">{% trans "View All" %}</span>
+      </a>
+    </div>
   </div>
 </section>

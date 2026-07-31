@@ -8,22 +8,23 @@
 
 {% block content %}
 <div class="container page-container product-detail" data-product-id="{{ product.pk }}">
-  <nav aria-label="breadcrumb" class="mb-3">
-    <ol class="breadcrumb small mb-0">
+  <nav aria-label="{% trans 'Breadcrumb' %}" class="pdp-breadcrumb">
+    <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item"><a href="{% url 'catalog:plp' %}">{% trans "Shop" %}</a></li>
       <li class="breadcrumb-item"><a href="{% url 'catalog:plp-category' category_slug=product.category.slug %}">{{ product.category.name }}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ product.name|truncatechars:40 }}</li>
     </ol>
   </nav>
-  <div class="row g-4">
+  <div class="row pdp-layout">
     <div class="col-lg-6">
-      <div class="pdp-gallery">
-        {% include "catalog/partials/pdp_gallery.html" %}
-      </div>
+      {% include "catalog/partials/pdp_gallery.html" %}
     </div>
-    <div class="col-lg-6 pdp-info">
-      <h1>{{ product.name }}</h1>
+    <div class="col-lg-6 pdp-info pdp-summary">
+      <h1 class="pdp-summary__title">{{ product.name }}</h1>
       <p class="pdp-meta">{{ product.category.name }}{% if product.brand %} · {{ product.brand.name }}{% endif %}</p>
+      {% if product.description %}
+      <p class="pdp-description">{{ product.description }}</p>
+      {% endif %}
       <p class="pdp-price" id="pdp-price">
         {% if price_data.is_flash_sale == "true" %}
         <span class="was">{% money_label price_data.original_price display_currency %}</span>
@@ -31,8 +32,8 @@
         {% money_label price_data.price display_currency %}
       </p>
       {% if product.variant_list %}
-      <div class="mb-3">
-        <label class="form-label small fw-medium">{% trans "Select Option" %}</label>
+      <div class="pdp-option">
+        <label class="form-label">{% trans "Select Option" %}</label>
         <select id="variant-select" class="form-select" data-price-url="{% url 'catalog:variant-price' product_id=product.pk %}">
           <option value="">{% trans "Standard" %}</option>
           {% for v in product.variant_list %}
@@ -42,12 +43,12 @@
       </div>
       {% endif %}
       {% include "catalog/partials/pdp_delivery.html" %}
-      <div class="d-flex gap-2 mb-3 d-none d-lg-flex">
+      <div class="pdp-cta-row d-none d-lg-flex">
         <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1 pdp-add-to-cart-form" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
           {% csrf_token %}
           <input type="hidden" name="product_id" value="{{ product.pk }}">
           <input type="hidden" name="variant_id" class="pdp-variant-id-field" value="">
-          <button type="submit" class="btn btn-floward w-100 py-2 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" data-cart-url="{% url 'cart:page' %}" {% if not product.is_in_stock %}disabled{% endif %}>
+          <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" data-cart-url="{% url 'cart:page' %}" {% if not product.is_in_stock %}disabled{% endif %}>
             <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
             <span class="btn-check-icon" aria-hidden="true">✔</span>
           </button>
@@ -55,17 +56,18 @@
         <form method="post" action="{% url 'cart:wishlist-toggle' %}">
           {% csrf_token %}
           <input type="hidden" name="product_id" value="{{ product.pk }}">
-          <button type="submit" class="btn btn-outline-floward px-3 pdp-wishlist-btn{% if in_wishlist %} is-wishlisted{% endif %}" aria-label="{% trans 'Wishlist' %}" aria-pressed="{% if in_wishlist %}true{% else %}false{% endif %}">
+          <button type="submit" class="btn btn-outline-floward pdp-wishlist-btn{% if in_wishlist %} is-wishlisted{% endif %}" aria-label="{% trans 'Wishlist' %}" aria-pressed="{% if in_wishlist %}true{% else %}false{% endif %}">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if in_wishlist %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </button>
         </form>
       </div>
-      {% if product.supports_gift_customization %}
-      <a href="{% url 'gifting:builder' slug=product.slug %}" class="btn btn-outline-floward w-100 mb-3 py-2">
+      {% if gift_customization_available %}
+      <a href="{% url 'gifting:builder' slug=product.slug %}" class="btn btn-outline-floward w-100 pdp-gift-btn">
         {% trans "Customize as Gift" %}
       </a>
       {% endif %}
-      <p class="small {% if not product.is_in_stock %}text-danger{% elif product.stock_quantity <= product.low_stock_threshold %}pdp-low-stock-text{% else %}text-success{% endif %} mb-0"
+      {% include "includes/payment_methods.html" with mode="display" %}
+      <p class="pdp-stock-status {% if not product.is_in_stock %}text-danger{% elif product.stock_quantity <= product.low_stock_threshold %}pdp-low-stock-text{% else %}text-success{% endif %}"
          id="pdp-stock-text"
          data-label-in-stock="{% trans 'In stock' %}"
          data-label-order-now="{% trans '— order now' %}"
@@ -83,31 +85,30 @@
   </div>
 
   <div class="pdp-sticky-bar">
-  <div class="pdp-sticky-price" id="pdp-sticky-price">{% money_label price_data.price display_currency %}</div>
-  <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1 pdp-add-to-cart-form" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
-    {% csrf_token %}
-    <input type="hidden" name="product_id" value="{{ product.pk }}">
-    <input type="hidden" name="variant_id" class="pdp-variant-id-field" value="">
-    {% comment %} <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" {% if not product.is_in_stock %}disabled{% endif %}> {% endcomment %}
-    <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" data-cart-url="{% url 'cart:page' %}" {% if not product.is_in_stock %}disabled{% endif %}>
-      <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
-      <span class="btn-check-icon" aria-hidden="true">✔</span>
-    </button>
-  </form>
-  <form method="post" action="{% url 'cart:wishlist-toggle' %}">
-    {% csrf_token %}
-    <input type="hidden" name="product_id" value="{{ product.pk }}">
-    <button type="submit" class="btn btn-outline-floward px-3 pdp-wishlist-btn{% if in_wishlist %} is-wishlisted{% endif %}" aria-label="{% trans 'Wishlist' %}" aria-pressed="{% if in_wishlist %}true{% else %}false{% endif %}">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if in_wishlist %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-    </button>
-  </form>
-</div>
+    <div class="pdp-sticky-price" id="pdp-sticky-price">{% money_label price_data.price display_currency %}</div>
+    <form method="post" action="{% url 'cart:add' %}" class="flex-grow-1 pdp-add-to-cart-form" hx-post="{% url 'cart:add' %}" hx-target="#cart-drawer-body" hx-swap="innerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ product.pk }}">
+      <input type="hidden" name="variant_id" class="pdp-variant-id-field" value="">
+      <button type="submit" class="btn btn-floward w-100 pdp-add-to-cart-btn{% if in_cart %} is-in-cart{% endif %}" data-added-label="{% trans 'View Cart' %}" data-cart-url="{% url 'cart:page' %}" {% if not product.is_in_stock %}disabled{% endif %}>
+        <span class="btn-label">{% if in_cart %}{% trans "View Cart" %}{% else %}{% trans "Add to Cart" %}{% endif %}</span>
+        <span class="btn-check-icon" aria-hidden="true">✔</span>
+      </button>
+    </form>
+    <form method="post" action="{% url 'cart:wishlist-toggle' %}">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" value="{{ product.pk }}">
+      <button type="submit" class="btn btn-outline-floward pdp-wishlist-btn{% if in_wishlist %} is-wishlisted{% endif %}" aria-label="{% trans 'Wishlist' %}" aria-pressed="{% if in_wishlist %}true{% else %}false{% endif %}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if in_wishlist %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </form>
+  </div>
 
-  <section class="mt-5 pt-4 border-top" id="reviews">
-    <h2 class="section-title h5 mb-3">{% trans "Reviews" %}</h2>
+  <section class="pdp-section pdp-reviews" id="reviews">
+    <h2 class="pdp-section-title">{% trans "Reviews" %}</h2>
 
     {% if can_review %}
-    <form method="post" action="{% url 'catalog:review-create' slug=product.slug %}" class="review-form mb-4 p-3 border rounded">
+    <form method="post" action="{% url 'catalog:review-create' slug=product.slug %}" class="review-form pdp-review-form">
       {% csrf_token %}
       <h3 class="h6 mb-2">{% trans "Write a review" %}</h3>
       <div class="star-rating mb-2">
@@ -134,7 +135,7 @@
     {% endif %}
 
     {% for review in product.approved_reviews %}
-    <div class="py-3 border-bottom">
+    <div class="pdp-review">
       <div class="d-flex justify-content-between align-items-start">
         <strong class="small">{{ review.title }}</strong>
         <span class="text-floward small">★ {{ review.rating }}</span>
@@ -147,9 +148,9 @@
   </section>
 
   {% if product.related_relations %}
-  <section class="mt-4">
+  <section class="pdp-section pdp-related">
     <div class="section-header">
-      <h2 class="section-title">{% trans "Related Products" %}</h2>
+      <h2 class="pdp-section-title">{% trans "Related Products" %}</h2>
     </div>
     <div class="product-rail-scroll">
       {% for rel in product.related_relations %}

@@ -12,6 +12,7 @@ from typing import Any
 from marketing.exceptions import InvalidGiftVoucherError
 from marketing.services import redeem_gift_voucher
 from payments.adapters.base import PaymentCaptureResult, PaymentGatewayAdapter, PaymentIntentResult
+from django.utils.translation import gettext_lazy as _
 
 
 class CardGatewayAdapter(PaymentGatewayAdapter):
@@ -23,8 +24,10 @@ class CardGatewayAdapter(PaymentGatewayAdapter):
     """
 
     key = "card"
-    display_name = "Credit / Debit Card"
+    display_name = _("Credit / Debit Card")
     is_async = False
+    show_on_storefront = True
+    badge_keys = ("visa", "mastercard", "amex")
 
     def create_payment_intent(
         self,
@@ -63,8 +66,10 @@ class QatarLocalGatewayAdapter(PaymentGatewayAdapter):
     """Qatar local payment rails sandbox adapter (e.g. NAPS-style deferred confirm)."""
 
     key = "qatar_local"
-    display_name = "Qatar Local Payment"
+    display_name = _("Qatar Local Payment")
     is_async = True
+    show_on_storefront = True
+    badge_keys = ("qatar_local",)
 
     def create_payment_intent(
         self,
@@ -99,6 +104,8 @@ class ApplePayAdapter(PaymentGatewayAdapter):
     key = "apple_pay"
     display_name = "Apple Pay"
     is_async = True
+    show_on_storefront = True
+    badge_keys = ("apple_pay",)
 
     def create_payment_intent(
         self,
@@ -129,6 +136,8 @@ class GooglePayAdapter(PaymentGatewayAdapter):
     key = "google_pay"
     display_name = "Google Pay"
     is_async = True
+    show_on_storefront = True
+    badge_keys = ("google_pay",)
 
     def create_payment_intent(
         self,
@@ -157,7 +166,7 @@ class GiftVoucherAdapter(PaymentGatewayAdapter):
     """Internal gift voucher adapter — no external HTTP calls."""
 
     key = "gift_voucher"
-    display_name = "Gift Voucher"
+    display_name = _("Gift Voucher")
     is_async = False
 
     def create_payment_intent(
@@ -210,7 +219,7 @@ class CashOnDeliveryAdapter(PaymentGatewayAdapter):
     """
 
     key = "cod"
-    display_name = "Cash on Delivery"
+    display_name = _("Cash on Delivery")
     is_async = True  # tells process_payment() to skip inline capture
 
     def create_payment_intent(

@@ -44,6 +44,9 @@ def get_gift_customization_config(
     """
     from gifting.request_cache import get_request_cache
 
+    if getattr(product_instance, "supports_gift_customization", True) is False:
+        return None
+
     cache_key = _config_cache_key(instance=product_instance)
     if request is not None:
         cache = get_request_cache(request)

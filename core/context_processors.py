@@ -10,6 +10,7 @@ from cart.selectors import get_cart_count, get_wishlist_count
 from catalog.selectors import get_category_tree
 from core.selectors import get_currency_by_code, get_default_currency
 from delivery.selectors import get_active_countries
+from payments.registry import STOREFRONT_BADGE_LABELS, get_storefront_payment_badges
 
 
 def storefront(request: HttpRequest) -> dict[str, Any]:
@@ -37,4 +38,6 @@ def storefront(request: HttpRequest) -> dict[str, Any]:
         "session_country": session_country,
         "active_country": active_country,
         "shell_only": request.META.get("HTTP_X_SHELL_RERENDER") == "true",
+        "storefront_payment_badges": get_storefront_payment_badges(),
+        "payment_badge_labels": STOREFRONT_BADGE_LABELS,
     }

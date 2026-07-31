@@ -47,21 +47,21 @@
       {% if snapshot.gift_wrap %}
       <div class="order-preview-row">
         <dt>{% trans "Gift wrap" %}</dt>
-        <dd>{{ snapshot.gift_wrap.name|display_label }} <span class="order-preview-delta">(+{{ snapshot.gift_wrap.price_delta }} QAR)</span></dd>
+        <dd>{{ snapshot.gift_wrap.name|display_label }} <span class="order-preview-delta">(+{% money_label snapshot.gift_wrap.price_delta display_currency %})</span></dd>
       </div>
       {% endif %}
 
       {% if snapshot.ribbon %}
       <div class="order-preview-row">
         <dt>{% trans "Ribbon" %}</dt>
-        <dd>{{ snapshot.ribbon.name|display_label }} <span class="order-preview-delta">(+{{ snapshot.ribbon.price_delta }} QAR)</span></dd>
+        <dd>{{ snapshot.ribbon.name|display_label }} <span class="order-preview-delta">(+{% money_label snapshot.ribbon.price_delta display_currency %})</span></dd>
       </div>
       {% endif %}
 
       {% if snapshot.photo_upload %}
       <div class="order-preview-row">
         <dt>{% trans "Photo upload" %}</dt>
-        <dd>{{ snapshot.photo_upload.name|display_label }} <span class="order-preview-delta">(+{{ snapshot.photo_upload.price_delta }} QAR)</span></dd>
+        <dd>{{ snapshot.photo_upload.name|display_label }} <span class="order-preview-delta">(+{% money_label snapshot.photo_upload.price_delta display_currency %})</span></dd>
       </div>
       {% endif %}
 
@@ -77,7 +77,7 @@
       {% for addon_row in snapshot.snapshot_addons.all %}
       <div class="order-preview-row">
         <dt>{% trans "Add-on" %}</dt>
-        <dd>{{ addon_row.addon_product.name|display_label }} <span class="order-preview-delta">(+{{ addon_row.price_at_time_of_purchase }} QAR)</span></dd>
+        <dd>{{ addon_row.addon_product.name|display_label }} <span class="order-preview-delta">(+{% money_label addon_row.price_at_time_of_purchase display_currency %})</span></dd>
       </div>
       {% endfor %}
 
@@ -120,7 +120,7 @@
     {% if snapshot.snapshot_json.pricing %}
     <div class="order-preview__total">
       <span>{% trans "Customization total" %}</span>
-      <span class="text-floward">+{{ snapshot.snapshot_json.pricing.total_delta }} QAR</span>
+      <span class="text-floward">+{% money_label snapshot.snapshot_json.pricing.total_delta display_currency %}</span>
     </div>
     {% endif %}
     {% else %}

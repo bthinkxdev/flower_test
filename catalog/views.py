@@ -31,20 +31,47 @@ from delivery.selectors import (
     get_city_by_slug,
     get_earliest_delivery_estimate,
 )
+from gifting.selectors import get_gift_customization_config
+
+
+def _parse_positive_int(value: str | None) -> int | None:
+    """Return a positive int from a query value, or None when missing/invalid."""
+    if value is None or value == "":
+        return None
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return None
+    return parsed if parsed > 0 else None
+
+
+def _parse_price(value: str | None):
+    """Return a non-negative Decimal price, or None when missing/invalid."""
+    from decimal import Decimal, InvalidOperation
+
+    if value is None or str(value).strip() == "":
+        return None
+    try:
+        amount = Decimal(str(value).strip())
+    except (InvalidOperation, ValueError):
+        return None
+    if amount < 0:
+        return None
+    return amount
 
 
 def _parse_plp_filters(request: HttpRequest) -> dict:
     """Parse shareable PLP filter query params into a selector filter dict."""
     filters: dict = {}
-    if category_id := request.GET.get("category"):
-        filters["category_id"] = int(category_id)
-    if occasion_id := request.GET.get("occasion"):
-        filters["occasion_id"] = int(occasion_id)
-    if brand_id := request.GET.get("brand"):
-        filters["brand_id"] = int(brand_id)
-    if recipient_id := request.GET.get("recipient"):
-        filters["recipient_id"] = int(recipient_id)
-    if color := request.GET.get("color"):
+    if category_id := _parse_positive_int(request.GET.get("category")):
+        filters["category_id"] = category_id
+    if occasion_id := _parse_positive_int(request.GET.get("occasion")):
+        filters["occasion_id"] = occasion_id
+    if brand_id := _parse_positive_int(request.GET.get("brand")):
+        filters["brand_id"] = brand_id
+    if recipient_id := _parse_positive_int(request.GET.get("recipient")):
+        filters["recipient_id"] = recipient_id
+    if color := (request.GET.get("color") or "").strip():
         filters["color"] = color
     if request.GET.get("same_day") == "1":
         filters["same_day"] = True
@@ -54,10 +81,18 @@ def _parse_plp_filters(request: HttpRequest) -> dict:
         filters["new_arrival"] = True
     if request.GET.get("in_stock") == "1":
         filters["in_stock"] = True
-    if min_price := request.GET.get("min_price"):
+    if min_price := _parse_price(request.GET.get("min_price")):
         filters["min_price"] = min_price
-    if max_price := request.GET.get("max_price"):
+    if max_price := _parse_price(request.GET.get("max_price")):
         filters["max_price"] = max_price
+    # Ignore inverted ranges rather than returning an empty accidental result set.
+    if (
+        filters.get("min_price") is not None
+        and filters.get("max_price") is not None
+        and filters["min_price"] > filters["max_price"]
+    ):
+        filters.pop("min_price", None)
+        filters.pop("max_price", None)
     return filters
 
 
@@ -73,8 +108,10 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
         if "category_id" not in filters and "category" not in request.GET:
             filters["category_id"] = category.pk
 
-    sort = request.GET.get("sort", "newest")
-    page = int(request.GET.get("page", 1))
+    sort = request.GET.get("sort") or "newest"
+    if sort not in {"newest", "price_asc", "price_desc", "rating", "name"}:
+        sort = "newest"
+    page = _parse_positive_int(request.GET.get("page")) or 1
     plp_data = get_plp_products(filters=filters, sort=sort, page=page)
     filter_options = get_plp_filter_options()
 
@@ -83,8 +120,14 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
     if selected_category_id and (category is None or selected_category_id != category.pk):
         active_category = next(
             (c for c in filter_options["categories"] if c.pk == selected_category_id),
-            category,
+            None,
         )
+        if active_category is None:
+            from catalog.models import Category
+
+            active_category = Category.objects.filter(
+                pk=selected_category_id, is_active=True
+            ).first()
     elif not selected_category_id:
         active_category = None
 
@@ -113,9 +156,13 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
             "filters": filters,
             "sort": sort,
             "categories": filter_options["categories"],
+            "category_groups": filter_options["category_groups"],
             "occasions": filter_options["occasions"],
             "brands": filter_options["brands"],
             "recipients": filter_options["recipients"],
+            "has_bestsellers": filter_options["has_bestsellers"],
+            "has_new_arrivals": filter_options["has_new_arrivals"],
+            "has_same_day": filter_options["has_same_day"],
             "view_mode": "grid",
             "active_category": active_category,
         }
@@ -149,6 +196,9 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
     cart = get_cart_for_request(request=request)
     in_cart = is_product_in_cart(cart=cart, product_id=product.pk)
     in_wishlist = is_product_in_wishlist(request=request, product_id=product.pk)
+    gift_customization_available = (
+        get_gift_customization_config(product_instance=product, request=request) is not None
+    )
     reviews = getattr(product, "approved_reviews", [])
     review_count = len(reviews)
     average_rating = None
@@ -181,6 +231,7 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
             "%(name)s — premium flowers and gifts delivered in Qatar."
         )
         % {"name": product.name},
+        og_type="product",
     )
     context.update(
         {
@@ -190,6 +241,7 @@ def pdp_view(request: HttpRequest, slug: str) -> HttpResponse:
             "cities": get_active_cities(),
             "in_cart": in_cart,
             "in_wishlist": in_wishlist,
+            "gift_customization_available": gift_customization_available,
             "product_json_ld": json.dumps(
                 build_product_json_ld(
                     product=product,

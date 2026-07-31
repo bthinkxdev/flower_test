@@ -189,12 +189,23 @@ class Product(ArabicTranslationMixin, TimeStampedModel):
         db_index=True,
         verbose_name="Slug",
     )
+    description = models.TextField(
+        blank=True,
+        verbose_name="Description",
+        help_text="Storefront product description shown on the PDP.",
+    )
     sku = models.CharField(
         max_length=64,
         unique=True,
         db_index=True,
         verbose_name="SKU",
         help_text="Stock keeping unit identifier.",
+    )
+    preparation_minutes = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name="Preparation minutes",
+        help_text="Estimated preparation time in minutes before dispatch.",
     )
     category = models.ForeignKey(
         Category,

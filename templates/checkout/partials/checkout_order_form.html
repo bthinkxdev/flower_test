@@ -116,14 +116,7 @@
       <span class="checkout-step__index" aria-hidden="true">3</span>
       <h2 class="checkout-step__title" id="checkout-payment-title">{% trans "Payment Method" %}</h2>
     </div>
-    <div class="checkout-payment">
-      {% for key, adapter in payment_gateways.items %}
-      <label class="checkout-payment__option" for="gw-{{ key }}">
-        <input class="form-check-input{% if payment_form.gateway_key.errors %} is-invalid{% endif %}" type="radio" name="gateway_key" value="{{ key }}" id="gw-{{ key }}" {% if selected_gateway_key == key or forloop.first and not selected_gateway_key %}checked{% endif %}>
-        <span class="small fw-semibold">{{ adapter.display_name }}</span>
-      </label>
-      {% endfor %}
-    </div>
+    {% include "includes/payment_methods.html" with mode="interactive" %}
     {% if payment_form.gateway_key.errors %}
     <div class="text-danger small mt-2">{{ payment_form.gateway_key.errors.0 }}</div>
     {% endif %}

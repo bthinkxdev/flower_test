@@ -27,6 +27,15 @@ PAYMENT_GATEWAYS: dict[str, PaymentGatewayAdapter] = {
     PayTabsGatewayAdapter.key: PayTabsGatewayAdapter(),
 }
 
+STOREFRONT_BADGE_LABELS: dict[str, str] = {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "amex": "American Express",
+    "apple_pay": "Apple Pay",
+    "google_pay": "Google Pay",
+    "qatar_local": "Qatar Local",
+}
+
 
 def get_payment_adapter(*, gateway_key: str) -> PaymentGatewayAdapter:
     """Look up a registered adapter by key."""
@@ -43,3 +52,23 @@ def register_payment_adapter(*, adapter: PaymentGatewayAdapter) -> None:
     Adding a gateway requires only registry registration — zero checkout view edits.
     """
     PAYMENT_GATEWAYS[adapter.key] = adapter
+
+
+def get_storefront_payment_badges() -> list[dict[str, str]]:
+    """Return ordered unique payment badges for PDP / trust UI."""
+    badges: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for adapter in PAYMENT_GATEWAYS.values():
+        if not getattr(adapter, "show_on_storefront", False):
+            continue
+        for badge_key in getattr(adapter, "badge_keys", ()):
+            if badge_key in seen:
+                continue
+            seen.add(badge_key)
+            badges.append(
+                {
+                    "key": badge_key,
+                    "label": STOREFRONT_BADGE_LABELS.get(badge_key, badge_key.replace("_", " ").title()),
+                }
+            )
+    return badges

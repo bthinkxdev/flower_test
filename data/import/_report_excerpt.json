@@ -1,0 +1,668 @@
+{
+  "excel_quality_no_ar": {
+    "missing_fields": {},
+    "price_min": 40.0,
+    "price_max": 4400.0,
+    "price_avg": 343.7,
+    "prep": {
+      "60.0": 1199,
+      "None": 13
+    },
+    "addons_en": {
+      "Greeting Card": 1211,
+      "": 1
+    },
+    "addons_ar": {
+      "\u0628\u0637\u0627\u0642\u0629 \u062a\u0647\u0646\u0626\u0629": 1211,
+      "": 1
+    },
+    "duplicate_name_en_count": 65,
+    "duplicate_samples": [
+      {
+        "name": "sophisticated splendor no-629",
+        "count": 3
+      },
+      {
+        "name": "standing bouquet with cute red roses no-1034",
+        "count": 3
+      },
+      {
+        "name": "bouquet with lilly mix arrangment-16",
+        "count": 2
+      },
+      {
+        "name": "bouquet with red rose mix-9",
+        "count": 2
+      },
+      {
+        "name": "flower bouquet fuchia themed -41",
+        "count": 2
+      },
+      {
+        "name": "red and white rose standing bouquet 091",
+        "count": 2
+      },
+      {
+        "name": "rose premium heavy standing bouquet",
+        "count": 2
+      },
+      {
+        "name": "standing bouquet red and black themed bouquet",
+        "count": 2
+      },
+      {
+        "name": "standing bouquet white and red flower bouquet",
+        "count": 2
+      },
+      {
+        "name": "flower lilly mix-56",
+        "count": 2
+      },
+      {
+        "name": "flower mix hand bouquet-61",
+        "count": 2
+      },
+      {
+        "name": "happy anniversary red wow flower bouquet",
+        "count": 2
+      },
+      {
+        "name": "happy anniversary special flower arrangement",
+        "count": 2
+      },
+      {
+        "name": "happy anniversary special mixed pink and golden bouquet",
+        "count": 2
+      },
+      {
+        "name": "happy anniversary special red rose bouquet",
+        "count": 2
+      },
+      {
+        "name": "birthday special pink rose with luxury perfume",
+        "count": 2
+      },
+      {
+        "name": "cala lilly bridal bouquet",
+        "count": 2
+      },
+      {
+        "name": "small bloom surprise no-19",
+        "count": 2
+      },
+      {
+        "name": "congrats colorfull bouquet",
+        "count": 2
+      },
+      {
+        "name": "congrats lilly bouquet",
+        "count": 2
+      }
+    ],
+    "typo_count": 139,
+    "typo_samples": [
+      {
+        "row": 4,
+        "name": "bouquet pink lilly with beige wrapp-04",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 5,
+        "name": "bouquet pink lilly-01",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 8,
+        "name": "bouquet white lilly -04",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 9,
+        "name": "bouquet white tulip with traditinal wrapp-05",
+        "flags": [
+          "traditinal"
+        ]
+      },
+      {
+        "row": 12,
+        "name": "Bouquet with cute lilly-11",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 16,
+        "name": "Bouquet with lilly green and mix-39",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 17,
+        "name": "Bouquet with lilly grey wrapp-35",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 18,
+        "name": "bouquet with lilly mix arrangment-16",
+        "flags": [
+          "lilly",
+          "arrangment"
+        ]
+      },
+      {
+        "row": 19,
+        "name": "Bouquet with long lilly -35",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 23,
+        "name": "Bouquet with pink all lilly-32",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 26,
+        "name": "Bouquet with pink lilly mix-15",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 28,
+        "name": "Bouquet with premium arrangment-17",
+        "flags": [
+          "arrangment"
+        ]
+      },
+      {
+        "row": 33,
+        "name": "Bouquet with soft lilly nice-15",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 34,
+        "name": "Bouquet with special flower arrangment-16",
+        "flags": [
+          "arrangment"
+        ]
+      },
+      {
+        "row": 37,
+        "name": "Bouquet with white mix lilly-06",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 43,
+        "name": "Bouquet with lilly mix-71",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 44,
+        "name": "Bouquet with lilly mix-83",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 45,
+        "name": "Bouquet with lilly pink rose mix-61",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 46,
+        "name": "Bouquet with lilly rose-72",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 47,
+        "name": "Bouquet with lilly rose mix-48",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 48,
+        "name": "Bouquet with lilly small-56",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 49,
+        "name": "Bouquet with lilly star-65",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 50,
+        "name": "Bouquet with long lilly mix-44",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 53,
+        "name": "Bouquet with pink lilly-93",
+        "flags": [
+          "lilly"
+        ]
+      },
+      {
+        "row": 54,
+        "name": "Bouquet with pink lilly with nice wrapp-45",
+        "flags": [
+          "lilly"
+        ]
+      }
+    ],
+    "anniversary_case_split": {
+      "Anniversary Special": 21,
+      "Anniversary special": 37
+    }
+  },
+  "gifts_excel": [
+    "10 Lilly Bunch with Rahash No-311",
+    "10 Pink Lilly Bunch with Rahash Free No-312",
+    "10 Pink White Lilly with Free Rahash No-313",
+    "10 ROSES WITH PRECIOUS GIFT WATCH NO-3010",
+    "10 ROSES WITH PRECIOUS GIFT WATCH NO-3011",
+    "20 Blue Rose with free Rahash No-300",
+    "20 Fuchia with Free Rahash no-301",
+    "20 Mix Rose with free Rahash No-306",
+    "20 Mix Rose with Free Rahash No-309",
+    "20 Orange Rose with free Rahash No-303",
+    "20 Pink and White Rose with Free Rahash No-308",
+    "20 Purple Rose with free Rahash No-305"
+  ],
+  "gifts_img": [
+    "10 Lilly Bunch with Rahash No-311",
+    "10 Pink Lilly Bunch with Rahash Free No-312",
+    "10 Pink White Lilly with Free Rahash No-313",
+    "20 Blue Rose with free Rahash No-300",
+    "20 Fuchia with Free Rahash no-301",
+    "20 Mix Rose with free Rahash No-306",
+    "20 Mix Rose with Free Rahash No-309",
+    "20 Orange Rose with free Rahash No-303",
+    "20 Pink and White Rose with Free Rahash No-308",
+    "20 Purple Rose with free Rahash No -305",
+    "20 Red Rose with free Rahash no-302",
+    "20 White Rose with free Rahash No-304"
+  ],
+  "prem_excel": [
+    "white and golden flower premium arrangement",
+    "blue arrangement flowers",
+    "purple arrangement premium arrangement",
+    "pink premium flower arrangement",
+    "white premium flower arrangement",
+    "white and blue flower premium arrangement with money box",
+    "flower mixed premium box arrangement",
+    "white and red with black base premium flower arrangement",
+    "rose pink mixed premium arrangement",
+    "white and green anthurium special premium arrangement",
+    "white and purple premium arrangement",
+    "fresh flower premium arrangement"
+  ],
+  "prem_img": [
+    "arrangement of surprice NO-639",
+    "arrangement red rose with black box premium love arrangement",
+    "blue arrangement flowers",
+    "flower mixed premium box arrangement",
+    "fresh flower  premium arrangement",
+    "fresh pink tulip bunch",
+    "mixed table arrangement red and white flowers",
+    "only yellow arrangement NO-638",
+    "pink premium flower arrangement",
+    "premium acrilic special flower arrangement",
+    "premium arrangement acrilic with peach arrangement",
+    "premium arrangement green and pink mixed arrangement"
+  ],
+  "watch": [
+    {
+      "name": "10 ROSES WITH PRECIOUS GIFT WATCH NO-3010",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 10 ROSES WITH PRECIOUS GIFT WATCH  NO-3010.png"
+      ]
+    },
+    {
+      "name": "10 ROSES WITH PRECIOUS GIFT WATCH NO-3011",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 10 ROSES WITH PRECIOUS GIFT WATCH  NO-3011.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3000",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3000.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3002",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3002.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3004",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3004.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3007",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3007.png"
+      ]
+    },
+    {
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3008",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3008.png"
+      ]
+    },
+    {
+      "name": "20 WHITE ROSES WITH PRECIOUS GIFT WATCH FOR MEN NO-3001",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 WHITE ROSES WITH PRECIOUS GIFT WATCH FOR MEN  NO-3001.png"
+      ]
+    },
+    {
+      "name": "30 MIX ROSES WITH PRECIOUS GIFT WATCH NO-3007",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 MIX ROSES WITH PRECIOUS GIFT WATCH  NO-3007.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3003",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3003.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3005",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3005.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3006",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3006.png"
+      ]
+    },
+    {
+      "name": "30 ROSES WITH PRECIOUS GIFT WATCH NO-3009",
+      "matches_elsewhere": [
+        "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 30 ROSES WITH PRECIOUS GIFT WATCH  NO-3009.png"
+      ]
+    }
+  ],
+  "rose_toys": [
+    {
+      "name": "BABY BIKE & CHOCOLATE WITH FLOWER BOUQUET NO-251",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "BABY BIKE WITH FLOWER AND CHOCOLATE NO-202",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "BABY BIKE WITH FLOWER BOUQUET NO-258",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "BABY BOY CYCLE WITH FLOWER BOUQUET NO-206",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "BABY CYCLE WITH FRESH FLOWER BOUQUET SWEET RIDE NO-259",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "Baby Girl Cycle with Chocolate & Flower Bouquet No-256",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "Cycle Boy or Girl Ride with Orange Flower Theme No-204",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "Girl Cycle with Flower Bouquet No-206",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "Little Baby Cycle with Flower Bouquet and Chocolate No-258",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "Little Baby Girl Bike with Flower Bouquet No-201",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "Littlebaby Bike Ride with Flower Bouquet and Chocolate No-252",
+      "matches_elsewhere": []
+    }
+  ],
+  "garangao": [
+    {
+      "name": "GARANGAO SPECIAL CHOCO BOUQUET 01",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "GARANGAO SPECIAL FLOWE WITH CHOCO BOUQUET 02",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "GARANGAO SPECIAL FLOWE WITH CHOCO BOUQUET 03",
+      "matches_elsewhere": []
+    },
+    {
+      "name": "GARANGAO SPECIAL FLOWE WITH CHOCO BOUQUET 04",
+      "matches_elsewhere": []
+    }
+  ],
+  "other": [
+    {
+      "cat": "Anniversary Special",
+      "expected": "ANNIVERSARY SPECIAL",
+      "name": "happy anniversary special mixed pink and golden bouquet",
+      "got": "BIRTHDAY SPECIAL/happy birthday special mixed pink and golden bouquet.jpeg"
+    },
+    {
+      "cat": "Anniversary special",
+      "expected": "ANNIVERSARY SPECIAL",
+      "name": "Happy anniversary special standing bouquet red rose with white wrapping special bouquet",
+      "got": "FLOWER BOUQUETS/standing bouquet red rose with white Wrapping special bouquet.jpeg"
+    },
+    {
+      "cat": "Birthday special",
+      "expected": "BIRTHDAY SPECIAL",
+      "name": "Birthday Special White Mix Flower with Luxury Perfume",
+      "got": "FLOWER WITH PERFUMES/WHITE MIX FLOWER WITH LUXURY PERFUME.jpeg"
+    },
+    {
+      "cat": "Birthday special",
+      "expected": "BIRTHDAY SPECIAL",
+      "name": "Birthday Special Whitish Arrangement with Branded Perfume",
+      "got": "FLOWER WITH PERFUMES/WHITISH ARRANGEMENT WITH BRANDED PERFUME..jpeg"
+    },
+    {
+      "cat": "FLOWER WITH PERFUMES",
+      "expected": "FLOWER WITH PERFUMES",
+      "name": "ROYAL BLOOM PERFUME SET NO-102",
+      "got": "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL ROYAL BLOOM PERFUME SET   NO-102.png"
+    },
+    {
+      "cat": "FLOWER WITH PERFUMES",
+      "expected": "FLOWER WITH PERFUMES",
+      "name": "WHITE ROSE AND LUXURY PERFUME",
+      "got": "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL WHITE ROSE AND LUXURY PERFUME.png"
+    },
+    {
+      "cat": "FLOWER WITH PERFUMES",
+      "expected": "FLOWER WITH PERFUMES",
+      "name": "YELLOW AND RED ROSE WITH LUXURY PERFUME",
+      "got": "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL YELLOW AND RED ROSE WITH LUXURY PERFUME.png"
+    },
+    {
+      "cat": "FLOWER WITH WATCH",
+      "expected": null,
+      "name": "10 ROSES WITH PRECIOUS GIFT WATCH NO-3010",
+      "got": "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 10 ROSES WITH PRECIOUS GIFT WATCH  NO-3010.png"
+    },
+    {
+      "cat": "FLOWER WITH WATCH",
+      "expected": null,
+      "name": "10 ROSES WITH PRECIOUS GIFT WATCH NO-3011",
+      "got": "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 10 ROSES WITH PRECIOUS GIFT WATCH  NO-3011.png"
+    },
+    {
+      "cat": "FLOWER WITH WATCH",
+      "expected": null,
+      "name": "20 ROSES WITH PRECIOUS GIFT WATCH NO-3000",
+      "got": "BIRTHDAY SPECIAL/BIRTHDAY SPECIAL 20 ROSES WITH PRECIOUS GIFT WATCH  NO-3000.png"
+    }
+  ],
+  "none": [
+    {
+      "row": 9,
+      "cat": "Flower Bouquet",
+      "name": "bouquet white tulip with traditinal wrapp-05"
+    },
+    {
+      "row": 18,
+      "cat": "Flower Bouquet",
+      "name": "bouquet with lilly mix arrangment-16"
+    },
+    {
+      "row": 36,
+      "cat": "Flower Bouquet",
+      "name": "Bouquet with tulip and gypso mix-35"
+    },
+    {
+      "row": 59,
+      "cat": "Flower Bouquet",
+      "name": "Bouqut with white and fusie rose -43"
+    },
+    {
+      "row": 73,
+      "cat": "Flower Bouquet",
+      "name": "Hand bouquet luxury feeling fresh mix flowers bouquet"
+    },
+    {
+      "row": 78,
+      "cat": "Flower Bouquet",
+      "name": "Hand bouquet pink gerbera bouquet"
+    },
+    {
+      "row": 123,
+      "cat": "Anniversary Special",
+      "name": "ANNIVERSARY SPECIAL 5 LILY WITH ROSE MIX +D123:D143NO-1036"
+    },
+    {
+      "row": 127,
+      "cat": "Anniversary Special",
+      "name": "ANNIVERSARY SPECIAL bouquet with lilly mix arrangment-16"
+    },
+    {
+      "row": 149,
+      "cat": "Anniversary Special",
+      "name": "ANNIVERSARY SPECIAL flower bouquet fuchie themed -41"
+    },
+    {
+      "row": 157,
+      "cat": "Anniversary Special",
+      "name": "happy anniversary special fuchie and pink bouquet"
+    },
+    {
+      "row": 165,
+      "cat": "Anniversary special",
+      "name": "Happy anniversary special red rose with white wrapper-54"
+    },
+    {
+      "row": 179,
+      "cat": "Anniversary special",
+      "name": "Happy anniversary special white hydrangea and red rose hand bouquet-60"
+    },
+    {
+      "row": 188,
+      "cat": "Birthday special",
+      "name": "Birthday Special 20 White Roses with Precious Gift Watch No-3001"
+    },
+    {
+      "row": 194,
+      "cat": "Birthday special",
+      "name": "Birthday Special Red Rose Arrangement in Black Box"
+    },
+    {
+      "row": 195,
+      "cat": "Birthday special",
+      "name": "Birthday Special Blue Flower Arrangement"
+    }
+  ],
+  "multi": [
+    {
+      "name": "graduation special",
+      "matches": [
+        "GRADUATION SPECIAL ARRANGEMENTS/Graduation special arrangement peach and white.jpeg",
+        "GRADUATION SPECIAL ARRANGEMENTS/Graduation special arrangement sweet pink.jpeg",
+        "GRADUATION SPECIAL ARRANGEMENTS/Graduation special arrangementpinkand white .jpeg",
+        "GRADUATION SPECIAL ARRANGEMENTS/graduation special nice arrangement.jpeg"
+      ]
+    },
+    {
+      "name": "MOTHERS DAY SPECIAL SURPRISE BOX, WATH AND PERFUME WITH DRYFUITS AND FLOWERS VERY SPECIAL 01",
+      "matches": [
+        "MOTHERS DAY SPECIAL ARRANGEMENT/MOTHERS DAY SPECIAL SURPRISE BOX. WATH AND PERFUME WITH DRYFUITS AND FLOWERS VERY SPECIAL.jpeg",
+        "MOTHERS DAY SPECIAL ARRANGEMENT/MOTHERS DAY SPECIAL SURPRISE BOX. WATH AND PERFUME WITH DRYFUITS AND FLOWERS.jpeg"
+      ]
+    },
+    {
+      "name": "new born baby boy white and blue color",
+      "matches": [
+        "NEW BORN BABY FLOWER ARRANGEMENTS/new born baby boy white and blue color flower bouquet 05.png",
+        "NEW BORN BABY FLOWER ARRANGEMENTS/new born baby boy white and blue color flower vase.jpeg"
+      ]
+    },
+    {
+      "name": "TABLE ARRANGEMENT green and white",
+      "matches": [
+        "TABLE ARRANGEMENTS/Table Arrangement  green and white hydrangea flower arrangement.jpeg",
+        "TABLE ARRANGEMENTS/TABLE ARRANGEMENT green and white anthurium.jpeg"
+      ]
+    }
+  ],
+  "blockers": [
+    "Download missing image folders: FLOWER WITH WATCH (13), GARANGAO SPECIAL (4), ROSE WITH TOYS (11).",
+    "Merge Anniversary Special + Anniversary special into one category?",
+    "Map 10/20/25/30 Roses Set into single ROSE BUNDLES category?",
+    "Fix excel typos on import (ADA->ADHA, lilly, bouqut, etc.) or keep as-is?",
+    "No-image products: skip, import without photo, or wait for images?",
+    "Multi-image matches: first only, all as gallery, or manual?",
+    "PREPARATION TIME mostly 60 \u2014 confirm unit (minutes)?",
+    "ADD-ONS almost always Greeting Card \u2014 one shared addon?",
+    "Ignore media/products/images/ junk/test files?"
+  ]
+}

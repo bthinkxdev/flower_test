@@ -1,0 +1,14 @@
+{% load static %}
+{# Single payment network/wallet badge. Expects: badge_key, badge_label #}
+{% with badge_path="img/payments/"|add:badge_key|add:".svg" %}
+<span class="payment-badge payment-badge--{{ badge_key }}" title="{{ badge_label }}">
+  <img
+    src="{% static badge_path %}"
+    alt="{{ badge_label }}"
+    width="48"
+    height="32"
+    loading="lazy"
+    decoding="async"
+  >
+</span>
+{% endwith %}

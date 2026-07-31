@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="delivery-widget">
   <h3 class="delivery-widget__title">{% trans "Delivery Estimate" %}</h3>
-  <select id="delivery-city" class="form-select form-select-sm mb-2" data-estimate-url="{% url 'catalog:delivery-estimate' product_id=product.pk %}">
+  <select id="delivery-city" class="form-select form-select-sm delivery-widget__select" data-estimate-url="{% url 'catalog:delivery-estimate' product_id=product.pk %}">
     {% for city in cities %}
     <option value="{{ city.slug }}" {% if delivery_estimate.city == city.name %}selected{% endif %}>{{ city.name }}</option>
     {% endfor %}

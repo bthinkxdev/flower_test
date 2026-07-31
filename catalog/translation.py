@@ -32,7 +32,7 @@ class RecipientTranslation(TranslationOptions):
 
 
 class ProductTranslation(TranslationOptions):
-    fields = ("name", "color", "meta_title", "meta_description")
+    fields = ("name", "description", "color", "meta_title", "meta_description")
 
 
 class ProductVariantTranslation(TranslationOptions):

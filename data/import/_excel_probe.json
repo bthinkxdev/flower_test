@@ -1,0 +1,235 @@
+{
+  "start": 3,
+  "products": 1212,
+  "missing": {},
+  "price_types": {
+    "float": 1212
+  },
+  "price_min": 40.0,
+  "price_max": 4400.0,
+  "price_avg": 343.7,
+  "prep": {
+    "60.0": 1199,
+    "None": 13
+  },
+  "addons": {
+    "Greeting Card": 1211,
+    "": 1
+  },
+  "cats": {
+    "Flower Bouquet": 120,
+    "Anniversary Special": 21,
+    "Anniversary special": 37,
+    "Birthday special": 94,
+    "Bridal bouquet": 13,
+    "Budget flowers (below - 100 qr)": 36,
+    "Congratulations Bouquets": 16,
+    "EID AL ADA SPECIAL": 72,
+    "EID SPECIAL SPECIAL": 92,
+    "FATHERS DAY SPECIAL": 22,
+    "Flower Bouquets Under 200 QR": 11,
+    "FLOWER BOUQUET WITH CHOCOLATE": 12,
+    "FLOWER VASE ARRANGEMENT": 77,
+    "FLOWER WITH PERFUMES": 20,
+    "FLOWER WITH WATCH": 13,
+    "FLOWER WITH GIFTS": 90,
+    "GARANGAO SPECIAL": 4,
+    "GET WELL SOON": 16,
+    "GRADUATION FLOWER NECKLACE": 34,
+    "GRADUATION SPECIAL ARRANGEMENT": 47,
+    "Hajj and Umra Special Arrangement": 36,
+    "MOTHERS DAY SPECIAL ARRANGEMENT": 27,
+    "NEW BORN BABY FLOWER ARRANGEMENT": 43,
+    "PREMIUM FLOWER ARRANGEMENT": 71,
+    "Ramadan Special Flower Arrangement": 5,
+    "10 Roses Set": 10,
+    "20 Roses Set": 9,
+    "25 Roses Set": 11,
+    "30 ROSES SET": 8,
+    "Rose Petals": 5,
+    "ROSE WITH CYCLE AND TOYS": 11,
+    "Table Floral Centerpiece Arrangement": 72,
+    "TEACHERS DAY SPECIAL": 14,
+    "VALENTINES DAY SPECIAL": 43
+  },
+  "dup_count": 65,
+  "typo_rows": 133,
+  "row1": {
+    "row": 1,
+    "vals": [
+      "NO",
+      "CATEGORY - ENGLISH",
+      "CATEGORY - ARABIC",
+      "PRODUCT NAME - ENGLISH",
+      "PRODUCT NAME - ARABIC",
+      "DESCRIPTION - ENGLISH",
+      "DESCRIPTION - ARABIC",
+      "PRICE",
+      "PREPARATION TIME",
+      "ADD-ONS ENGLISH",
+      "ADD-ONS ARABIC"
+    ]
+  },
+  "row2": {
+    "row": 2,
+    "vals": [
+      null,
+      "الفئة - اللغة الإنجليزية",
+      "الفئة - اللغة العربية",
+      "اسم المنتج - اللغة الإنجليزية",
+      "اسم المنتج - اللغة العربية",
+      "الوصف - اللغة الإنجليزية",
+      "الوصف - اللغة العربية",
+      "السعر",
+      "وقت التحضير",
+      "إضافات - اللغة الإنجليزية",
+      "إضافات اللغة العربية"
+    ]
+  },
+  "row3": {
+    "row": 3,
+    "vals": [
+      "1.0",
+      "Flower Bouquet",
+      "باقة زهور",
+      "bouquet with tulip white small",
+      "باقة توليب أبيض صغيرة",
+      "A delicate small bouquet of white tulips.",
+      "باقة صغيرة ورقيقة من التوليب الأبيض.",
+      "130.0",
+      "60.0",
+      "Greeting Card",
+      "بطاقة تهنئة"
+    ]
+  },
+  "sample_rows": [
+    {
+      "row": 3,
+      "vals": [
+        "1.0",
+        "Flower Bouquet",
+        "باقة زهور",
+        "bouquet with tulip white small",
+        "باقة توليب أبيض صغيرة",
+        "A delicate small bouquet of white tulips.",
+        "باقة صغيرة ورقيقة من التوليب الأبيض.",
+        "130.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 50,
+      "vals": [
+        "48.0",
+        "Flower Bouquet",
+        "باقة زهور",
+        "Bouquet with long lilly mix-44",
+        "باقة زنبق طويل مشكل-44",
+        "Graceful long-stemmed lilies mixed with complementary blossoms.",
+        "زنبق طويل وأنيق ممزوج مع زهور مكملة له.",
+        "240.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 150,
+      "vals": [
+        "148.0",
+        "Anniversary Special",
+        "هدايا ذكرى سنوية",
+        "ANNIVERSARY SPECIAL FLOWER HAND BOUQUET -58",
+        "ذكرى سنوية باقة يد زهور-58",
+        "A beautiful, hand-tied bouquet perfect for any special occasion.",
+        "باقة جميلة منسقة يدوياً، مثالية لأي مناسبة خاصة.",
+        "190.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 300,
+      "vals": [
+        "298.0",
+        "Budget flowers (below - 100 qr)",
+        "زهور اقتصادية (أقل من 100 ريال)",
+        "Rose mix",
+        "مزيج ورد",
+        "A beautiful, budget-friendly mix of fresh colorful roses.",
+        "مزيج جميل واقتصادي من الورود الملونة الطازجة.",
+        "60.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 600,
+      "vals": [
+        "598.0",
+        "FLOWER VASE ARRANGEMENT",
+        "تنسيق فازة زهور",
+        "SMALL VASE WITH MIX CUTE FLOWERS",
+        "فازة صغيرة مع زهور مشكلة جذابة",
+        "Charming mix of small flowers in a vase.",
+        "مزيج ساحر من الزهور الصغيرة في فازة.",
+        "230.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 900,
+      "vals": [
+        "898.0",
+        "MOTHERS DAY SPECIAL ARRANGEMENT",
+        "ترتيبات خاصة ليوم الأم",
+        "MOTHERS DAY SPECIAL PINK SIMPLE BOUQUET",
+        "بوكيه وردي بسيط ليوم الأم",
+        "A simple and elegant pink bouquet.",
+        "بوكيه وردي بسيط وأنيق.",
+        "40.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 1100,
+      "vals": [
+        "1098.0",
+        "Table Floral Centerpiece Arrangement",
+        "تنسيق زهور للطاولة",
+        "purple table arrangement",
+        "تنسيق طاولة بنفسجي",
+        "Regal purple flowers arranged as a table centerpiece.",
+        "زهور بنفسجية ملكية منسقة كقطعة مركزية للطاولة.",
+        "220.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    },
+    {
+      "row": 1214,
+      "vals": [
+        "1212.0",
+        "VALENTINES DAY SPECIAL",
+        "هدية عيد الحب المميزة",
+        "WHITE ROSE HAND BOUQUET-60",
+        "باقة يد ورد أبيض-60",
+        "A mixed hand bouquet featuring white roses.",
+        "باقة يد متنوعة تتميز بالورود البيضاء.",
+        "240.0",
+        "60.0",
+        "Greeting Card",
+        "بطاقة تهنئة"
+      ]
+    }
+  ]
+}
