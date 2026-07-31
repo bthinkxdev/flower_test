@@ -32,7 +32,7 @@ from delivery.selectors import (
     get_earliest_delivery_estimate,
 )
 from gifting.selectors import get_gift_customization_config
-
+from core.page_rerender import is_htmx_request
 
 def _parse_positive_int(value: str | None) -> int | None:
     """Return a positive int from a query value, or None when missing/invalid."""
@@ -153,6 +153,7 @@ def plp_view(request: HttpRequest, category_slug: str | None = None) -> HttpResp
     context.update(
         {
             "plp": plp_data,
+            "is_htmx": is_htmx_request(request),
             "filters": filters,
             "sort": sort,
             "categories": filter_options["categories"],

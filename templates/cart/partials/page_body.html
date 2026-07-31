@@ -16,7 +16,12 @@
           {% include "cart/partials/line_thumbnail.html" with line=line size_class="cart-line__img-wrap--lg" %}
           <div class="flex-grow-1 min-w-0">
             <div class="d-flex justify-content-between align-items-start gap-2">
-              <a href="{% url 'catalog:pdp' slug=line.product.slug %}" class="cart-line__name text-dark text-truncate">{{ line.product.name }}</a>
+              <a href="{% url 'catalog:pdp' slug=line.product.slug %}" 
+                class="cart-line__name text-dark d-block"
+                data-full-name="{{ line.product.name }}"
+                onclick="return toggleFullName(event, this)">
+                <span class="name-display">{{ line.product.name|truncatechars:30 }}</span>
+              </a>
               <span class="fw-semibold flex-shrink-0">{% money_label line.line_subtotal display_currency %}</span>
             </div>
             {% if line.variant %}<div class="cart-line__meta">{{ line.variant.name }} (+{% money_label line.variant.price_delta display_currency %})</div>{% endif %}

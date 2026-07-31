@@ -167,12 +167,18 @@ def _render_product_form(request, product, mode):
         eligibility = _build_eligibility_formsets(product)
         addon_eligibility = eligibility["addons"]
 
-    for f in [form, *variants.forms, variants.empty_form, *images.forms, images.empty_form,
+    variants_empty_form = variants.empty_form
+    images_empty_form = images.empty_form
+
+    for f in [form, *variants.forms, variants_empty_form, *images.forms, images_empty_form,
               gift_config_form]:
         _style(f)
-    for fs in eligibility.values():
+
+    eligibility_empty_forms = {}
+    for name, fs in eligibility.items():
         if fs is not None:
-            for f in [*fs.forms, fs.empty_form]:
+            eligibility_empty_forms[name] = fs.empty_form
+            for f in [*fs.forms, eligibility_empty_forms[name]]:
                 _style(f)
 
     context = {
@@ -193,6 +199,13 @@ def _render_product_form(request, product, mode):
         "wrap_eligibility": eligibility["wraps"],
         "ribbon_eligibility": eligibility["ribbons"],
         "photo_eligibility": eligibility["photos"],
+        "variants_empty_form": variants_empty_form,
+        "images_empty_form": images_empty_form,
+        "addon_empty_form": eligibility_empty_forms.get("addons"),
+        "card_empty_form": eligibility_empty_forms.get("cards"),
+        "wrap_empty_form": eligibility_empty_forms.get("wraps"),
+        "ribbon_empty_form": eligibility_empty_forms.get("ribbons"),
+        "photo_empty_form": eligibility_empty_forms.get("photos"),
     })
     return render(request, "dashboard/catalog/product_form.html", context)
 

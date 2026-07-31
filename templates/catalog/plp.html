@@ -8,7 +8,7 @@
   <div class="plp-toolbar">
     <div>
       <h1 class="section-title mb-0">{% if active_category %}{{ active_category.name }}{% else %}{% trans "Shop All" %}{% endif %}</h1>
-      <p class="section-subtitle mt-1" id="plp-product-count">{% if plp.total_count %}{{ plp.total_count }} {% trans "products" %}{% endif %}</p>
+      <p class="section-subtitle mt-1" id="plp-product-count">{{ plp.total_count|default:0 }} {% trans "products" %}</p>
     </div>
     <div class="d-flex gap-2 align-items-center">
       <button type="button" class="btn btn-outline-floward btn-sm plp-filter-toggle" data-bs-toggle="offcanvas" data-bs-target="#plpFilters">

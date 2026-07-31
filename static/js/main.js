@@ -639,3 +639,19 @@
     });
   });
 })();
+
+function toggleFullName(event, el) {
+  event.preventDefault(); // stop navigation to PDP on click
+  const span = el.querySelector('.name-display');
+  const full = el.dataset.fullName;
+  const isExpanded = el.dataset.expanded === 'true';
+
+  if (isExpanded) {
+    span.textContent = full.length > 30 ? full.slice(0, 30) + '…' : full;
+    el.dataset.expanded = 'false';
+  } else {
+    span.textContent = full;
+    el.dataset.expanded = 'true';
+  }
+  return false;
+}

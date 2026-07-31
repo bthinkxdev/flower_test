@@ -82,4 +82,20 @@
       setTimeout(() => { el.textContent = ""; }, 3000);
     }
   });
+
+  document.body.addEventListener("htmx:afterRequest", function (event) {
+    const elt = event.detail.elt;
+    if (!elt || !elt.id) return;
+    const isAddToCart = elt.id === "add-to-cart-btn" || elt.id === "add-to-cart-btn-mobile";
+    if (!isAddToCart) return;
+    if (!event.detail.successful) return;
+
+    elt.classList.add("is-added");
+    window.setTimeout(() => {
+      elt.classList.remove("is-added");
+      elt.classList.add("is-in-cart");
+      const label = elt.querySelector(".btn-label");
+      if (label) label.textContent = elt.dataset.addedLabel || "View Cart";
+    }, 900);
+  });
 })();

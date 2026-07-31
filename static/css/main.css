@@ -1488,6 +1488,29 @@ body.mobile-search-open { overflow: hidden; }
   background-color: var(--floward-primary-dark);
   border-color: var(--floward-primary-dark);
 }
+.gift-builder__cta .btn-check-icon {
+  display: inline-block;
+  width: 0;
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    width 0.2s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.2s ease;
+}
+.gift-builder__cta.is-added {
+  background-color: var(--floward-success);
+  border-color: var(--floward-success);
+}
+.gift-builder__cta.is-added .btn-check-icon {
+  width: 1rem;
+  opacity: 1;
+  transform: scale(1);
+}
+.gift-builder__cta.is-in-cart {
+  background-color: var(--floward-primary-dark);
+  border-color: var(--floward-primary-dark);
+}
 .pdp-wishlist-btn {
   display: inline-grid;
   width: 44px;
@@ -3709,4 +3732,28 @@ body.mobile-search-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .payment-pending-spinner__ring { animation: none; border-top-color: var(--floward-primary-light); }
   .payment-pending-dots span { animation: none; opacity: 1; }
+}
+
+/* Force the dropdown to not affect layout */
+/* Minimal fix - only for RTL */
+[dir="rtl"] .floward-select--nav .floward-select__panel {
+  left: auto !important;
+  right: 0 !important;
+}
+
+[dir="rtl"] .navbar-col--prefs {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  gap: 0.5rem !important;
+}
+
+/* Ensure the trigger itself doesn't overflow */
+[dir="rtl"] .navbar-col--prefs .floward-select__trigger {
+  max-width: 100% !important;
+}
+
+[dir="rtl"] .navbar-prefs {
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
 }

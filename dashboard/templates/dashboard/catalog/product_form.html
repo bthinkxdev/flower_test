@@ -68,12 +68,12 @@
           </div>
           <template data-formset-empty>
             <tr>
-              {{ variants.empty_form.id }}
-              <td>{{ variants.empty_form.variant_type }}</td>
-              <td>{{ variants.empty_form.name }}</td>
-              <td>{{ variants.empty_form.price_delta }}</td>
-              <td>{{ variants.empty_form.sku_suffix }}</td>
-              <td>{{ variants.empty_form.stock_quantity }}</td>
+              {{ variants_empty_form.id }}
+              <td>{{ variants_empty_form.variant_type }}</td>
+              <td>{{ variants_empty_form.name }}</td>
+              <td>{{ variants_empty_form.price_delta }}</td>
+              <td>{{ variants_empty_form.sku_suffix }}</td>
+              <td>{{ variants_empty_form.stock_quantity }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
@@ -126,12 +126,12 @@
           </div>
           <template data-formset-empty>
             <tr>
-              {{ images.empty_form.id }}
+              {{ images_empty_form.id }}
               <td><img src="" class="thumb d-none" data-img-preview alt=""></td>
-              <td>{{ images.empty_form.image }}</td>
-              <td>{{ images.empty_form.alt_text }}</td>
-              <td>{{ images.empty_form.display_order }}</td>
-              <td class="text-center">{{ images.empty_form.is_primary }}</td>
+              <td>{{ images_empty_form.image }}</td>
+              <td>{{ images_empty_form.alt_text }}</td>
+              <td>{{ images_empty_form.display_order }}</td>
+              <td class="text-center">{{ images_empty_form.is_primary }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
@@ -165,8 +165,8 @@
           </table>
           <template data-formset-empty>
             <tr>
-              {{ addon_eligibility.empty_form.id }}
-              <td>{{ addon_eligibility.empty_form.addon_product }}</td>
+              {{ addon_empty_form.id }}
+              <td>{{ addon_empty_form.addon_product }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
@@ -199,8 +199,8 @@
           </table>
           <template data-formset-empty>
             <tr>
-              {{ wrap_eligibility.empty_form.id }}
-              <td>{{ wrap_eligibility.empty_form.gift_wrap }}</td>
+              {{ wrap_empty_form.id }}
+              <td>{{ wrap_empty_form.gift_wrap }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
@@ -235,8 +235,8 @@
           </table>
           <template data-formset-empty>
             <tr>
-              {{ ribbon_eligibility.empty_form.id }}
-              <td>{{ ribbon_eligibility.empty_form.ribbon }}</td>
+              {{ ribbon_empty_form.id }}
+              <td>{{ ribbon_empty_form.ribbon }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
@@ -271,8 +271,8 @@
           </table>
           <template data-formset-empty>
             <tr>
-              {{ photo_eligibility.empty_form.id }}
-              <td>{{ photo_eligibility.empty_form.photo_upload }}</td>
+              {{ photo_empty_form.id }}
+              <td>{{ photo_empty_form.photo_upload }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
@@ -306,8 +306,8 @@
           </table>
           <template data-formset-empty>
             <tr>
-              {{ card_eligibility.empty_form.id }}
-              <td>{{ card_eligibility.empty_form.greeting_card }}</td>
+              {{ card_empty_form.id }}
+              <td>{{ card_empty_form.greeting_card }}</td>
               <td class="text-center"><button type="button" class="btn btn-icon btn-sm btn-light text-danger" data-row-remove><i class="ti ti-trash"></i></button></td>
             </tr>
           </template>
