@@ -215,7 +215,7 @@ PAYTABS_CALLBACK_URL = env("PAYTABS_CALLBACK_URL", default="")
 PAYTABS_DEFAULT_RETURN_URL = env("PAYTABS_DEFAULT_RETURN_URL", default="")
 PAYTABS_HIDE_SHIPPING = env.bool("PAYTABS_HIDE_SHIPPING", default=True)
 
-LANGUAGE_CODE = env("LANGUAGE_CODE", default="en")
+LANGUAGE_CODE = env("LANGUAGE_CODE", default="ar")
 
 LANGUAGES = [
     ("en", "English"),
