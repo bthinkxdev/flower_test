@@ -11,21 +11,23 @@
       <p class="checkout-page__lede">{% trans "Confirm delivery details and payment to complete your order." %}</p>
     </header>
 
-    <div class="checkout-page__layout">
-      <div class="checkout-page__main">
+    <div class="row checkout-page__layout gy-4 g-lg-5 align-items-lg-start">
+      <div class="col-12 col-lg-7 checkout-page__main">
         {% include "checkout/partials/checkout_order_form.html" %}
       </div>
 
-      <aside class="checkout-page__aside" aria-label="{% trans 'Order Summary' %}">
-        <div class="checkout-summary sticky-top">
-          <div class="checkout-summary__header">
-            <h2 class="checkout-summary__title">{% trans "Order Summary" %}</h2>
+      <div class="col-12 col-lg-5">
+        <aside class="checkout-page__aside" aria-label="{% trans 'Order Summary' %}">
+          <div class="checkout-summary sticky-top">
+            <div class="checkout-summary__header">
+              <h2 class="checkout-summary__title">{% trans "Order Summary" %}</h2>
+            </div>
+            <div class="checkout-summary__body" id="order-summary-wrapper">
+              {% include "checkout/partials/order_summary_lines.html" with show_desktop_cta=True %}
+            </div>
           </div>
-          <div class="checkout-summary__body" id="order-summary-wrapper">
-            {% include "checkout/partials/order_summary_lines.html" with show_desktop_cta=True %}
-          </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </div>
   </div>
 </div>
