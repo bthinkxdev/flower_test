@@ -130,11 +130,16 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () { init(document); });
-  document.body.addEventListener('htmx:afterSettle', function (evt) {
-    init((evt.detail && evt.detail.target) || document);
+
+  document.body.addEventListener('htmx:afterSettle', function () {
+    init(document);
   });
-  
-  document.body.addEventListener('htmx:oobAfterSwap', function (evt) {
-    init((evt.detail && evt.detail.target) || document);
+
+  document.body.addEventListener('htmx:oobAfterSwap', function () {
+    init(document);
+  });
+
+  document.body.addEventListener('htmx:load', function () {
+    init(document);
   });
 })();

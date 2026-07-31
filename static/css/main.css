@@ -271,6 +271,7 @@ img { max-width: 100%; height: auto; display: block; }
   left: auto;
   right: 0;
   min-width: 10rem;
+  max-width: calc(100vw - 2rem);
   z-index: 1040;
   padding: 0.35rem;
   border-color: var(--floward-border);
@@ -3750,11 +3751,9 @@ body.mobile-search-open { overflow: hidden; }
   .payment-pending-dots span { animation: none; opacity: 1; }
 }
 
-/* Force the dropdown to not affect layout */
-/* Minimal fix - only for RTL */
-[dir="rtl"] .floward-select--nav .floward-select__panel {
-  left: auto !important;
-  right: 0 !important;
+[dir="rtl"] .preference-switchers .floward-select--nav .floward-select__panel {
+  left: 0 !important;
+  right: auto !important;
 }
 
 [dir="rtl"] .navbar-col--prefs {
