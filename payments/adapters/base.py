@@ -40,6 +40,8 @@ class PaymentGatewayAdapter(ABC):
     # Storefront trust strip: network/wallet badge keys rendered once on PDP.
     show_on_storefront: bool = False
     badge_keys: tuple[str, ...] = ()
+    # Short instructional line shown under the option name at checkout.
+    checkout_note: str = ""
 
     @abstractmethod
     def create_payment_intent(

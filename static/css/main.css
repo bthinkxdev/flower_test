@@ -1612,10 +1612,22 @@ body.mobile-search-open { overflow: hidden; }
   gap: 0.5rem;
   min-width: 0;
 }
+.checkout-payment__name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
 .checkout-payment__name {
   font-size: 0.875rem;
   font-weight: 600;
   min-width: 0;
+  overflow-wrap: break-word;
+}
+.checkout-payment__note {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--floward-muted);
   overflow-wrap: break-word;
 }
 .checkout-payment__badges {

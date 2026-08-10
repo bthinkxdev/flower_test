@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32" role="img" aria-label="Fawran">
+  <rect width="48" height="32" rx="4" fill="#003b3d"/>
+  <path fill="#c5a585" d="M9.8 8.5 5.6 17h3l-1.1 6.5 6-9h-3.2l1.5-6z"/>
+  <text x="27" y="20.5" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Fawran</text>
+</svg>

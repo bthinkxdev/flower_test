@@ -209,6 +209,49 @@ class GiftVoucherAdapter(PaymentGatewayAdapter):
     def refund(self, *, transaction_id: str, amount: Decimal) -> PaymentCaptureResult:
         return PaymentCaptureResult(success=True, transaction_id=f"voucher_refund_{transaction_id}")
 
+class FawranAdapter(PaymentGatewayAdapter):
+    """
+    Fawran — Qatar's instant bank transfer rail, paid manually to a fixed number.
+
+    There's no gateway API: the customer transfers to the merchant's Fawran
+    number and staff confirm the transfer against the PENDING transaction.
+    Same non-capturing shape as Cash on Delivery, minus the delivery-status
+    auto-confirmation (that's cash-specific, see payments/signals.py).
+    """
+
+    key = "fawran"
+    display_name = _("Fawran")
+    is_async = True  # tells process_payment() to skip inline capture
+    checkout_note = _("Fawran Number: 240803")
+    show_on_storefront = True
+    badge_keys = ("fawran",)
+
+    def create_payment_intent(
+        self,
+        *,
+        amount: Decimal,
+        currency: str,
+        metadata: dict[str, Any],
+    ) -> PaymentIntentResult:
+        intent_id = f"fawran_{uuid.uuid4().hex[:16]}"
+        return PaymentIntentResult(
+            intent_id=intent_id,
+            metadata={"amount": str(amount), "currency": currency, **metadata},
+            requires_webhook=False,
+        )
+
+    def verify_webhook(self, *, payload: bytes, signature: str) -> dict[str, Any]:
+        raise NotImplementedError("Fawran does not use webhooks.")
+
+    def capture(self, *, intent_id: str) -> PaymentCaptureResult:
+        raise NotImplementedError(
+            "Fawran is never captured directly — staff confirm it manually against the transfer."
+        )
+
+    def refund(self, *, transaction_id: str, amount: Decimal) -> PaymentCaptureResult:
+        return PaymentCaptureResult(success=True, transaction_id=f"fawran_refund_{transaction_id}")
+
+
 class CashOnDeliveryAdapter(PaymentGatewayAdapter):
     """
     Cash on Delivery — no upfront capture, no external gateway call.
@@ -221,6 +264,9 @@ class CashOnDeliveryAdapter(PaymentGatewayAdapter):
     key = "cod"
     display_name = _("Cash on Delivery")
     is_async = True  # tells process_payment() to skip inline capture
+    checkout_note = _("Card payment via POS machine also available on delivery")
+    show_on_storefront = True
+    badge_keys = ("cod",)
 
     def create_payment_intent(
         self,

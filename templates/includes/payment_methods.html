@@ -12,8 +12,13 @@
       {% if selected_gateway_key == key or forloop.first and not selected_gateway_key %}checked{% endif %}
     >
     <span class="checkout-payment__meta">
-      <span class="checkout-payment__name">{{ adapter.display_name }}</span>
-      {% if adapter.badge_keys %}
+      <span class="checkout-payment__name-group">
+        <span class="checkout-payment__name">{{ adapter.display_name }}</span>
+        {% if adapter.checkout_note %}
+        <span class="checkout-payment__note">{{ adapter.checkout_note }}</span>
+        {% endif %}
+      </span>
+      {% if adapter.badge_keys|length > 1 %}
       <span class="checkout-payment__badges" aria-hidden="true">
         {% for badge_key in adapter.badge_keys %}
           {% with badge_label=payment_badge_labels|dict_get:badge_key %}

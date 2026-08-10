@@ -76,6 +76,9 @@ msgstr "Address saved"
 msgid "All"
 msgstr "All"
 
+msgid "All %(name)s"
+msgstr "All %(name)s"
+
 msgid "All Flowers"
 msgstr "All Flowers"
 
@@ -115,6 +118,9 @@ msgstr "Brands You'll Love"
 msgid "Breadcrumb"
 msgstr "Breadcrumb"
 
+msgid "Browse"
+msgstr "Browse"
+
 msgid "Browse %(name)s flowers and gifts with same-day delivery in Qatar."
 msgstr "Browse %(name)s flowers and gifts with same-day delivery in Qatar."
 
@@ -129,6 +135,9 @@ msgstr "Calculated at checkout"
 
 msgid "Cancel"
 msgstr "Cancel"
+
+msgid "Card payment via POS machine also available on delivery"
+msgstr "Card payment via POS machine also available on delivery"
 
 msgid "Cart"
 msgstr "Cart"
@@ -372,6 +381,12 @@ msgstr "FAQ"
 msgid "FAQ | Story of Flowers"
 msgstr "FAQ | Story of Flowers"
 
+msgid "Fawran"
+msgstr "Fawran"
+
+msgid "Fawran Number: 240803"
+msgstr "Fawran Number: 240803"
+
 msgid "Featured brands"
 msgstr "Featured brands"
 
@@ -605,6 +620,9 @@ msgstr "My Wishlist"
 msgid "Name"
 msgstr "Name"
 
+msgid "Name A–Z"
+msgstr "Name A–Z"
+
 msgid "Need quick answers?"
 msgstr "Need quick answers?"
 
@@ -613,6 +631,9 @@ msgstr "Network error. Please try again."
 
 msgid "New"
 msgstr "New"
+
+msgid "New Arrival"
+msgstr "New Arrival"
 
 msgid "New Subscription"
 msgstr "New Subscription"
@@ -747,9 +768,6 @@ msgstr "Pause"
 msgid "Payment Method"
 msgstr "Payment Method"
 
-msgid "Ways to pay"
-msgstr "Ways to pay"
-
 msgid "Pending quotes"
 msgstr "Pending quotes"
 
@@ -842,6 +860,9 @@ msgstr "Price: Low to High"
 
 msgid "Prices hidden on packing slip"
 msgstr "Prices hidden on packing slip"
+
+msgid "Primary"
+msgstr "Primary"
 
 msgid "Privacy Policy"
 msgstr "Privacy Policy"
@@ -955,11 +976,11 @@ msgstr "Save Changes"
 msgid "Saved Addresses"
 msgstr "Saved Addresses"
 
-msgid "Scroll brands left"
-msgstr "Scroll brands left"
+msgid "Scroll left"
+msgstr "Scroll left"
 
-msgid "Scroll brands right"
-msgstr "Scroll brands right"
+msgid "Scroll right"
+msgstr "Scroll right"
 
 msgid "Search"
 msgstr "Search"
@@ -1030,6 +1051,12 @@ msgstr "Shop Now"
 msgid "Shop by Recipient"
 msgstr "Shop by Recipient"
 
+msgid "Shop categories"
+msgstr "Shop categories"
+
+msgid "Shop collections"
+msgstr "Shop collections"
+
 msgid "Shop | Story of Flowers"
 msgstr "Shop | Story of Flowers"
 
@@ -1059,6 +1086,9 @@ msgstr "Start shopping"
 
 msgid "Still have questions?"
 msgstr "Still have questions?"
+
+msgid "Store preferences"
+msgstr "Store preferences"
 
 msgid "Story of Flowers"
 msgstr "Story of Flowers"
@@ -1120,6 +1150,9 @@ msgstr "The selected address is no longer available. Please choose another."
 msgid "Time slot"
 msgstr "Time slot"
 
+msgid "Toggle %(name)s collections"
+msgstr "Toggle %(name)s collections"
+
 msgid "Top Rated"
 msgstr "Top Rated"
 
@@ -1165,11 +1198,20 @@ msgstr "View Cart"
 msgid "View My Subscriptions"
 msgstr "View My Subscriptions"
 
+msgid "View all"
+msgstr "View all"
+
+msgid "View all %(name)s"
+msgstr "View all %(name)s"
+
 msgid "View image"
 msgstr "View image"
 
 msgid "Visit FAQ"
 msgstr "Visit FAQ"
+
+msgid "Ways to pay"
+msgstr "Ways to pay"
 
 msgid ""
 "We collect the information you provide when placing an order, creating an "
@@ -1278,12 +1320,3 @@ msgstr "to write a review after purchasing this product."
 
 msgid "— order now"
 msgstr "— order now"
-
-msgid "View all"
-msgstr "View all"
-
-msgid "Scroll left"
-msgstr "Scroll left"
-
-msgid "Scroll right"
-msgstr "Scroll right"

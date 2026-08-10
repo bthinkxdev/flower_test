@@ -76,6 +76,9 @@ msgstr "تم حفظ العنوان"
 msgid "All"
 msgstr "الكل"
 
+msgid "All %(name)s"
+msgstr "جميع %(الاسم)s"
+
 msgid "All Flowers"
 msgstr "جميع الزهور"
 
@@ -115,6 +118,9 @@ msgstr "علامات ستعجبك"
 msgid "Breadcrumb"
 msgstr "مسار التنقل"
 
+msgid "Browse"
+msgstr "تصفح"
+
 msgid "Browse %(name)s flowers and gifts with same-day delivery in Qatar."
 msgstr "تصفح زهور وهدايا %(name)s مع التوصيل في نفس اليوم في قطر."
 
@@ -130,6 +136,9 @@ msgstr "يُحسب عند الدفع"
 
 msgid "Cancel"
 msgstr "إلغاء"
+
+msgid "Card payment via POS machine also available on delivery"
+msgstr "يتوفر أيضاً الدفع بالبطاقة عبر جهاز نقاط البيع عند التسليم"
 
 msgid "Cart"
 msgstr "السلة"
@@ -372,6 +381,12 @@ msgstr "الأسئلة الشائعة"
 msgid "FAQ | Story of Flowers"
 msgstr "الأسئلة الشائعة | قصة الزهور"
 
+msgid "Fawran"
+msgstr "فوران"
+
+msgid "Fawran Number: 240803"
+msgstr "رقم فوران: 240803"
+
 msgid "Featured brands"
 msgstr "علامات مميزة"
 
@@ -599,6 +614,9 @@ msgstr "قائمة أمنياتي"
 msgid "Name"
 msgstr "الاسم"
 
+msgid "Name A–Z"
+msgstr "الاسم من الألف إلى الياء"
+
 msgid "Need quick answers?"
 msgstr "هل تحتاج إلى إجابات سريعة؟"
 
@@ -607,6 +625,9 @@ msgstr "خطأ في الشبكة. يرجى المحاولة مرة أخرى."
 
 msgid "New"
 msgstr "جديد"
+
+msgid "New Arrival"
+msgstr "وصول جديد"
 
 msgid "New Subscription"
 msgstr "اشتراك جديد"
@@ -741,9 +762,6 @@ msgstr "يوقف"
 msgid "Payment Method"
 msgstr "طريقة الدفع"
 
-msgid "Ways to pay"
-msgstr "طرق الدفع"
-
 msgid "Pending quotes"
 msgstr "الاقتباسات المعلقة"
 
@@ -836,6 +854,9 @@ msgstr "السعر: من الأقل إلى الأعلى"
 
 msgid "Prices hidden on packing slip"
 msgstr "الأسعار مخفية من قسيمة التعبئة"
+
+msgid "Primary"
+msgstr "أساسي"
 
 msgid "Privacy Policy"
 msgstr "سياسة الخصوصية"
@@ -947,11 +968,11 @@ msgstr "حفظ التغييرات"
 msgid "Saved Addresses"
 msgstr "العناوين المحفوظة"
 
-msgid "Scroll brands left"
-msgstr "تمرير العلامات لليسار"
+msgid "Scroll left"
+msgstr "قم بالتمرير إلى اليسار"
 
-msgid "Scroll brands right"
-msgstr "تمرير العلامات لليمين"
+msgid "Scroll right"
+msgstr "قم بالتمرير إلى اليمين"
 
 msgid "Search"
 msgstr "بحث"
@@ -1022,6 +1043,12 @@ msgstr "تسوق الآن"
 msgid "Shop by Recipient"
 msgstr "تسوق حسب المستلم"
 
+msgid "Shop categories"
+msgstr "فئات المتجر"
+
+msgid "Shop collections"
+msgstr "مجموعات المتجر"
+
 msgid "Shop | Story of Flowers"
 msgstr "تسوق | قصة الزهور"
 
@@ -1051,6 +1078,9 @@ msgstr "ابدأ بالتسوق"
 
 msgid "Still have questions?"
 msgstr "لا تزال لديك أسئلة؟"
+
+msgid "Store preferences"
+msgstr "تفضيلات المتجر"
 
 msgid "Story of Flowers"
 msgstr "قصة الزهور"
@@ -1111,6 +1141,9 @@ msgstr "العنوان المحدد لم يعد متاحا. الرجاء اخت�
 msgid "Time slot"
 msgstr "الفترة الزمنية"
 
+msgid "Toggle %(name)s collections"
+msgstr "تبديل مجموعات %(name)s"
+
 msgid "Top Rated"
 msgstr "الأعلى تقييماً"
 
@@ -1156,11 +1189,20 @@ msgstr "عرض السلة"
 msgid "View My Subscriptions"
 msgstr "عرض اشتراكاتي"
 
+msgid "View all"
+msgstr "عرض الكل"
+
+msgid "View all %(name)s"
+msgstr "عرض جميع %(الاسم)s"
+
 msgid "View image"
 msgstr "عرض الصورة"
 
 msgid "Visit FAQ"
 msgstr "تفضل بزيارة الأسئلة الشائعة"
+
+msgid "Ways to pay"
+msgstr "طرق الدفع"
 
 msgid ""
 "We collect the information you provide when placing an order, creating an "
@@ -1268,12 +1310,3 @@ msgstr "لكتابة تقييم بعد شراء هذا المنتج."
 
 msgid "— order now"
 msgstr "— اطلب الآن"
-
-msgid "View all"
-msgstr "عرض الكل"
-
-msgid "Scroll left"
-msgstr "تمرير إلى اليسار"
-
-msgid "Scroll right"
-msgstr "تمرير إلى اليمين"
