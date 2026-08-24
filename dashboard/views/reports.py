@@ -16,6 +16,7 @@ from reports.selectors import (
     get_admin_dashboard_summary,
     get_daily_customer_reports,
     get_daily_sales_reports,
+    get_live_today_sales,
 )
 from reports.services import aggregate_daily_reports
 
@@ -38,13 +39,22 @@ def reports_view(request: HttpRequest) -> HttpResponse:
     customers = get_daily_customer_reports(start_date=start, end_date=end, page=1, page_size=366)
 
     ordered = list(reversed(sales["results"]))
-    chart = {
-        "categories": [r.report_date.strftime("%b %d") for r in ordered],
-        "revenue": [float(r.revenue) for r in ordered],
-        "orders": [r.order_count for r in ordered],
-    }
-    total_revenue = sum(float(r.revenue) for r in sales["results"])
-    total_orders = sum(r.order_count for r in sales["results"])
+    categories = [r.report_date.strftime("%b %d") for r in ordered]
+    revenue = [float(r.revenue) for r in ordered]
+    order_counts = [r.order_count for r in ordered]
+    total_revenue = sum(revenue)
+    total_orders = sum(order_counts)
+
+    has_today_row = any(r.report_date == today for r in ordered)
+    if start <= today <= end and not has_today_row:
+        today_live = get_live_today_sales()
+        categories.append(today.strftime("%b %d"))
+        revenue.append(today_live["revenue"])
+        order_counts.append(today_live["order_count"])
+        total_revenue += today_live["revenue"]
+        total_orders += today_live["order_count"]
+
+    chart = {"categories": categories, "revenue": revenue, "orders": order_counts}
 
     context = {
         "nav_section": "reports",

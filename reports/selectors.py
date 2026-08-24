@@ -93,6 +93,24 @@ def get_inventory_snapshots(
     return {"results": list(page_obj.object_list), "page": page_obj.number}
 
 
+def get_live_today_sales() -> dict[str, Any]:
+    """
+    Live (uncached) revenue/order count for today.
+
+    """
+    today = timezone.localdate()
+    agg = (
+        Order.objects.filter(created_at__date=today)
+        .exclude(order_status=OrderStatus.CANCELLED)
+        .aggregate(order_count=Count("id"), revenue=Sum("total_amount"))
+    )
+    return {
+        "report_date": today,
+        "order_count": agg["order_count"] or 0,
+        "revenue": float(agg["revenue"] or 0),
+    }
+
+
 def get_admin_dashboard_summary() -> dict[str, Any]:
     """
     Admin dashboard summary.
@@ -114,17 +132,11 @@ def get_admin_dashboard_summary() -> dict[str, Any]:
         stock_quantity__lte=F("low_stock_threshold"),
     ).count()
 
-    today_orders = Order.objects.filter(created_at__date=today).exclude(
-        order_status=OrderStatus.CANCELLED,
-    )
-    today_agg = today_orders.aggregate(
-        order_count=Count("id"),
-        revenue=Sum("total_amount"),
-    )
+    today_live = get_live_today_sales()
 
     summary = {
-        "today_revenue": today_agg["revenue"] or 0,
-        "today_order_count": today_agg["order_count"] or 0,
+        "today_revenue": today_live["revenue"],
+        "today_order_count": today_live["order_count"],
         "yesterday_revenue": yesterday_report.revenue if yesterday_report else 0,
         "yesterday_order_count": yesterday_report.order_count if yesterday_report else 0,
         "low_stock_alert_count": low_stock_count,
